@@ -265,6 +265,7 @@ function startTurnSetup() {
     const team = state.teams[state.currentTeamIndex];
     document.getElementById('game-current-team').textContent = team.name;
     document.getElementById('game-words-remaining').textContent = state.deck.length;
+    document.getElementById('game-current-score').textContent = '0';
     
     document.getElementById('current-word').textContent = "READY?";
     document.getElementById('current-word').classList.remove('gradient-text');
@@ -346,6 +347,7 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     
     state.turnScore++;
     state.teams[state.currentTeamIndex].score++;
+    document.getElementById('game-current-score').textContent = state.turnScore;
     
     state.deck.splice(state.currentWordIndex, 1);
     playBeep(800, 'sine', 0.1);
@@ -361,8 +363,18 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
 
 document.getElementById('btn-pass').addEventListener('click', () => {
     playBeep(300, 'triangle', 0.1);
+    
+    // 5-second penalty for passing
+    state.timeLeft = Math.max(0, state.timeLeft - 5);
+    updateTimerVisuals();
+    
     drawCard();
     syncToProjector('pass');
+    
+    // End turn immediately if time is up after penalty
+    if (state.timeLeft <= 0) {
+        endTurn(false);
+    }
 });
 
 document.getElementById('btn-foul').addEventListener('click', () => {
