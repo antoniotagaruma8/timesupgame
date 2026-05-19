@@ -250,6 +250,7 @@ function startGame() {
     state.currentTeamIndex = 0;
     
     showScreen('roundIntro');
+    syncToProjector();
 }
 
 document.getElementById('btn-start-round').addEventListener('click', () => {
@@ -270,6 +271,7 @@ function startTurnSetup() {
     
     state.timeLeft = state.turnDuration;
     updateTimerVisuals();
+    syncToProjector();
 }
 
 document.getElementById('btn-start-turn').addEventListener('click', () => {
@@ -388,6 +390,7 @@ function endTurn(wasFoul) {
     
     state.currentTeamIndex = (state.currentTeamIndex + 1) % state.teams.length;
     document.getElementById('summary-next-team').textContent = state.teams[state.currentTeamIndex].name;
+    syncToProjector();
 }
 
 document.getElementById('btn-next-turn').addEventListener('click', () => {
@@ -397,6 +400,25 @@ document.getElementById('btn-next-turn').addEventListener('click', () => {
         startTurnSetup();
     }
 });
+
+// --- PROJECTOR SYNC ---
+function syncToProjector(eventName = null) {
+    if (!state.roomId) return;
+    
+    let phase = 'waiting';
+    if (screens.roundIntro.classList.contains('active')) phase = 'round-intro';
+    else if (screens.gameplay.classList.contains('active')) phase = 'playing';
+    else if (screens.turnSummary.classList.contains('active')) phase = 'turn-summary';
+    else if (screens.gameOver.classList.contains('active')) phase = 'game-over';
+    
+    socket.emit('hostUpdate', {
+        roomId: state.roomId,
+        phase: phase,
+        currentTeam: state.teams[state.currentTeamIndex] || null,
+        timeLeft: state.timeLeft,
+        event: eventName
+    });
+}
 
 // --- GAME OVER PHASE ---
 
@@ -425,6 +447,7 @@ function endGame() {
     setTimeout(() => playBeep(800, 'sine', 0.1), 150);
     setTimeout(() => playBeep(1000, 'sine', 0.3), 300);
     
+    syncToProjector();
     fireConfetti();
 }
 
