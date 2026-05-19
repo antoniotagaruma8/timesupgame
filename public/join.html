@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Game - Time's Up!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body { padding: 1rem; align-items: flex-start; pt-4 }
+        .glass-panel { padding: 1.5rem; text-align: center; }
+        .input-group { margin-top: 1.5rem; }
+        input { font-size: 2rem; padding: 1rem; text-align: center; letter-spacing: 4px; font-family: monospace; text-transform: uppercase; }
+        .btn-large { margin-top: 1rem; padding: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto;">
+        <h2 class="gradient-text">Time's Up!</h2>
+        <p>Enter your 6-digit Room Code</p>
+
+        <div class="input-group">
+            <input type="text" id="code-input" placeholder="000000" maxlength="6" autocomplete="off">
+        </div>
+        
+        <button id="btn-join" class="btn-primary btn-large">Join Room</button>
+    </div>
+
+    <script>
+        const input = document.getElementById('code-input');
+        const btn = document.getElementById('btn-join');
+
+        function joinRoom() {
+            const code = input.value.trim().replace(/[^0-9]/g, '');
+            if (code.length === 6) {
+                window.location.href = `submit.html?room=${code}`;
+            } else {
+                alert("Please enter a valid 6-digit code.");
+            }
+        }
+
+        btn.addEventListener('click', joinRoom);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') joinRoom();
+        });
+    </script>
+</body>
+</html>

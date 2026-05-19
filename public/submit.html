@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Words - Time's Up!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body { padding: 1rem; align-items: flex-start; pt-4 }
+        .glass-panel { padding: 1.5rem; text-align: center; }
+        .input-group { margin-top: 1.5rem; }
+        input { font-size: 1.2rem; padding: 1rem; text-align: center; }
+        .btn-large { margin-top: 1rem; padding: 1rem; }
+        .status { margin-top: 1rem; font-size: 0.9rem; color: var(--success); opacity: 0; transition: opacity 0.3s; }
+        .status.show { opacity: 1; }
+        #waiting-screen, #error-screen { display: none; }
+        .shake-error {
+            animation: shake 0.5s;
+            border: 2px solid #ff4444 !important;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div id="register-screen" class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto; display: none;">
+        <h2 class="gradient-text">Join the Game</h2>
+        <p>Room: <strong class="room-id-display">...</strong></p>
+
+        <div class="input-group">
+            <label>Team / Pair Name</label>
+            <input type="text" id="team-name-input" placeholder="e.g. John & Sarah" autocomplete="off" maxlength="20">
+        </div>
+        
+        <button id="btn-register" class="btn-primary btn-large">Join Room</button>
+    </div>
+
+    <div id="submit-screen" class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto; display: none;">
+        <h2 class="gradient-text">Time's Up!</h2>
+        <p>Team: <strong id="team-name-display" class="gradient-text">...</strong></p>
+
+        <div class="alert-warning" style="margin-top: 1rem; text-align: left;">
+            <strong>Strategy Tip!</strong> Choose tricky words that are difficult to describe or act out. Easy words = easy points for the other team!
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="word-input" placeholder="Enter a word..." autocomplete="off">
+        </div>
+        
+        <button id="btn-submit" class="btn-primary btn-large">Send Word</button>
+
+        <div id="status-msg" class="status">✓ Word Sent!</div>
+        
+        <div style="margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+            <p class="subtitle" style="font-size: 0.9rem; margin-bottom: 0.5rem;">Words you sent:</p>
+            <div id="my-words" class="hidden-words-list"></div>
+        </div>
+    </div>
+
+    <div id="waiting-screen" class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto; text-align: center;">
+        <h2 class="gradient-text">Game Starting!</h2>
+        <p>Look at the main screen.</p>
+    </div>
+
+    <div id="error-screen" class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto; text-align: center;">
+        <h2 style="color: var(--danger)">Invalid Room</h2>
+        <p>Please scan the QR code from the main screen again.</p>
+    </div>
+
+    <!-- Socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const input = document.getElementById('word-input');
+        const btn = document.getElementById('btn-submit');
+        const statusMsg = document.getElementById('status-msg');
+        const myWords = document.getElementById('my-words');
+        
+        const registerScreen = document.getElementById('register-screen');
+        const submitScreen = document.getElementById('submit-screen');
+        const teamNameInput = document.getElementById('team-name-input');
+        const btnRegister = document.getElementById('btn-register');
+        let myTeamName = "";
+        
+        // Get Room ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('room');
+
+        if (!roomId) {
+            document.getElementById('error-screen').style.display = 'block';
+        } else {
+            document.querySelectorAll('.room-id-display').forEach(el => el.textContent = roomId);
+            
+            // Try to join
+            socket.emit('joinRoom', roomId, (response) => {
+                if (response.success) {
+                    if (response.status === 'started') {
+                        document.getElementById('waiting-screen').style.display = 'block';
+                    } else {
+                        registerScreen.style.display = 'block';
+                        teamNameInput.focus();
+                    }
+                } else {
+                    document.getElementById('error-screen').style.display = 'block';
+                }
+            });
+        }
+
+        function registerTeam() {
+            const name = teamNameInput.value.trim();
+            if (!name) return;
+            
+            myTeamName = name;
+            socket.emit('registerTeam', { roomId, teamName: name });
+            
+            registerScreen.style.display = 'none';
+            submitScreen.style.display = 'block';
+            document.getElementById('team-name-display').textContent = name;
+            input.focus();
+        }
+
+        btnRegister.addEventListener('click', registerTeam);
+        teamNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') registerTeam();
+        });
+
+        function sendWord() {
+            const word = input.value.trim();
+            if (!word || !roomId) return;
+            
+            // Send via socket with callback
+            socket.emit('submitWord', { roomId, word }, (response) => {
+                if (response && response.error) {
+                    // Show error
+                    input.classList.add('shake-error');
+                    setTimeout(() => input.classList.remove('shake-error'), 500);
+                    
+                    const errorMsg = document.createElement('div');
+                    errorMsg.style.color = '#ff4444';
+                    errorMsg.style.marginTop = '10px';
+                    errorMsg.style.fontSize = '0.9rem';
+                    errorMsg.textContent = "⚠️ " + response.error;
+                    
+                    const container = document.querySelector('.input-group');
+                    const existingErr = container.querySelector('.error-msg');
+                    if(existingErr) existingErr.remove();
+                    
+                    errorMsg.className = 'error-msg';
+                    container.appendChild(errorMsg);
+                    
+                    setTimeout(() => {
+                        if(errorMsg.parentNode) errorMsg.remove();
+                    }, 3000);
+                    
+                } else {
+                    // UI Update on Success
+                    input.value = '';
+                    input.focus();
+                    
+                    statusMsg.classList.add('show');
+                    setTimeout(() => statusMsg.classList.remove('show'), 2000);
+                    
+                    const dot = document.createElement('div');
+                    dot.className = 'hidden-word';
+                    dot.textContent = '••••••';
+                    myWords.appendChild(dot);
+                    
+                    const container = document.querySelector('.input-group');
+                    const existingErr = container.querySelector('.error-msg');
+                    if(existingErr) existingErr.remove();
+                }
+            });
+        }
+
+        btn.addEventListener('click', sendWord);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendWord();
+        });
+
+        socket.on('gameStarted', () => {
+            document.getElementById('submit-screen').style.display = 'none';
+            document.getElementById('waiting-screen').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

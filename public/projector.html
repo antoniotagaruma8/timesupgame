@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projector - Time's Up!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background: #000; /* Pitch black for projector contrast */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .projector-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        .massive-timer-text {
+            font-size: 20rem;
+            font-weight: 800;
+            font-family: var(--font-heading);
+            color: var(--success);
+            line-height: 1;
+            text-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
+            margin: 2rem 0;
+            transition: color 0.3s;
+        }
+        .timer-warning {
+            color: var(--danger);
+            text-shadow: 0 10px 30px rgba(239, 68, 68, 0.5);
+        }
+        .team-title {
+            font-size: 5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .score-display {
+            font-size: 4rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .state-text {
+            font-size: 3rem;
+            color: var(--text-muted);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        
+        /* Different View States */
+        #view-waiting, #view-playing, #view-summary {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+        .active-view {
+            display: flex !important;
+        }
+        
+        .huge-logo {
+            font-size: 8rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="projector-container">
+        
+        <!-- Waiting State -->
+        <div id="view-waiting" class="active-view">
+            <h1 class="gradient-text huge-logo">Time's Up!</h1>
+            <p class="state-text pulse">Waiting for host to start...</p>
+            <div class="mt-4" style="font-size: 2rem; color: var(--text-muted);">
+                Room Code: <strong id="proj-room-code" style="color: white; font-family: monospace;">---</strong>
+            </div>
+        </div>
+
+        <!-- Playing State -->
+        <div id="view-playing">
+            <h2 class="state-text mb-4" id="proj-phase-text">GET READY</h2>
+            <div class="team-title" id="proj-team-name">Team Name</div>
+            
+            <div class="massive-timer-text" id="proj-timer">--:--</div>
+            
+            <div class="score-display">
+                Score: <span id="proj-score">0</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Audio Effects -->
+    <audio id="sfx-success" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=success-1-6297.mp3"></audio>
+    <audio id="sfx-pass" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_731422d3b2.mp3?filename=error-126627.mp3"></audio>
+    <audio id="sfx-timesup" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2e022f4682.mp3?filename=buzzer-14-170381.mp3"></audio>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/projector.js"></script>
+</body>
+</html>
