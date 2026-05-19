@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        body { padding: 1rem; align-items: flex-start; pt-4 }
+        body { padding: 1rem; align-items: flex-start; }
         .glass-panel { padding: 1.5rem; text-align: center; }
         .input-group { margin-top: 1.5rem; }
         input { font-size: 1.2rem; padding: 1rem; text-align: center; }
@@ -29,9 +29,44 @@
             75% { transform: translateX(-5px); }
             100% { transform: translateX(0); }
         }
+
+        .connecting-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <!-- Room Code Entry Screen (shown when no room in URL or room is invalid) -->
+    <div id="roomcode-screen" class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto; display: none;">
+        <h2 class="gradient-text">Time's Up!</h2>
+        <p>Enter the room code from the main screen.</p>
+
+        <div class="input-group">
+            <label>Room Code</label>
+            <input type="text" id="room-code-input" placeholder="e.g. 123456" autocomplete="off" maxlength="6" inputmode="numeric" style="font-size: 1.8rem; letter-spacing: 6px; font-weight: 800;">
+        </div>
+        
+        <button id="btn-join-room" class="btn-primary btn-large">Join Room</button>
+        <div id="roomcode-error" style="color: #ff4444; margin-top: 10px; font-size: 0.9rem; display: none;"></div>
+    </div>
+
+    <!-- Connecting Screen -->
+    <div id="connecting-screen" class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto; display: none;">
+        <h2 class="gradient-text">Connecting...</h2>
+        <p><span class="connecting-spinner"></span> Joining room...</p>
+    </div>
+
     <div id="register-screen" class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto; display: none;">
         <h2 class="gradient-text">Join the Game</h2>
         <p>Room: <strong class="room-id-display">...</strong></p>
@@ -71,38 +106,81 @@
         <p>Look at the main screen.</p>
     </div>
 
-    <div id="error-screen" class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto; text-align: center;">
-        <h2 style="color: var(--danger)">Invalid Room</h2>
-        <p>Please scan the QR code from the main screen again.</p>
+    <div id="error-screen" class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto; text-align: center; display: none;">
+        <h2 style="color: var(--danger)">Connection Error</h2>
+        <p>Could not connect to the server. Please check your internet connection and try again.</p>
+        <button onclick="location.reload()" class="btn-primary btn-large">Retry</button>
     </div>
 
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        const socket = io({ reconnectionAttempts: 5, timeout: 10000 });
         const input = document.getElementById('word-input');
         const btn = document.getElementById('btn-submit');
         const statusMsg = document.getElementById('status-msg');
         const myWords = document.getElementById('my-words');
         
+        const roomcodeScreen = document.getElementById('roomcode-screen');
+        const connectingScreen = document.getElementById('connecting-screen');
         const registerScreen = document.getElementById('register-screen');
         const submitScreen = document.getElementById('submit-screen');
         const teamNameInput = document.getElementById('team-name-input');
         const btnRegister = document.getElementById('btn-register');
-        let myTeamName = "";
+        const roomCodeInput = document.getElementById('room-code-input');
+        const btnJoinRoom = document.getElementById('btn-join-room');
+        const roomcodeError = document.getElementById('roomcode-error');
         
+        let myTeamName = "";
+        let roomId = null;
+        let isConnected = false;
+
         // Get Room ID from URL
         const urlParams = new URLSearchParams(window.location.search);
-        const roomId = urlParams.get('room');
+        const urlRoomId = urlParams.get('room');
 
-        if (!roomId) {
+        // Wait for socket connection before attempting to join
+        socket.on('connect', () => {
+            console.log('Socket connected!');
+            isConnected = true;
+
+            if (urlRoomId) {
+                // We have a room code from URL — try to join it
+                attemptJoinRoom(urlRoomId);
+            } else {
+                // No room code in URL — show manual entry screen
+                roomcodeScreen.style.display = 'block';
+                roomCodeInput.focus();
+            }
+        });
+
+        socket.on('connect_error', (err) => {
+            console.error('Connection error:', err);
+            // Show error screen if we can't connect at all
+            hideAllScreens();
             document.getElementById('error-screen').style.display = 'block';
-        } else {
-            document.querySelectorAll('.room-id-display').forEach(el => el.textContent = roomId);
-            
-            // Try to join
-            socket.emit('joinRoom', roomId, (response) => {
+        });
+
+        function hideAllScreens() {
+            roomcodeScreen.style.display = 'none';
+            connectingScreen.style.display = 'none';
+            registerScreen.style.display = 'none';
+            submitScreen.style.display = 'none';
+            document.getElementById('waiting-screen').style.display = 'none';
+            document.getElementById('error-screen').style.display = 'none';
+        }
+
+        function attemptJoinRoom(code) {
+            hideAllScreens();
+            connectingScreen.style.display = 'block';
+
+            socket.emit('joinRoom', code, (response) => {
+                hideAllScreens();
+
                 if (response.success) {
+                    roomId = code;
+                    document.querySelectorAll('.room-id-display').forEach(el => el.textContent = roomId);
+
                     if (response.status === 'started') {
                         document.getElementById('waiting-screen').style.display = 'block';
                     } else {
@@ -110,10 +188,28 @@
                         teamNameInput.focus();
                     }
                 } else {
-                    document.getElementById('error-screen').style.display = 'block';
+                    // Room not found — show manual entry with error
+                    roomcodeScreen.style.display = 'block';
+                    roomCodeInput.value = code;
+                    roomcodeError.textContent = '⚠️ Room "' + code + '" not found. Please check the code and try again.';
+                    roomcodeError.style.display = 'block';
+                    roomCodeInput.focus();
                 }
             });
         }
+
+        // Manual room code join
+        function joinWithCode() {
+            const code = roomCodeInput.value.trim();
+            if (!code) return;
+            roomcodeError.style.display = 'none';
+            attemptJoinRoom(code);
+        }
+
+        btnJoinRoom.addEventListener('click', joinWithCode);
+        roomCodeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') joinWithCode();
+        });
 
         function registerTeam() {
             const name = teamNameInput.value.trim();
@@ -150,7 +246,7 @@
                     errorMsg.style.fontSize = '0.9rem';
                     errorMsg.textContent = "⚠️ " + response.error;
                     
-                    const container = document.querySelector('.input-group');
+                    const container = document.querySelector('#submit-screen .input-group');
                     const existingErr = container.querySelector('.error-msg');
                     if(existingErr) existingErr.remove();
                     
@@ -174,7 +270,7 @@
                     dot.textContent = '••••••';
                     myWords.appendChild(dot);
                     
-                    const container = document.querySelector('.input-group');
+                    const container = document.querySelector('#submit-screen .input-group');
                     const existingErr = container.querySelector('.error-msg');
                     if(existingErr) existingErr.remove();
                 }
@@ -187,7 +283,7 @@
         });
 
         socket.on('gameStarted', () => {
-            document.getElementById('submit-screen').style.display = 'none';
+            hideAllScreens();
             document.getElementById('waiting-screen').style.display = 'block';
         });
     </script>
