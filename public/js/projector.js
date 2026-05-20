@@ -5,9 +5,17 @@ const urlParams = new URLSearchParams(window.location.search);
 const roomId = urlParams.get('room');
 
 // Elements
-const projRoomCode = document.getElementById('proj-room-code');
-const viewWaiting = document.getElementById('view-waiting');
-const viewPlaying = document.getElementById('view-playing');
+const projRoomCodeDisplays = document.querySelectorAll('.proj-room-code-display');
+
+const views = {
+    'welcome': document.getElementById('view-welcome'),
+    'how-to-play': document.getElementById('view-how-to-play'),
+    'rules': document.getElementById('view-rules'),
+    'setup': document.getElementById('view-setup'),
+    'submission': document.getElementById('view-submission'),
+    'waiting': document.getElementById('view-waiting'),
+    'playing': document.getElementById('view-playing')
+};
 
 const projPhaseText = document.getElementById('proj-phase-text');
 const projTeamName = document.getElementById('proj-team-name');
@@ -20,14 +28,14 @@ const sfxPass = document.getElementById('sfx-pass');
 const sfxTimesup = document.getElementById('sfx-timesup');
 
 if (roomId) {
-    projRoomCode.textContent = roomId;
+    projRoomCodeDisplays.forEach(el => el.textContent = roomId);
     socket.emit('joinRoom', roomId, (response) => {
         if (!response.success) {
-            projRoomCode.textContent = "INVALID ROOM";
+            projRoomCodeDisplays.forEach(el => el.textContent = "INVALID ROOM");
         }
     });
 } else {
-    projRoomCode.textContent = "MISSING ?room=CODE";
+    projRoomCodeDisplays.forEach(el => el.textContent = "MISSING CODE");
 }
 
 let lastScore = 0;
@@ -37,13 +45,17 @@ socket.on('projectorSync', (data) => {
     // data = { phase, currentTeam: {name, score}, timeLeft, event }
     
     // Switch views based on phase
+    Object.values(views).forEach(v => { if(v) v.classList.remove('active-view'); });
+    
+    let targetView = views[data.phase];
+    
     if (data.phase === 'playing' || data.phase === 'round-intro' || data.phase === 'turn-summary') {
-        viewWaiting.classList.remove('active-view');
-        viewPlaying.classList.add('active-view');
-    } else {
-        viewWaiting.classList.add('active-view');
-        viewPlaying.classList.remove('active-view');
+        targetView = views['playing'];
+    } else if (data.phase === 'game-over') {
+        targetView = views['welcome']; // Just fallback to welcome for now, or keep playing
     }
+    
+    if (targetView) targetView.classList.add('active-view');
 
     // Update text
     if (data.phase === 'round-intro') projPhaseText.textContent = 'GET READY';

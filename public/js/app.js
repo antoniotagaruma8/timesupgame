@@ -20,6 +20,20 @@ let state = {
     roomId: null
 };
 
+function generateRoomId() {
+    return Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit code
+}
+
+// Initialize Room ID immediately
+state.roomId = generateRoomId();
+socket.emit('createRoom', state.roomId);
+
+// Pre-compute Projector URL
+let currentHost = window.location.host;
+let currentPath = window.location.pathname.replace('index.html', '');
+if(!currentPath.endsWith('/')) currentPath += '/';
+const projUrl = window.location.protocol + '//' + currentHost + currentPath + `projector.html?room=${state.roomId}`;
+
 // Audio context
 let audioCtx = null;
 function initAudio() {
@@ -61,6 +75,7 @@ const screens = {
 function showScreen(screenId) {
     Object.values(screens).forEach(s => s.classList.remove('active'));
     screens[screenId].classList.add('active');
+    syncToProjector();
 }
 
 // --- ONBOARDING PHASE ---
@@ -94,14 +109,22 @@ document.getElementById('btn-back-rules').addEventListener('click', () => {
     showScreen('rules');
 });
 
+// Setup copy projector link
+document.getElementById('btn-copy-projector').addEventListener('click', () => {
+    navigator.clipboard.writeText(projUrl).then(() => {
+        const btn = document.getElementById('btn-copy-projector');
+        const origText = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = origText, 2000);
+    }).catch(err => {
+        alert('Failed to copy: ' + err);
+    });
+});
+
 // --- SETUP PHASE ---
 
 const inputMinutes = document.getElementById('timer-minutes');
 const inputSeconds = document.getElementById('timer-seconds');
-
-function generateRoomId() {
-    return Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit code
-}
 
 document.getElementById('btn-open-submissions').addEventListener('click', () => {
     state.teams = []; // Reset teams on new room creation
@@ -115,19 +138,8 @@ document.getElementById('btn-open-submissions').addEventListener('click', () => 
     
     initAudio();
     
-    state.roomId = generateRoomId();
     document.getElementById('room-code-display').textContent = state.roomId;
     
-    // Tell server to create this room
-    socket.emit('createRoom', state.roomId);
-
-    // Generate URLs dynamically (QR Code relies on this)
-    let currentHost = window.location.host;
-    let currentPath = window.location.pathname.replace('index.html', '');
-    if(!currentPath.endsWith('/')) currentPath += '/';
-    
-    // Set projector URL
-    const projUrl = window.location.protocol + '//' + currentHost + currentPath + `projector.html?room=${state.roomId}`;
     const btnProj = document.getElementById('btn-open-projector');
     if(btnProj) {
         btnProj.onclick = () => window.open(projUrl, '_blank');
@@ -432,8 +444,14 @@ document.getElementById('btn-next-turn').addEventListener('click', () => {
 function syncToProjector(eventName = null) {
     if (!state.roomId) return;
     
-    let phase = 'waiting';
-    if (screens.roundIntro.classList.contains('active')) phase = 'round-intro';
+    let phase = 'waiting'; // default fallback
+    
+    if (screens.welcome.classList.contains('active')) phase = 'welcome';
+    else if (screens.howToPlay.classList.contains('active')) phase = 'how-to-play';
+    else if (screens.rules.classList.contains('active')) phase = 'rules';
+    else if (screens.setup.classList.contains('active')) phase = 'setup';
+    else if (screens.submission.classList.contains('active')) phase = 'submission';
+    else if (screens.roundIntro.classList.contains('active')) phase = 'round-intro';
     else if (screens.gameplay.classList.contains('active')) phase = 'playing';
     else if (screens.turnSummary.classList.contains('active')) phase = 'turn-summary';
     else if (screens.gameOver.classList.contains('active')) phase = 'game-over';

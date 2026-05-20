@@ -75,13 +75,43 @@
 
     <div class="projector-container">
         
-        <!-- Waiting State -->
-        <div id="view-waiting" class="active-view">
-            <h1 class="gradient-text huge-logo">Time's Up!</h1>
-            <p class="state-text pulse">Waiting for host to start...</p>
+        <!-- Onboarding States -->
+        <div id="view-welcome" class="active-view" style="width: 100%; flex-direction: column; align-items: center;">
+            <h1 class="gradient-text huge-logo pulse-slow">Time's Up!</h1>
+            <p class="state-text">Welcome to the Classroom Challenge</p>
             <div class="mt-4" style="font-size: 2rem; color: var(--text-muted);">
-                Room Code: <strong id="proj-room-code" style="color: white; font-family: monospace;">---</strong>
+                Room Code: <strong class="proj-room-code-display" style="color: white; font-family: monospace;">---</strong>
             </div>
+        </div>
+        
+        <div id="view-how-to-play" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+            <h1 class="gradient-text huge-logo">How To Play</h1>
+            <p class="state-text mt-3">1. Submit Words &nbsp;&nbsp; 2. Describe &nbsp;&nbsp; 3. Win</p>
+        </div>
+
+        <div id="view-rules" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+            <h1 style="color: var(--danger); font-size: 6rem; margin-bottom: 2rem;">Strict Rules</h1>
+            <p class="state-text">🚫 NO Saying the Word</p>
+            <p class="state-text mt-3">🚫 NO Pointing at Objects (Instant FOUL!)</p>
+        </div>
+
+        <div id="view-setup" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+            <h1 class="gradient-text huge-logo">Game Setup</h1>
+            <p class="state-text pulse">Host is configuring the game...</p>
+        </div>
+
+        <div id="view-submission" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+            <h1 class="gradient-text huge-logo">Join The Game!</h1>
+            <p class="state-text pulse">Scan the QR code on the host screen</p>
+            <div class="mt-4" style="font-size: 3rem; color: var(--text-muted);">
+                Room Code: <strong class="proj-room-code-display" style="color: white; font-family: monospace;">---</strong>
+            </div>
+        </div>
+
+        <!-- Waiting State -->
+        <div id="view-waiting" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+            <h1 class="gradient-text huge-logo">Get Ready!</h1>
+            <p class="state-text pulse">Waiting for host to start...</p>
         </div>
 
         <!-- Playing State -->
