@@ -111,14 +111,35 @@ document.getElementById('btn-back-rules').addEventListener('click', () => {
 
 // Setup copy projector link
 document.getElementById('btn-copy-projector').addEventListener('click', () => {
-    navigator.clipboard.writeText(projUrl).then(() => {
-        const btn = document.getElementById('btn-copy-projector');
-        const origText = btn.textContent;
+    const btn = document.getElementById('btn-copy-projector');
+    const origText = "🔗 Copy Projector Link";
+    
+    // Success feedback function
+    const showSuccess = () => {
         btn.textContent = '✓ Copied!';
         setTimeout(() => btn.textContent = origText, 2000);
-    }).catch(err => {
-        alert('Failed to copy: ' + err);
-    });
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(projUrl).then(showSuccess).catch(err => {
+            alert('Failed to copy: ' + err);
+        });
+    } else {
+        // Fallback for non-HTTPS or older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = projUrl;
+        textArea.style.position = "absolute";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showSuccess();
+        } catch (err) {
+            alert('Failed to copy. Please manually copy this link: ' + projUrl);
+        }
+        textArea.remove();
+    }
 });
 
 // --- SETUP PHASE ---
@@ -146,8 +167,14 @@ document.getElementById('btn-open-submissions').addEventListener('click', () => 
         btnProj.style.display = 'inline-block';
     }
     
-    // Force the QR code to point to the production URL, not localhost
-    const submitUrl = `https://timesupgame.fly.dev/submit.html?room=${state.roomId}`;
+    // Make the QR code point to the current production URL dynamically
+    const submitUrl = `${window.location.origin}/submit.html?room=${state.roomId}`;
+    
+    // Update the manual URL display dynamically
+    const manualDisplay = document.getElementById('manual-url-display');
+    if (manualDisplay) {
+        manualDisplay.textContent = `${window.location.host}/submit.html`;
+    }
     
     const canvas = document.getElementById('qrcode');
     QRCode.toCanvas(canvas, submitUrl, { width: 500, margin: 1, color: { dark: '#000000', light: '#ffffff' } }, function (error) {
