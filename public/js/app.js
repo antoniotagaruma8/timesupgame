@@ -69,14 +69,29 @@ document.getElementById('btn-start-onboarding').addEventListener('click', () => 
     showScreen('howToPlay');
 });
 
+document.getElementById('btn-back-welcome').addEventListener('click', () => {
+    playBeep(400, 'sine', 0.1);
+    showScreen('welcome');
+});
+
 document.getElementById('btn-next-rules').addEventListener('click', () => {
     playBeep(600, 'sine', 0.1);
     showScreen('rules');
 });
 
+document.getElementById('btn-back-how-to-play').addEventListener('click', () => {
+    playBeep(400, 'sine', 0.1);
+    showScreen('howToPlay');
+});
+
 document.getElementById('btn-next-setup').addEventListener('click', () => {
     playBeep(800, 'sine', 0.1);
     showScreen('setup');
+});
+
+document.getElementById('btn-back-rules').addEventListener('click', () => {
+    playBeep(400, 'sine', 0.1);
+    showScreen('rules');
 });
 
 // --- SETUP PHASE ---

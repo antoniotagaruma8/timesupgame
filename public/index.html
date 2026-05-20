@@ -33,7 +33,7 @@
                     <div class="step-card">
                         <div class="step-number">1</div>
                         <h3>Submit</h3>
-                        <p>Scan the QR code and submit tricky vocabulary words from your phone.</p>
+                        <p>Scan the QR code and submit tricky vocabulary words from your phone. Add and send as many words as you can!</p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">2</div>
@@ -46,7 +46,8 @@
                         <p>The team that correctly guesses the most words wins the game.</p>
                     </div>
                 </div>
-                <div class="text-center mt-4 pt-4">
+                <div class="text-center mt-4 pt-4" style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="btn-back-welcome" class="btn-secondary btn-large">Back</button>
                     <button id="btn-next-rules" class="btn-primary btn-large">Next: The Rules</button>
                 </div>
             </div>
@@ -67,10 +68,11 @@
                     </div>
                     <div class="rule-item">
                         <span class="rule-icon">⏱️</span>
-                        <p><strong>Pass Penalty:</strong> You can pass if you're stuck, but it wastes valuable time.</p>
+                        <p><strong>Pass Penalty:</strong> You can pass if you're stuck, but passing a word will cost 5 seconds of your remaining time.</p>
                     </div>
                 </div>
-                <div class="text-center mt-4 pt-4">
+                <div class="text-center mt-4 pt-4" style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="btn-back-how-to-play" class="btn-secondary btn-large">Back</button>
                     <button id="btn-next-setup" class="btn-primary btn-large">Configure Game</button>
                 </div>
             </div>
@@ -98,7 +100,10 @@
 
                 <div class="mt-4 pt-4 text-center">
                     <button id="btn-open-submissions" class="btn-primary btn-large pulse">Create Room & Open Submissions</button>
-                    <button id="btn-open-projector" class="btn-secondary mt-3" style="display: none; width: 100%;">Open Projector View (Smart TV)</button>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button id="btn-back-rules" class="btn-secondary" style="flex: 1;">Back to Rules</button>
+                        <button id="btn-open-projector" class="btn-secondary" style="display: none; flex: 2;">Open Projector View (Smart TV)</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -208,7 +213,7 @@
 
             <div id="game-controls-active" class="controls-area hidden">
                 <div class="action-buttons">
-                    <button id="btn-pass" class="btn-action pass">✗ Pass</button>
+                    <button id="btn-pass" class="btn-action pass">✗ Pass (-5s)</button>
                     <button id="btn-got-it" class="btn-action got-it">✓ Got It!</button>
                 </div>
                 <button id="btn-foul" class="btn-foul mt-3">🚫 FOUL! (Pointed at Object)</button>
