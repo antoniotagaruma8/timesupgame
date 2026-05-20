@@ -108,20 +108,20 @@ socket.on('projectorSync', (data) => {
                 row.style.display = 'flex';
                 row.style.justifyContent = 'space-between';
                 row.style.alignItems = 'center';
-                row.style.padding = '0.6rem 1rem';
+                row.style.padding = '0.4rem 0.6rem';
                 row.style.background = isCurrent ? 'rgba(139, 92, 246, 0.2)' : 'rgba(0,0,0,0.3)';
-                row.style.border = isCurrent ? '2px solid var(--primary)' : '2px solid transparent';
-                row.style.borderRadius = '15px';
+                row.style.border = isCurrent ? '1px solid var(--primary)' : '1px solid transparent';
+                row.style.borderRadius = '10px';
                 row.style.transition = 'all 0.3s ease';
                 
                 // Add a crown for 1st place if score > 0
                 const crown = (i === 0 && t.score > 0) ? '👑 ' : '';
                 
                 row.innerHTML = `
-                    <div style="font-size: 1.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${isCurrent ? 'white' : 'var(--text-light)'}; font-weight: ${isCurrent ? 'bold' : 'normal'};">
+                    <div style="font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${isCurrent ? 'white' : 'var(--text-light)'}; font-weight: ${isCurrent ? 'bold' : 'normal'};">
                         ${crown}${t.name}
                     </div>
-                    <div style="font-size: 1.5rem; color: var(--success); font-weight: bold; font-family: var(--font-heading); flex-shrink: 0; margin-left: 0.5rem;">
+                    <div style="font-size: 1.1rem; color: var(--success); font-weight: bold; font-family: var(--font-heading); flex-shrink: 0; margin-left: 0.3rem;">
                         ${t.score}
                     </div>
                 `;
