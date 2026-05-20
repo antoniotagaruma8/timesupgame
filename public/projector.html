@@ -55,11 +55,19 @@
         }
         
         /* Different View States */
-        #view-waiting, #view-playing, #view-summary {
+        #view-waiting, #view-summary {
             display: none;
             width: 100%;
             flex-direction: column;
             align-items: center;
+        }
+        #view-playing {
+            display: none;
+            width: 100%;
+            flex-direction: row; /* 2-column layout */
+            justify-content: center;
+            align-items: center;
+            gap: 6vw; /* Space between current turn and scoreboard */
         }
         .active-view {
             display: flex !important;
@@ -114,15 +122,26 @@
             <p class="state-text pulse">Waiting for host to start...</p>
         </div>
 
-        <!-- Playing State -->
+        <!-- Playing State (2-Column Layout) -->
         <div id="view-playing">
-            <h2 class="state-text mb-4" id="proj-phase-text">GET READY</h2>
-            <div class="team-title" id="proj-team-name">Team Name</div>
-            
-            <div class="massive-timer-text" id="proj-timer">--:--</div>
-            
-            <div class="score-display">
-                Score: <span id="proj-score">0</span>
+            <!-- Left Column: Current Turn Info -->
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <h2 class="state-text mb-4" id="proj-phase-text">GET READY</h2>
+                <div class="team-title" id="proj-team-name">Team Name</div>
+                
+                <div class="massive-timer-text" id="proj-timer">--:--</div>
+                
+                <div class="score-display">
+                    Score: <span id="proj-score">0</span>
+                </div>
+            </div>
+
+            <!-- Right Column: Live Scoreboard -->
+            <div style="flex: 1; max-width: 500px; display: flex; flex-direction: column; background: rgba(255,255,255,0.05); border-radius: 30px; padding: 2.5rem; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+                <h3 style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; font-size: 1.5rem; margin-bottom: 2rem; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">Live Scoreboard</h3>
+                <div id="proj-live-scoreboard" style="display: flex; flex-direction: column; gap: 1rem; flex-grow: 1; overflow-y: auto;">
+                    <!-- Dynamically populated by JS -->
+                </div>
             </div>
         </div>
 

@@ -486,6 +486,7 @@ function syncToProjector(eventName = null) {
     socket.emit('hostUpdate', {
         roomId: state.roomId,
         phase: phase,
+        teams: state.teams,
         currentTeam: state.teams[state.currentTeamIndex] || null,
         timeLeft: state.timeLeft,
         event: eventName
