@@ -108,7 +108,7 @@ socket.on('projectorSync', (data) => {
                 row.style.display = 'flex';
                 row.style.justifyContent = 'space-between';
                 row.style.alignItems = 'center';
-                row.style.padding = '1rem 1.5rem';
+                row.style.padding = '0.6rem 1rem';
                 row.style.background = isCurrent ? 'rgba(139, 92, 246, 0.2)' : 'rgba(0,0,0,0.3)';
                 row.style.border = isCurrent ? '2px solid var(--primary)' : '2px solid transparent';
                 row.style.borderRadius = '15px';
@@ -118,10 +118,10 @@ socket.on('projectorSync', (data) => {
                 const crown = (i === 0 && t.score > 0) ? '👑 ' : '';
                 
                 row.innerHTML = `
-                    <div style="font-size: 1.5rem; color: ${isCurrent ? 'white' : 'var(--text-light)'}; font-weight: ${isCurrent ? 'bold' : 'normal'};">
+                    <div style="font-size: 1.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${isCurrent ? 'white' : 'var(--text-light)'}; font-weight: ${isCurrent ? 'bold' : 'normal'};">
                         ${crown}${t.name}
                     </div>
-                    <div style="font-size: 2rem; color: var(--success); font-weight: bold; font-family: var(--font-heading);">
+                    <div style="font-size: 1.5rem; color: var(--success); font-weight: bold; font-family: var(--font-heading); flex-shrink: 0; margin-left: 0.5rem;">
                         ${t.score}
                     </div>
                 `;

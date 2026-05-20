@@ -123,9 +123,10 @@
             flex-direction: row;
             justify-content: center;
             align-items: stretch;
-            gap: 4vw;
+            gap: 2vw;
             padding: 1rem 0;
-            max-width: 1600px;
+            max-width: 95vw;
+            width: 100%;
             margin: 0 auto;
             height: 100%;
             max-height: 100%;
@@ -150,7 +151,8 @@
 
         /* Left Column: Turn Info */
         .turn-info-card {
-            flex: 1.2;
+            flex: 0.8;
+            max-width: 500px;
             justify-content: center;
         }
         
@@ -184,7 +186,7 @@
         }
 
         .massive-timer-text {
-            font-size: clamp(8rem, 20vh, 15rem);
+            font-size: clamp(6rem, 15vh, 12rem);
             font-weight: 800;
             font-family: var(--font-heading);
             color: var(--success);
@@ -222,8 +224,7 @@
 
         /* Right Column: Scoreboard */
         .scoreboard-card {
-            flex: 0.8;
-            max-width: 600px;
+            flex: 1.2;
         }
 
         .scoreboard-header {
@@ -247,14 +248,14 @@
 
         .scoreboard-list {
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.8rem;
+            align-content: start;
+            overflow: hidden;
             flex-grow: 1;
-            overflow-y: auto;
-            padding-right: 1rem;
             min-height: 0;
-            height: 0;
+            height: auto;
         }
         
         /* Custom Scrollbar for scoreboard */
@@ -304,7 +305,6 @@
         <!-- Persistent Header -->
         <header class="projector-header">
             <h1 class="gradient-text huge-logo">Time's Up!</h1>
-            <div class="subtitle-text">Welcome to the Classroom Challenge</div>
             <div class="room-code-pill">
                 Room Code: <strong class="proj-room-code-display">---</strong>
             </div>
