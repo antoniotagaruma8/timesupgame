@@ -24,13 +24,13 @@
             text-align: center;
         }
         .massive-timer-text {
-            font-size: 20rem;
+            font-size: clamp(6rem, 25vh, 14rem);
             font-weight: 800;
             font-family: var(--font-heading);
             color: var(--success);
             line-height: 1;
             text-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
-            margin: 2rem 0;
+            margin: 1rem 0;
             transition: color 0.3s;
         }
         .timer-warning {
@@ -38,17 +38,17 @@
             text-shadow: 0 10px 30px rgba(239, 68, 68, 0.5);
         }
         .team-title {
-            font-size: 5rem;
+            font-size: clamp(2rem, 6vh, 4rem);
             color: white;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
         .score-display {
-            font-size: 4rem;
+            font-size: clamp(2rem, 5vh, 3.5rem);
             color: var(--primary);
             font-weight: bold;
         }
         .state-text {
-            font-size: 3rem;
+            font-size: clamp(1.5rem, 4vh, 2.5rem);
             color: var(--text-muted);
             letter-spacing: 4px;
             text-transform: uppercase;

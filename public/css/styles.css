@@ -34,17 +34,18 @@ body {
     background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
     background-attachment: fixed;
     color: var(--text-light);
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .app-container {
     width: 100%;
     max-width: 800px;
-    height: 100vh;
+    min-height: 100vh;
     padding: 1rem;
     position: relative;
     display: flex;
@@ -361,7 +362,7 @@ input:focus {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
     flex-grow: 1;
     justify-content: center;
 }
@@ -665,4 +666,13 @@ input:focus {
     #qrcode-container { padding: 0.5rem !important; }
     #room-code-display { font-size: 2rem !important; }
     .live-counter { font-size: 3rem !important; }
+    
+    /* Fix Gameplay screen overlap */
+    .top-bar { margin-bottom: 1rem; }
+    .word-card { padding: 2rem 1.5rem; }
+    .word-card h1 { font-size: 2.8rem; }
+    .controls-area { margin-top: 1rem; }
+    .btn-action { padding: 1rem; font-size: 1.2rem; }
+    .btn-foul { margin-top: 0.5rem; padding: 0.8rem; }
+    .game-center { gap: 1rem; }
 }
