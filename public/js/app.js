@@ -236,43 +236,72 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
         return;
     }
     
-    // AUTO-FILL B2 VOCABULARY LOGIC
-    const B2_VOCABULARY = [
-        "Achieve", "Analyze", "Benefit", "Campaign", "Challenge", "Circumstance", 
-        "Collapse", "Debate", "Economy", "Factor", "Generate", "Hypothesis", 
-        "Impact", "Justify", "Knowledge", "Logical", "Maintain", "Network", 
-        "Objective", "Perspective", "Quote", "Relevant", "Sequence", "Theory", 
-        "Unique", "Variable", "Acquire", "Adjust", "Alternative", "Approach", 
-        "Assume", "Category", "Community", "Complex", "Conclude", "Conduct", 
-        "Consequence", "Construct", "Consumer", "Context", "Contrast", "Create", 
-        "Cultural", "Decline", "Define", "Demonstrate", "Design", "Distinction", 
-        "Elements", "Emphasize", "Environment", "Estimate", "Evaluate", "Evidence", 
-        "Examine", "Expand", "Feature", "Financial", "Focus", "Function", 
-        "Global", "Identify", "Illustrate", "Imply", "Indicate", "Individual", 
-        "Initial", "Innovation", "Instance", "Institute", "Internal", "Investigate", 
-        "Journal", "Legislation", "Major", "Maximum", "Mechanism", "Method", 
-        "Minor", "Modify", "Negative", "Normal", "Obtain", "Occur", "Outcome", 
-        "Participate", "Partner", "Perceive", "Period", "Physical", "Policy", 
-        "Positive", "Potential", "Previous", "Primary", "Principle", "Process", 
-        "Professional", "Project", "Proportion", "Publish", "Purchase", "Range", 
-        "Region", "Regulate", "Require", "Research", "Resident", "Resource", 
-        "Respond", "Restrict", "Role", "Section", "Secure", "Select", "Shift", 
-        "Significant", "Similar", "Simulate", "Source", "Specific", "Strategy", 
-        "Structure", "Subsequent", "Survey", "Survive", "Target", "Task", 
-        "Technique", "Technology", "Temporary", "Tradition", "Transfer", "Trend", 
-        "Valid", "Vary", "Vehicle", "Version", "Volume", "Volunteer"
+    // AUTO-FILL B1+/B2 VOCABULARY LOGIC
+    const FALLBACK_VOCABULARY = [
+        // B2 Level (50 words)
+        "Submarine", "Binoculars", "Parachute", "Handcuffs", "Helicopter",
+        "Microscope", "Telescope", "Avalanche", "Skeleton", "Sculpture",
+        "Orchestra", "Architecture", "Laboratory", "Thermometer", "Baggage",
+        "Symphony", "Choreography", "Hypnotize", "Acupuncture", "Camouflage",
+        "Catastrophe", "Investigate", "Negotiation", "Fossil", "Monument",
+        "Exhibition", "Gallery", "Masterpiece", "Canvas", "Portrait",
+        "Landscape", "Tapestry", "Sculptor", "Easel", "Ballet",
+        "Opera", "Composer", "Conductor", "Applause", "Encore",
+        "Microphone", "Amphitheater", "Acoustics", "Harmony", "Rhythm",
+        "Melody", "Chorus", "Verse", "Stanza", "Poetry",
+        
+        // B1+ Level (200 words)
+        "Destination", "Celebration", "Competition", "Generation", "Pollution",
+        "Environment", "Atmosphere", "Temperature", "Advertisement", "Ingredient",
+        "Signature", "Neighborhood", "Rehearsal", "Tradition", "Ceremony",
+        "Personality", "Relationship", "Friendship", "Argument", "Discussion",
+        "Translation", "Pronunciation", "Vocabulary", "Dictionary", "Password",
+        "Keyboard", "Screen", "Software", "Document", "Message",
+        "Audience", "Performance", "Character", "Director", "Musician",
+        "Instrument", "Concert", "Stadium", "Champion", "Referee",
+        "Penalty", "Tournament", "Backpack", "Suitcase", "Passenger",
+        "Flight", "Pilot", "Airport", "Platform", "Ticket",
+        "Receipt", "Discount", "Customer", "Manager", "Employee",
+        "Interview", "Salary", "Company", "Industry", "Factory",
+        "Recycling", "Rubbish", "Climate", "Hurricane", "Earthquake",
+        "Volcano", "Drought", "Flood", "Disease", "Infection",
+        "Medicine", "Surgery", "Ambulance", "Emergency", "Accident",
+        "Traffic", "Vehicle", "Engine", "License", "Bicycle",
+        "Motorcycle", "Helicopter", "Subway", "Scooter", "Skateboard",
+        "Surfboard", "Snowboard", "Parachute", "Backpack", "Suitcase",
+        "Briefcase", "Wallet", "Purse", "Umbrella", "Raincoat",
+        "Jacket", "Sweater", "Scarf", "Gloves", "Boots",
+        "Sneakers", "Sandals", "Socks", "Pajamas", "Underwear",
+        "Swimsuit", "Towel", "Blanket", "Pillow", "Mattress",
+        "Furniture", "Bookshelf", "Wardrobe", "Drawer", "Mirror",
+        "Carpet", "Curtain", "Window", "Balcony", "Garden",
+        "Garage", "Basement", "Attic", "Chimney", "Fireplace",
+        "Kitchen", "Bathroom", "Bedroom", "Living Room", "Dining Room",
+        "Restaurant", "Cafeteria", "Bakery", "Supermarket", "Pharmacy",
+        "Hospital", "Clinic", "Dentist", "Doctor", "Nurse",
+        "Surgeon", "Patient", "Medicine", "Pharmacy", "Prescription",
+        "Police", "Station", "Prison", "Detective", "Criminal",
+        "Judge", "Lawyer", "Court", "Jury", "Witness",
+        "Firefighter", "Fire Engine", "Extinguisher", "Smoke", "Alarm",
+        "Scientist", "Laboratory", "Experiment", "Microscope", "Telescope",
+        "Planet", "Star", "Moon", "Sun", "Galaxy",
+        "Universe", "Astronaut", "Rocket", "Satellite", "Orbit",
+        "Alien", "UFO", "Spacecraft", "Comet", "Meteor",
+        "Ocean", "River", "Lake", "Waterfall", "Mountain",
+        "Valley", "Forest", "Jungle", "Desert", "Island",
+        "Beach", "Sand", "Shell", "Wave", "Tide"
     ];
 
-    if (state.allWords.length < 100) {
-        console.log(`Only ${state.allWords.length} words submitted. Auto-filling to 100...`);
+    if (state.allWords.length < 200) {
+        console.log(`Only ${state.allWords.length} words submitted. Auto-filling to 200...`);
         let currentWordsLower = state.allWords.map(w => w.toLowerCase());
         
         // Shuffle the backup list
-        let backupList = [...B2_VOCABULARY];
+        let backupList = [...FALLBACK_VOCABULARY];
         shuffleArray(backupList);
         
         for (let word of backupList) {
-            if (state.allWords.length >= 100) break;
+            if (state.allWords.length >= 200) break;
             
             if (!currentWordsLower.includes(word.toLowerCase())) {
                 state.allWords.push(word);

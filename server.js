@@ -93,14 +93,17 @@ io.on('connection', (socket) => {
         if (rooms[roomId] && word && word.trim()) {
             const cleanWord = word.trim();
             
+            // Strip emojis and punctuation for the checks, but keep the original for saving
+            const checkWord = cleanWord.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]|[^\w\s])/g, '').trim();
+            
             // 1. Check Profanity
-            if (filter && filter.isProfane(cleanWord)) {
+            if (filter && filter.isProfane(checkWord || cleanWord)) {
                 if (callback) callback({ success: false, error: 'Inappropriate language is not allowed.' });
                 return;
             }
             
-            // 2. Check Spelling
-            if (spellchecker && !spellchecker.correct(cleanWord)) {
+            // 2. Check Spelling (only if there are actually letters to check)
+            if (checkWord.length > 0 && spellchecker && !spellchecker.correct(checkWord)) {
                 if (callback) callback({ success: false, error: 'Invalid word or misspelled. English words only.' });
                 return;
             }

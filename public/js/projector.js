@@ -69,6 +69,7 @@ socket.on('projectorSync', (data) => {
         // Play sounds if score changed positively or if event passed
         if (data.event === 'gotIt' && data.currentTeam.score > lastScore) {
             playAudio(sfxSuccess);
+            fireProjectorConfetti();
         } else if (data.event === 'pass') {
             playAudio(sfxPass);
         } else if (data.event === 'timesUp') {
@@ -134,4 +135,64 @@ function playAudio(audioElement) {
     if(!audioElement) return;
     audioElement.currentTime = 0;
     audioElement.play().catch(err => console.log('Audio blocked by browser:', err));
+}
+
+// --- Quick Burst Confetti for Scoring ---
+function fireProjectorConfetti() {
+    const canvas = document.getElementById('proj-confetti-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const pieces = [];
+    const colors = ['#8b5cf6', '#3b82f6', '#ec4899', '#10b981', '#fcd34d'];
+    
+    // Create fewer pieces for a quick burst
+    for (let i = 0; i < 60; i++) {
+        pieces.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height * 0.5 - canvas.height * 0.5, // Start slightly higher
+            w: Math.random() * 10 + 5,
+            h: Math.random() * 10 + 5,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            vy: Math.random() * 5 + 3,
+            vx: Math.random() * 4 - 2,
+            rot: Math.random() * 360,
+            rotSpeed: Math.random() * 5 - 2.5
+        });
+    }
+    
+    let isAnimating = true;
+    setTimeout(() => isAnimating = false, 1500); // 1.5 seconds burst
+    
+    function animate() {
+        if (!isAnimating) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return;
+        }
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+            p.y += p.vy;
+            p.x += p.vx;
+            p.rot += p.rotSpeed;
+            
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot * Math.PI / 180);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+            ctx.restore();
+            
+            // Loop pieces to top occasionally if still animating
+            if (p.y > canvas.height) {
+                p.y = -20;
+                p.x = Math.random() * canvas.width;
+            }
+        });
+        
+        requestAnimationFrame(animate);
+    }
+    animate();
 }
