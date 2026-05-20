@@ -81,11 +81,32 @@ io.on('connection', (socket) => {
     socket.on('registerTeam', ({ roomId, teamName }) => {
         if (rooms[roomId] && teamName && teamName.trim()) {
             const name = teamName.trim();
-            rooms[roomId].teams.push({ name: name, score: 0 });
+            // Store the socket id with the team so we can target them for kicks
+            rooms[roomId].teams.push({ name: name, score: 0, socketId: socket.id });
             
             io.to(roomId).emit('newTeam', {
                 teams: rooms[roomId].teams
             });
+        }
+    });
+
+    socket.on('kickTeam', ({ roomId, teamName }) => {
+        if (rooms[roomId]) {
+            const teamIndex = rooms[roomId].teams.findIndex(t => t.name === teamName);
+            if (teamIndex !== -1) {
+                const kicked = rooms[roomId].teams.splice(teamIndex, 1)[0];
+                console.log(`Kicked team "${teamName}" from room ${roomId}`);
+                
+                // Notify the kicked player's socket
+                if (kicked.socketId) {
+                    io.to(kicked.socketId).emit('kicked', { reason: 'You have been removed by the host.' });
+                }
+
+                // Broadcast updated team list to everyone
+                io.to(roomId).emit('newTeam', {
+                    teams: rooms[roomId].teams
+                });
+            }
         }
     });
 

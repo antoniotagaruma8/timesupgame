@@ -203,10 +203,32 @@ socket.on('newTeam', (data) => {
     
     liveTeamList.innerHTML = '';
     state.teams.forEach(t => {
-        const span = document.createElement('span');
-        span.className = 'hidden-word';
-        span.textContent = t.name;
-        liveTeamList.appendChild(span);
+        const wrapper = document.createElement('span');
+        wrapper.className = 'hidden-word';
+        wrapper.style.display = 'inline-flex';
+        wrapper.style.alignItems = 'center';
+        wrapper.style.gap = '0.4rem';
+        wrapper.style.paddingRight = '0.3rem';
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = t.name;
+        
+        const kickBtn = document.createElement('button');
+        kickBtn.textContent = '✕';
+        kickBtn.title = `Kick ${t.name}`;
+        kickBtn.style.cssText = 'background: rgba(239,68,68,0.3); color: #fca5a5; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1; transition: background 0.2s;';
+        kickBtn.addEventListener('mouseenter', () => kickBtn.style.background = 'rgba(239,68,68,0.7)');
+        kickBtn.addEventListener('mouseleave', () => kickBtn.style.background = 'rgba(239,68,68,0.3)');
+        kickBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm(`Kick "${t.name}" from the game?`)) {
+                socket.emit('kickTeam', { roomId: state.roomId, teamName: t.name });
+            }
+        });
+        
+        wrapper.appendChild(nameSpan);
+        wrapper.appendChild(kickBtn);
+        liveTeamList.appendChild(wrapper);
     });
     
     playBeep(600, 'triangle', 0.1);
@@ -239,57 +261,57 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
     // AUTO-FILL B1+/B2 VOCABULARY LOGIC
     const FALLBACK_VOCABULARY = [
         // B2 Level (50 words)
-        "Submarine", "Binoculars", "Parachute", "Handcuffs", "Helicopter",
-        "Microscope", "Telescope", "Avalanche", "Skeleton", "Sculpture",
-        "Orchestra", "Architecture", "Laboratory", "Thermometer", "Baggage",
-        "Symphony", "Choreography", "Hypnotize", "Acupuncture", "Camouflage",
-        "Catastrophe", "Investigate", "Negotiation", "Fossil", "Monument",
-        "Exhibition", "Gallery", "Masterpiece", "Canvas", "Portrait",
-        "Landscape", "Tapestry", "Sculptor", "Easel", "Ballet",
-        "Opera", "Composer", "Conductor", "Applause", "Encore",
-        "Microphone", "Amphitheater", "Acoustics", "Harmony", "Rhythm",
-        "Melody", "Chorus", "Verse", "Stanza", "Poetry",
+        "Submarine 🚢", "Binoculars 🔭", "Parachute 🪂", "Handcuffs 🔗", "Helicopter 🚁",
+        "Microscope 🔬", "Telescope 🔭", "Avalanche 🏔️", "Skeleton 💀", "Sculpture 🗿",
+        "Orchestra 🎻", "Architecture 🏛️", "Laboratory 🧪", "Thermometer 🌡️", "Baggage 🧳",
+        "Symphony 🎼", "Choreography 💃", "Hypnotize 🌀", "Acupuncture 🪡", "Camouflage 🦎",
+        "Catastrophe 🌋", "Investigate 🕵️", "Negotiation 🤝", "Fossil 🦕", "Monument 🗽",
+        "Exhibition 🖼️", "Gallery 🖼️", "Masterpiece 🎨", "Canvas 🖌️", "Portrait 🖼️",
+        "Landscape 🏞️", "Tapestry 🧵", "Sculptor 🔨", "Easel 🎨", "Ballet 🩰",
+        "Opera 🎭", "Composer 🎼", "Conductor 🪗", "Applause 👏", "Encore 🎬",
+        "Microphone 🎤", "Amphitheater 🏟️", "Acoustics 🎧", "Harmony 🎶", "Rhythm 🥁",
+        "Melody 🎵", "Chorus 🎤", "Verse 📝", "Stanza 📜", "Poetry ✒️",
         
         // B1+ Level (200 words)
-        "Destination", "Celebration", "Competition", "Generation", "Pollution",
-        "Environment", "Atmosphere", "Temperature", "Advertisement", "Ingredient",
-        "Signature", "Neighborhood", "Rehearsal", "Tradition", "Ceremony",
-        "Personality", "Relationship", "Friendship", "Argument", "Discussion",
-        "Translation", "Pronunciation", "Vocabulary", "Dictionary", "Password",
-        "Keyboard", "Screen", "Software", "Document", "Message",
-        "Audience", "Performance", "Character", "Director", "Musician",
-        "Instrument", "Concert", "Stadium", "Champion", "Referee",
-        "Penalty", "Tournament", "Backpack", "Suitcase", "Passenger",
-        "Flight", "Pilot", "Airport", "Platform", "Ticket",
-        "Receipt", "Discount", "Customer", "Manager", "Employee",
-        "Interview", "Salary", "Company", "Industry", "Factory",
-        "Recycling", "Rubbish", "Climate", "Hurricane", "Earthquake",
-        "Volcano", "Drought", "Flood", "Disease", "Infection",
-        "Medicine", "Surgery", "Ambulance", "Emergency", "Accident",
-        "Traffic", "Vehicle", "Engine", "License", "Bicycle",
-        "Motorcycle", "Helicopter", "Subway", "Scooter", "Skateboard",
-        "Surfboard", "Snowboard", "Parachute", "Backpack", "Suitcase",
-        "Briefcase", "Wallet", "Purse", "Umbrella", "Raincoat",
-        "Jacket", "Sweater", "Scarf", "Gloves", "Boots",
-        "Sneakers", "Sandals", "Socks", "Pajamas", "Underwear",
-        "Swimsuit", "Towel", "Blanket", "Pillow", "Mattress",
-        "Furniture", "Bookshelf", "Wardrobe", "Drawer", "Mirror",
-        "Carpet", "Curtain", "Window", "Balcony", "Garden",
-        "Garage", "Basement", "Attic", "Chimney", "Fireplace",
-        "Kitchen", "Bathroom", "Bedroom", "Living Room", "Dining Room",
-        "Restaurant", "Cafeteria", "Bakery", "Supermarket", "Pharmacy",
-        "Hospital", "Clinic", "Dentist", "Doctor", "Nurse",
-        "Surgeon", "Patient", "Medicine", "Pharmacy", "Prescription",
-        "Police", "Station", "Prison", "Detective", "Criminal",
-        "Judge", "Lawyer", "Court", "Jury", "Witness",
-        "Firefighter", "Fire Engine", "Extinguisher", "Smoke", "Alarm",
-        "Scientist", "Laboratory", "Experiment", "Microscope", "Telescope",
-        "Planet", "Star", "Moon", "Sun", "Galaxy",
-        "Universe", "Astronaut", "Rocket", "Satellite", "Orbit",
-        "Alien", "UFO", "Spacecraft", "Comet", "Meteor",
-        "Ocean", "River", "Lake", "Waterfall", "Mountain",
-        "Valley", "Forest", "Jungle", "Desert", "Island",
-        "Beach", "Sand", "Shell", "Wave", "Tide"
+        "Destination 📍", "Celebration 🎉", "Competition 🏆", "Generation 👶", "Pollution 🏭",
+        "Environment 🌳", "Atmosphere ☁️", "Temperature 🌡️", "Advertisement 📺", "Ingredient 🧂",
+        "Signature ✍️", "Neighborhood 🏘️", "Rehearsal 🎭", "Tradition 🏮", "Ceremony 🎖️",
+        "Personality 🧠", "Relationship 💑", "Friendship 👫", "Argument 🗣️", "Discussion 💬",
+        "Translation 🌐", "Pronunciation 🗣️", "Vocabulary 📖", "Dictionary 📚", "Password 🔑",
+        "Keyboard ⌨️", "Screen 🖥️", "Software 💻", "Document 📄", "Message ✉️",
+        "Audience 👥", "Performance 🎭", "Character 🦸", "Director 🎬", "Musician 🎸",
+        "Instrument 🎺", "Concert 🎫", "Stadium 🏟️", "Champion 🥇", "Referee 🦓",
+        "Penalty ⚽", "Tournament 🏆", "Backpack 🎒", "Suitcase 🧳", "Passenger 🧍",
+        "Flight ✈️", "Pilot 🧑‍✈️", "Airport 🛬", "Platform 🚉", "Ticket 🎟️",
+        "Receipt 🧾", "Discount 🏷️", "Customer 🛒", "Manager 👔", "Employee 👷",
+        "Interview 🎤", "Salary 💰", "Company 🏢", "Industry 🏭", "Factory 🏭",
+        "Recycling ♻️", "Rubbish 🗑️", "Climate 🌍", "Hurricane 🌀", "Earthquake 🫨",
+        "Volcano 🌋", "Drought 🏜️", "Flood 🌊", "Disease 🦠", "Infection 🤒",
+        "Medicine 💊", "Surgery 🥼", "Ambulance 🚑", "Emergency 🚨", "Accident 💥",
+        "Traffic 🚦", "Vehicle 🚗", "Engine ⚙️", "License 🪪", "Bicycle 🚲",
+        "Motorcycle 🏍️", "Helicopter 🚁", "Subway 🚇", "Scooter 🛴", "Skateboard 🛹",
+        "Surfboard 🏄", "Snowboard 🏂", "Parachute 🪂", "Backpack 🎒", "Suitcase 🧳",
+        "Briefcase 💼", "Wallet 👛", "Purse 👜", "Umbrella ☂️", "Raincoat 🧥",
+        "Jacket 🧥", "Sweater 🧥", "Scarf 🧣", "Gloves 🧤", "Boots 👢",
+        "Sneakers 👟", "Sandals 🩴", "Socks 🧦", "Pajamas 🛌", "Underwear 🩲",
+        "Swimsuit 🩱", "Towel 🧖", "Blanket 🛌", "Pillow 🛌", "Mattress 🛏️",
+        "Furniture 🛋️", "Bookshelf 📚", "Wardrobe 🚪", "Drawer 🗄️", "Mirror 🪞",
+        "Carpet 🧶", "Curtain 🪟", "Window 🪟", "Balcony 🏢", "Garden 🪴",
+        "Garage 🚘", "Basement 🏚️", "Attic 🛖", "Chimney 🏭", "Fireplace 🔥",
+        "Kitchen 🍳", "Bathroom 🛁", "Bedroom 🛏️", "Living Room 🛋️", "Dining Room 🍽️",
+        "Restaurant 🍽️", "Cafeteria 🍱", "Bakery 🥐", "Supermarket 🛒", "Pharmacy 💊",
+        "Hospital 🏥", "Clinic 🩺", "Dentist 🦷", "Doctor 👨‍⚕️", "Nurse 👩‍⚕️",
+        "Surgeon 😷", "Patient 🤕", "Medicine 💊", "Pharmacy ⚕️", "Prescription 📜",
+        "Police 👮", "Station 🚓", "Prison ⛓️", "Detective 🕵️", "Criminal 🦹",
+        "Judge 👨‍⚖️", "Lawyer 💼", "Court 🏛️", "Jury 🧑‍🤝‍🧑", "Witness 👁️",
+        "Firefighter 👨‍🚒", "Fire Engine 🚒", "Extinguisher 🧯", "Smoke 💨", "Alarm 🔔",
+        "Scientist 👨‍🔬", "Laboratory 🧪", "Experiment 🧪", "Microscope 🔬", "Telescope 🔭",
+        "Planet 🪐", "Star ⭐️", "Moon 🌕", "Sun ☀️", "Galaxy 🌌",
+        "Universe 🌠", "Astronaut 👨‍🚀", "Rocket 🚀", "Satellite 🛰️", "Orbit 🔄",
+        "Alien 👽", "UFO 🛸", "Spacecraft 🛸", "Comet ☄️", "Meteor ☄️",
+        "Ocean 🌊", "River 🏞️", "Lake 🏞️", "Waterfall 🏞️", "Mountain ⛰️",
+        "Valley 🏞️", "Forest 🌲", "Jungle 🌴", "Desert 🐪", "Island 🏝️",
+        "Beach 🏖️", "Sand 🏜️", "Shell 🐚", "Wave 🌊", "Tide 🌊"
     ];
 
     if (state.allWords.length < 200) {

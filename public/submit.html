@@ -113,6 +113,13 @@
         <button onclick="location.reload()" class="btn-primary btn-large">Retry</button>
     </div>
 
+    <div id="kicked-screen" class="glass-panel" style="width: 100%; max-width: 400px; margin: 0 auto; text-align: center; display: none;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🚫</div>
+        <h2 style="color: var(--danger); margin-bottom: 1rem;">Removed from Game</h2>
+        <p style="color: var(--text-muted); font-size: 1.1rem;" id="kicked-reason">You have been removed by the host.</p>
+        <button onclick="location.reload()" class="btn-primary btn-large" style="margin-top: 1.5rem;">Rejoin</button>
+    </div>
+
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -169,6 +176,7 @@
             submitScreen.style.display = 'none';
             document.getElementById('waiting-screen').style.display = 'none';
             document.getElementById('error-screen').style.display = 'none';
+            document.getElementById('kicked-screen').style.display = 'none';
         }
 
         function attemptJoinRoom(code) {
@@ -286,6 +294,15 @@
         socket.on('gameStarted', () => {
             hideAllScreens();
             document.getElementById('waiting-screen').style.display = 'block';
+        });
+
+        socket.on('kicked', (data) => {
+            hideAllScreens();
+            const kickedScreen = document.getElementById('kicked-screen');
+            if (data && data.reason) {
+                document.getElementById('kicked-reason').textContent = data.reason;
+            }
+            kickedScreen.style.display = 'block';
         });
     </script>
 </body>
