@@ -77,6 +77,10 @@
                         <span class="rule-icon">🎁</span>
                         <p><strong>Time Bonus:</strong> Every correct guess immediately adds +1 second to your timer!</p>
                     </div>
+                    <div class="rule-item" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3);">
+                        <span class="rule-icon">🏆</span>
+                        <p><strong>Tiered Scoring:</strong> Harder words give more points! <strong>B1+</strong> = 1 pt, <strong>B2</strong> = 2 pts, <strong>C1</strong> = 3 pts.</p>
+                    </div>
                 </div>
                 <div class="text-center mt-4 pt-4" style="display: flex; gap: 1rem; justify-content: center;">
                     <button id="btn-back-how-to-play" class="btn-secondary btn-large">Back</button>
@@ -199,12 +203,18 @@
             </div>
 
             <div class="game-center">
-                <div class="timer-container">
-                    <svg class="timer-svg" viewBox="0 0 100 100">
-                        <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
-                        <circle class="timer-path" id="timer-path" cx="50" cy="50" r="45"></circle>
-                    </svg>
-                    <div id="timer-text" class="timer-text">30</div>
+                <div class="timer-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <div class="timer-container">
+                        <svg class="timer-svg" viewBox="0 0 100 100">
+                            <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="timer-path" id="timer-path" cx="50" cy="50" r="45"></circle>
+                        </svg>
+                        <div id="timer-text" class="timer-text">30</div>
+                    </div>
+                    <div id="timer-adjust-controls" style="display: flex; gap: 0.5rem;">
+                        <button id="btn-timer-sub" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;" title="Subtract 5 seconds">-5s</button>
+                        <button id="btn-timer-add" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;" title="Add 5 seconds">+5s</button>
+                    </div>
                 </div>
 
                 <div id="word-card" class="word-card">
@@ -226,7 +236,7 @@
                     <button id="btn-got-it" class="btn-action got-it">✅ Got It! (+1s)</button>
                 </div>
                 <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                    <button id="btn-undo" class="btn-secondary" style="flex: 1;" title="Accidentally pressed Got It? Undo it.">↩ Undo (-1)</button>
+                    <button id="btn-undo" class="btn-secondary" style="flex: 1;" title="Accidentally pressed Got It? Undo it.">↩ Undo</button>
                     <button id="btn-pause" class="btn-secondary" style="flex: 1;">⏸ Pause</button>
                     <button id="btn-foul" class="btn-foul" style="flex: 1.5;">🚫 FOUL!</button>
                 </div>

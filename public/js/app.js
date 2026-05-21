@@ -445,6 +445,7 @@ document.getElementById('btn-start-turn').addEventListener('click', () => {
     document.getElementById('game-controls-active').classList.remove('hidden');
     state.turnScore = 0;
     state.lastGuessedCards = [];
+    state.c1WordsSeenThisTurn = 0;
     
     drawCard();
     
@@ -458,7 +459,24 @@ function drawCard() {
         return;
     }
     
-    state.currentWordIndex = Math.floor(Math.random() * state.deck.length);
+    // Find all valid card indices. If we've already seen 2 C1 cards this turn, filter out C1 cards.
+    let validIndices = [];
+    for (let i = 0; i < state.deck.length; i++) {
+        const c = state.deck[i];
+        if (c.level === 'C1' && state.c1WordsSeenThisTurn >= 2) {
+            continue; // Skip C1 words if limit reached
+        }
+        validIndices.push(i);
+    }
+    
+    // Fallback: If only C1 cards are left in the deck, ignore the limit so the game doesn't break
+    if (validIndices.length === 0) {
+        validIndices = state.deck.map((_, i) => i);
+    }
+    
+    const randomValidIdx = Math.floor(Math.random() * validIndices.length);
+    state.currentWordIndex = validIndices[randomValidIdx];
+    
     const cardEl = document.getElementById('word-card');
     
     cardEl.classList.remove('anim-pop');
@@ -466,6 +484,9 @@ function drawCard() {
     cardEl.classList.add('anim-pop');
     
     const card = state.deck[state.currentWordIndex];
+    if (card.level === 'C1') {
+        state.c1WordsSeenThisTurn++;
+    }
     const wordText = card.word || card; // handle both object and string
     const teamText = card.team || '';
     const levelText = card.level || '';
@@ -553,11 +574,16 @@ function showTimeAnimation(text, colorClass) {
 document.getElementById('btn-got-it').addEventListener('click', () => {
     if (state.currentWordIndex === -1) return;
     
-    state.turnScore++;
-    state.teams[state.currentTeamIndex].score++;
+    const scoredCard = state.deck.splice(state.currentWordIndex, 1)[0];
+    
+    let points = 1;
+    if (scoredCard.level === 'B2') points = 2;
+    if (scoredCard.level === 'C1') points = 3;
+    
+    state.turnScore += points;
+    state.teams[state.currentTeamIndex].score += points;
     document.getElementById('game-current-score').textContent = state.turnScore;
     
-    const scoredCard = state.deck.splice(state.currentWordIndex, 1)[0];
     state.lastGuessedCards = state.lastGuessedCards || [];
     state.lastGuessedCards.push(scoredCard);
     
@@ -581,13 +607,21 @@ document.getElementById('btn-undo').addEventListener('click', () => {
     if (!state.lastGuessedCards || state.lastGuessedCards.length === 0) return;
     if (state.turnScore <= 0) return;
     
-    state.turnScore--;
-    state.teams[state.currentTeamIndex].score--;
-    document.getElementById('game-current-score').textContent = state.turnScore;
-    
     const cardToReturn = state.lastGuessedCards.pop();
+    
+    let points = 1;
+    if (cardToReturn.level === 'B2') points = 2;
+    if (cardToReturn.level === 'C1') points = 3;
+    
+    state.turnScore = Math.max(0, state.turnScore - points);
+    state.teams[state.currentTeamIndex].score = Math.max(0, state.teams[state.currentTeamIndex].score - points);
+    document.getElementById('game-current-score').textContent = state.turnScore;
     state.deck.push(cardToReturn);
     document.getElementById('game-words-remaining').textContent = state.deck.length;
+    
+    if (cardToReturn.level === 'C1') {
+        state.c1WordsSeenThisTurn = Math.max(0, state.c1WordsSeenThisTurn - 1);
+    }
     
     // Remove the +1 second bonus for the undone card
     state.timeLeft = Math.max(0, state.timeLeft - 1);
@@ -637,6 +671,26 @@ document.getElementById('btn-pause').addEventListener('click', () => {
     }
     syncToProjector(state.isPaused ? 'paused' : 'resumed');
 });
+
+document.getElementById('btn-timer-add').addEventListener('click', () => {
+    state.timeLeft += 5;
+    updateTimerVisuals();
+    showTimeAnimation('+5s', 'text-success');
+    syncToProjector('timer-adjusted');
+});
+
+document.getElementById('btn-timer-sub').addEventListener('click', () => {
+    state.timeLeft = Math.max(0, state.timeLeft - 5);
+    updateTimerVisuals();
+    showTimeAnimation('-5s', 'text-danger');
+    syncToProjector('timer-adjusted');
+    
+    // Check if they manually drained the time to zero
+    if (state.timeLeft <= 0) {
+        endTurn(false);
+    }
+});
+
 
 function endTurn(wasFoul) {
     clearInterval(state.timer);
