@@ -364,6 +364,12 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
         "Catacombs 💀", "Colosseum 🏟️", "Acropolis 🏛️", "Parthenon 🏛️",
         "Hieroglyphics 📜", "Papyrus 📃", "Archaeology 🦴", "Anthropology 🧬", "Etymology 📖",
         "Calligraphy ✒️", "Origami 🦢", "Ventriloquism 🎭", "Pantomime 🤡", "Puppeteer 🎭",
+        "Mosaic 🎨", "Fresco 🖼️", "Terracotta 🏺", "Porcelain 🍶",
+        "Marionette 🎭", "Xenophobia 🚫", "Agoraphobia 🏃", "Kleptomania 💎", "Megalomania 👑",
+        "Omnipresence 🌌", "Omniscience 🧠", "Omnipotence 💪"
+    ];
+
+    if (state.allWords.length < 200) {
         console.log(`Only ${state.allWords.length} words submitted. Auto-filling to 200...`);
         // Extract just the word text for dedup (allWords are now {word, team} objects)
         let currentWordsLower = state.allWords.map(w => (w.word || w).toLowerCase());
