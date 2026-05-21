@@ -442,6 +442,7 @@ document.getElementById('btn-start-turn').addEventListener('click', () => {
     document.getElementById('game-controls-pre').classList.add('hidden');
     document.getElementById('game-controls-active').classList.remove('hidden');
     state.turnScore = 0;
+    state.lastGuessedCards = [];
     
     drawCard();
     
@@ -527,7 +528,10 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     state.teams[state.currentTeamIndex].score++;
     document.getElementById('game-current-score').textContent = state.turnScore;
     
-    state.deck.splice(state.currentWordIndex, 1);
+    const scoredCard = state.deck.splice(state.currentWordIndex, 1)[0];
+    state.lastGuessedCards = state.lastGuessedCards || [];
+    state.lastGuessedCards.push(scoredCard);
+    
     playBeep(800, 'sine', 0.1);
     
     syncToProjector('gotIt');
@@ -537,6 +541,22 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     } else {
         drawCard();
     }
+});
+
+document.getElementById('btn-undo').addEventListener('click', () => {
+    if (!state.lastGuessedCards || state.lastGuessedCards.length === 0) return;
+    if (state.turnScore <= 0) return;
+    
+    state.turnScore--;
+    state.teams[state.currentTeamIndex].score--;
+    document.getElementById('game-current-score').textContent = state.turnScore;
+    
+    const cardToReturn = state.lastGuessedCards.pop();
+    state.deck.push(cardToReturn);
+    document.getElementById('game-words-remaining').textContent = state.deck.length;
+    
+    playBeep(300, 'triangle', 0.1);
+    syncToProjector();
 });
 
 document.getElementById('btn-pass').addEventListener('click', () => {
