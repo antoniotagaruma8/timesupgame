@@ -71,7 +71,11 @@
                     </div>
                     <div class="rule-item">
                         <span class="rule-icon">⏱️</span>
-                        <p><strong>Pass Penalty:</strong> You can pass if you're stuck, but passing a word will cost 5 seconds of your remaining time.</p>
+                        <p><strong>Pass Penalty:</strong> You can pass if you're stuck, but passing a word will cost 2 seconds of your remaining time.</p>
+                    </div>
+                    <div class="rule-item" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
+                        <span class="rule-icon">🎁</span>
+                        <p><strong>Time Bonus:</strong> Every correct guess immediately adds +1 second to your timer!</p>
                     </div>
                 </div>
                 <div class="text-center mt-4 pt-4" style="display: flex; gap: 1rem; justify-content: center;">
@@ -218,8 +222,8 @@
 
             <div id="game-controls-active" class="controls-area hidden">
                 <div class="action-buttons">
-                    <button id="btn-pass" class="btn-action pass">✗ Pass (-5s)</button>
-                    <button id="btn-got-it" class="btn-action got-it">✓ Got It!</button>
+                    <button id="btn-pass" class="btn-action pass">⏭ Pass (-2s)</button>
+                    <button id="btn-got-it" class="btn-action got-it">✅ Got It! (+1s)</button>
                 </div>
                 <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                     <button id="btn-undo" class="btn-secondary" style="flex: 1;" title="Accidentally pressed Got It? Undo it.">↩ Undo (-1)</button>
