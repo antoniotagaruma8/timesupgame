@@ -217,7 +217,7 @@
                     <div class="card-inner">
                         <h1 id="current-word">READY?</h1>
                         <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 0.5rem;">
-                            <p id="word-source" style="margin: 0; font-size: 0.85rem; color: var(--text-muted); font-style: italic; opacity: 0.8; transition: opacity 0.3s;"></p>
+                            <p id="word-source" style="margin: 0; font-size: 0.85rem; transition: opacity 0.3s;"></p>
                             <div id="word-level-badge" class="level-badge" style="display: none; margin: 0;"></div>
                         </div>
                     </div>
@@ -240,8 +240,8 @@
 
             <div id="game-controls-active" class="controls-area hidden">
                 <div class="action-buttons">
-                    <button id="btn-pass" class="btn-action pass">⏭ Pass (-2s)</button>
-                    <button id="btn-got-it" class="btn-action got-it">✅ Got It! (+1s)</button>
+                    <button id="btn-pass" class="btn-action pass">✗ Pass (-2s)</button>
+                    <button id="btn-got-it" class="btn-action got-it">✓ Got It! (+1s)</button>
                 </div>
                 <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                     <button id="btn-undo" class="btn-secondary" style="flex: 1;" title="Accidentally pressed Got It? Undo it.">↩ Undo</button>

@@ -494,16 +494,28 @@ function drawCard() {
     const teamText = card.team || '';
     const levelText = card.level || '';
     
-    document.getElementById('current-word').textContent = wordText;
+    let displayHtml = wordText;
+    const parts = wordText.trim().split(' ');
+    if (parts.length > 1) {
+        const lastPart = parts[parts.length - 1];
+        // If the last part has no standard letters/numbers, assume it's an emoji/icon
+        if (!/[a-zA-Z0-9]/.test(lastPart)) {
+            parts.pop();
+            const textPart = parts.join(' ');
+            displayHtml = `${textPart} <span style="-webkit-text-fill-color: initial; color: initial;">${lastPart}</span>`;
+        }
+    }
+    
+    document.getElementById('current-word').innerHTML = displayHtml;
     document.getElementById('current-word').classList.add('gradient-text');
     
     const sourceEl = document.getElementById('word-source');
     if (teamText === '🤖 Auto') {
-        sourceEl.textContent = '🤖 Auto-filled';
+        sourceEl.innerHTML = `🤖 <span style="color: var(--text-muted); font-style: italic; opacity: 0.8;">Auto-filled</span>`;
     } else if (teamText) {
-        sourceEl.textContent = `✏️ by ${teamText}`;
+        sourceEl.innerHTML = `✏️ <span style="color: var(--text-muted); font-style: italic; opacity: 0.8;">by ${teamText}</span>`;
     } else {
-        sourceEl.textContent = '';
+        sourceEl.innerHTML = '';
     }
 
     const levelEl = document.getElementById('word-level-badge');
@@ -694,12 +706,7 @@ document.getElementById('btn-pause').addEventListener('click', () => {
     syncToProjector(state.isPaused ? 'paused' : 'resumed');
 });
 
-document.getElementById('btn-timer-add').addEventListener('click', () => {
-    state.timeLeft += 5;
-    updateTimerVisuals();
-    showTimeAnimation('+5s', 'text-success');
-    syncToProjector('timer-adjusted');
-});
+
 
 document.getElementById('btn-update-timer').addEventListener('click', () => {
     const minVal = parseInt(document.getElementById('input-midgame-min').value, 10) || 0;
