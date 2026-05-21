@@ -258,136 +258,132 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
         return;
     }
 
-    // AUTO-FILL VOCABULARY — 500 unique words across B1+, B2, C1 (no duplicates)
-    const FALLBACK_VOCABULARY = [
-        // ═══════════════════════════════════════════════════
-        // B1+ Level (~167 words) — Common, concrete, everyday
-        // ═══════════════════════════════════════════════════
-        "Destination 📍", "Celebration 🎉", "Competition 🏆", "Pollution 🏭", "Environment 🌳",
-        "Atmosphere ☁️", "Temperature 🌡️", "Advertisement 📺", "Ingredient 🧂", "Signature ✍️",
-        "Neighborhood 🏘️", "Tradition 🏮", "Ceremony 🎖️", "Personality 🧠", "Friendship 👫",
-        "Argument 🗣️", "Discussion 💬", "Vocabulary 📖", "Dictionary 📚", "Password 🔑",
-        "Keyboard ⌨️", "Screen 🖥️", "Document 📄", "Message ✉️", "Audience 👥",
-        "Performance 🎭", "Character 🦸", "Director 🎬", "Musician 🎸", "Instrument 🎺",
-        "Concert 🎫", "Stadium 🏟️", "Champion 🥇", "Referee 🦓", "Tournament 🏆",
-        "Backpack 🎒", "Suitcase 🧳", "Passenger 🧍", "Flight ✈️", "Pilot 🧑‍✈️",
-        "Airport 🛬", "Platform 🚉", "Ticket 🎟️", "Receipt 🧾", "Discount 🏷️",
-        "Customer 🛒", "Manager 👔", "Employee 👷", "Interview 🎤", "Salary 💰",
-        "Company 🏢", "Bicycle 🚲", "Motorcycle 🏍️", "Subway 🚇", "Skateboard 🛹",
-        "Umbrella ☂️", "Jacket 🧥", "Sweater 🧶", "Scarf 🧣", "Gloves 🧤",
-        "Boots 👢", "Sneakers 👟", "Sandals 🩴", "Pajamas 🛌", "Swimsuit 🩱",
-        "Towel 🧖", "Blanket 🛏️", "Pillow 😴", "Furniture 🛋️", "Bookshelf 📚",
-        "Wardrobe 🚪", "Mirror 🪞", "Curtain 🪟", "Garden 🪴", "Garage 🚘",
-        "Fireplace 🔥", "Kitchen 🍳", "Bathroom 🛁", "Bedroom 🛏️", "Restaurant 🍽️",
-        "Bakery 🥐", "Supermarket 🛒", "Pharmacy 💊", "Hospital 🏥", "Dentist 🦷",
-        "Doctor 👨‍⚕️", "Nurse 👩‍⚕️", "Ambulance 🚑", "Emergency 🚨", "Accident 💥",
-        "Traffic 🚦", "Vehicle 🚗", "Engine ⚙️", "Police 👮", "Firefighter 👨‍🚒",
-        "Alarm 🔔", "Planet 🪐", "Rocket 🚀", "Ocean 🌊", "River 🏞️",
-        "Mountain ⛰️", "Forest 🌲", "Desert 🐪", "Island 🏝️", "Beach 🏖️",
-        "Dolphin 🐬", "Penguin 🐧", "Elephant 🐘", "Giraffe 🦒", "Butterfly 🦋",
-        "Crocodile 🐊", "Kangaroo 🦘", "Octopus 🐙", "Volcano 🌋", "Earthquake 🫨",
-        "Hurricane 🌀", "Flood 🌊", "Medicine 💊", "Telescope 🔬", "Compass 🧭",
-        "Lighthouse 🏠", "Treasure 💎", "Sandwich 🥪", "Pineapple 🍍", "Mushroom 🍄",
-        "Strawberry 🍓", "Watermelon 🍉", "Chocolate 🍫", "Hamburger 🍔", "Pancake 🥞",
-        "Lemonade 🍋", "Broccoli 🥦", "Avocado 🥑", "Cinnamon 🫚", "Popcorn 🍿",
-        "Calendar 📅", "Envelope ✉️", "Newspaper 📰", "Magazine 📖", "Notebook 📓",
-        "Scissors ✂️", "Staircase 🪜", "Candle 🕯️", "Battery 🔋", "Microwave 📡",
-        "Refrigerator 🧊", "Washing Machine 🫧", "Camera 📷", "Headphones 🎧", "Sunglasses 🕶️",
-        "Necklace 📿", "Bracelet 💍", "Toothbrush 🪥", "Wheelchair 🦽", "Parachute 🪂",
-        "Laptop 💻", "Backyard 🏡",
-
-        // ═══════════════════════════════════════════════════
-        // B2 Level (~167 words) — Specialized, less common
-        // ═══════════════════════════════════════════════════
-        "Submarine 🚢", "Binoculars 🔭", "Handcuffs 🔗", "Helicopter 🚁", "Microscope 🔬",
-        "Avalanche 🏔️", "Skeleton 💀", "Sculpture 🗿", "Orchestra 🎻", "Architecture 🏛️",
-        "Laboratory 🧪", "Thermometer 🌡️", "Baggage 🧳", "Symphony 🎼", "Choreography 💃",
-        "Camouflage 🦎", "Catastrophe 💥", "Negotiation 🤝", "Fossil 🦕", "Monument 🗽",
-        "Exhibition 🖼️", "Gallery 🎨", "Masterpiece 🖌️", "Canvas 🎨", "Portrait 🖼️",
-        "Landscape 🏞️", "Tapestry 🧵", "Ballet 🩰", "Opera 🎭", "Composer 🎼",
-        "Conductor 🪗", "Applause 👏", "Encore 🎬", "Microphone 🎤", "Amphitheater 🏟️",
-        "Harmony 🎶", "Rhythm 🥁", "Melody 🎵", "Stethoscope 🩺", "Prescription 📜",
-        "Surgeon 😷", "Diagnosis 🔍", "Quarantine 🏥", "Vaccination 💉", "Antibiotic 💊",
-        "Adrenaline ⚡", "Metabolism 🔄", "Chromosome 🧬", "Ecosystem 🌿", "Photosynthesis 🌱",
-        "Constellation 🌟", "Astronaut 👨‍🚀", "Satellite 🛰️", "Orbit 🔄", "Spacecraft 🛸",
-        "Meteorite ☄️", "Observatory 🏛️", "Gravity ⬇️", "Hemisphere 🌍",
-        "Peninsula 🗺️", "Archipelago 🏝️", "Glacier 🧊", "Tsunami 🌊", "Tornado 🌪️",
-        "Drought 🏜️", "Monsoon 🌧️", "Blizzard ❄️", "Quicksand ⏳", "Whirlpool 🌀",
-        "Silhouette 🌑", "Kaleidoscope 🔮", "Chandelier 💡", "Pendulum ⏱️", "Periscope 🔭",
-        "Tightrope 🎪", "Trampoline 🤸", "Catapult 🏰", "Boomerang 🪃", "Guillotine ⚔️",
-        "Typewriter ⌨️", "Gramophone 🎵", "Stagecoach 🐎", "Drawbridge 🏰", "Portcullis 🏰",
-        "Aquarium 🐠", "Terrarium 🦎", "Greenhouse 🌱", "Windmill 🌬️", "Waterfall 💧",
-        "Thunderstorm ⛈️", "Labyrinth 🏛️", "Souvenir 🎁", "Fireworks 🎆",
-        "Trident 🔱", "Hammock 🏝️", "Canopy 🌳", "Propeller ✈️", "Perimeter 📐",
-        "Barometer 🌡️", "Thermostat 🌡️", "Speedometer 🏎️",
-        "Odometer 🚗", "Altimeter ⛰️", "Hourglass ⏳", "Sundial ☀️", "Metronome 🎵",
-        "Xylophone 🎶", "Saxophone 🎷", "Accordion 🪗", "Tambourine 🥁", "Harmonica 🎵",
-        "Clarinet 🎵", "Trombone 🎺", "Banjo 🪕", "Ukulele 🎸", "Harpoon 🎣",
-        "Anchor ⚓", "Rudder 🚢", "Lifeboat 🛟", "Flagship 🚢",
-        "Caravan 🐫", "Gondola 🛶", "Toboggan 🛷", "Rickshaw 🛺", "Chariot 🏇",
-        "Monocle 🧐", "Turban 🧕", "Tiara 👑", "Gauntlet 🧤", "Medallion 🏅",
-        "Goblet 🏆", "Chalice 🍷", "Cauldron 🫕", "Scepter 👑", "Horoscope ♈",
-        "Mascot 🐶", "Talisman 🧿", "Pharaoh 🐫", "Pyramid 🔺", "Obelisk 🏛️",
-        "Gargoyle 🐉", "Sphinx 🦁", "Centaur 🐎", "Pegasus 🦄", "Griffin 🦅",
-        "Dragon 🐲", "Phoenix 🔥",
-
-        // ═══════════════════════════════════════════════════
-        // C1 Level (~166 words) — Advanced, abstract, sophisticated
-        // ═══════════════════════════════════════════════════
-        "Philanthropy 🤲", "Bureaucracy 🏛️", "Sovereignty 👑", "Jurisdiction ⚖️", "Legislature 📜",
-        "Diplomacy 🕊️", "Propaganda 📢", "Censorship ✂️", "Referendum 🗳️", "Amnesty 🕊️",
-        "Paradox 🔄", "Hypothesis 🧪", "Phenomenon 🌟", "Algorithm 💻", "Encryption 🔐",
-        "Cybersecurity 🛡️", "Infrastructure 🏗️", "Sustainability 🌿", "Biodiversity 🦜", "Deforestation 🪵",
-        "Gentrification 🏘️", "Globalization 🌐", "Immigration 🛂", "Assimilation 🤝", "Emancipation ⛓️",
-        "Renaissance 🎨", "Enlightenment 💡", "Revolution 🔄", "Colonialism 🗺️", "Imperialism 👑",
-        "Aristocracy 🏰", "Oligarchy 💰", "Dictatorship ⚔️", "Anarchy 🏴", "Democracy 🗳️",
-        "Capitalism 💵", "Socialism 🤝", "Communism ☭", "Meritocracy 🏅", "Theocracy ⛪",
-        "Eloquence 🎤", "Rhetoric 📣", "Metaphor 🌀", "Allegory 📖", "Satire 🎭",
-        "Plagiarism 📝", "Manuscript 📜", "Anthology 📚", "Autobiography 📖", "Monologue 🎭",
-        "Soliloquy 🎭", "Protagonist 🦸", "Antagonist 🦹", "Cliffhanger 🧗", "Epilogue 📖",
-        "Reconnaissance 🔭", "Espionage 🕵️", "Sabotage 💣", "Subterfuge 🎭", "Ambush ⚔️",
-        "Barricade 🚧", "Fortification 🏰", "Ammunition 🎯", "Artillery 💥", "Surveillance 📹",
-        "Interrogation ❓", "Prosecution ⚖️", "Acquittal ✅", "Extradition 🛫",
-        "Bankruptcy 📉", "Monopoly 🎩", "Conglomerate 🏢", "Embezzlement 💸", "Litigation ⚖️",
-        "Arbitration ⚖️", "Jurisprudence 📚", "Precedent 📜", "Amendment 📝", "Constitution 📜",
-        "Pandemonium 😱", "Calamity 💥", "Turbulence ✈️", "Upheaval 🌊",
-        "Resurgence 📈", "Deterioration 📉", "Stagnation 🔄", "Proliferation 📊", "Culmination 🏔️",
-        "Juxtaposition 🔀", "Conundrum 🤔", "Quandary ❓", "Predicament 😰", "Dilemma ⚖️",
-        "Epiphany 💡", "Revelation 🌟", "Premonition 🔮", "Intuition 🧠", "Perception 👁️",
-        "Consciousness 🧠", "Subconscious 💭", "Hallucination 🌀", "Meditation 🧘", "Tranquility 🕊️",
-        "Melancholy 🌧️", "Nostalgia 📷", "Serendipity ✨", "Euphoria 🎆", "Wanderlust 🌍",
-        "Sarcasm 😏", "Irony 🎭", "Hypocrisy 🎭", "Altruism 💝", "Narcissism 🪞",
-        "Charisma ✨", "Resilience 💪", "Perseverance 🏃", "Tenacity 🦾", "Ambiguity 🔮",
-        "Anonymity 🎭", "Authenticity ✅", "Vulnerability 💔", "Solidarity 🤝", "Unanimity ✊",
-        "Exaggeration 📢", "Understatement 🤏", "Contradiction 🔄", "Coincidence 🎯", "Consequence ⚡",
-        "Procrastination ⏰", "Claustrophobia 😨", "Vertigo 🌀", "Insomnia 😵", "Amnesia 🧠",
-        "Catacombs 💀", "Colosseum 🏟️", "Acropolis 🏛️", "Parthenon 🏛️",
-        "Hieroglyphics 📜", "Papyrus 📃", "Archaeology 🦴", "Anthropology 🧬", "Etymology 📖",
-        "Calligraphy ✒️", "Origami 🦢", "Ventriloquism 🎭", "Pantomime 🤡", "Puppeteer 🎭",
-        "Mosaic 🎨", "Fresco 🖼️", "Terracotta 🏺", "Porcelain 🍶",
-        "Marionette 🎭", "Xenophobia 🚫", "Agoraphobia 🏃", "Kleptomania 💎", "Megalomania 👑",
-        "Omnipresence 🌌", "Omniscience 🧠", "Omnipotence 💪"
+    const B1_WORDS = [
+        "Destination 📍","Celebration 🎉","Competition 🏆","Pollution 🏭","Environment 🌳",
+        "Atmosphere ☁️","Temperature 🌡️","Advertisement 📺","Ingredient 🧂","Signature ✍️",
+        "Neighborhood 🏘️","Tradition 🏮","Ceremony 🎖️","Personality 🧠","Friendship 👫",
+        "Argument 🗣️","Discussion 💬","Vocabulary 📖","Dictionary 📚","Password 🔑",
+        "Keyboard ⌨️","Screen 🖥️","Document 📄","Message ✉️","Audience 👥",
+        "Performance 🎭","Character 🦸","Director 🎬","Musician 🎸","Instrument 🎺",
+        "Concert 🎫","Stadium 🏟️","Champion 🥇","Referee 🦓","Tournament 🏆",
+        "Backpack 🎒","Suitcase 🧳","Passenger 🧍","Flight ✈️","Pilot 🧑‍✈️",
+        "Airport 🛬","Platform 🚉","Ticket 🎟️","Receipt 🧾","Discount 🏷️",
+        "Customer 🛒","Manager 👔","Employee 👷","Interview 🎤","Salary 💰",
+        "Company 🏢","Bicycle 🚲","Motorcycle 🏍️","Subway 🚇","Skateboard 🛹",
+        "Umbrella ☂️","Jacket 🧥","Sweater 🧶","Scarf 🧣","Gloves 🧤",
+        "Boots 👢","Sneakers 👟","Sandals 🩴","Pajamas 🛌","Swimsuit 🩱",
+        "Towel 🧖","Blanket 🛏️","Pillow 😴","Furniture 🛋️","Bookshelf 📚",
+        "Wardrobe 🚪","Mirror 🪞","Curtain 🪟","Garden 🪴","Garage 🚘",
+        "Fireplace 🔥","Kitchen 🍳","Bathroom 🛁","Bedroom 🛏️","Restaurant 🍽️",
+        "Bakery 🥐","Supermarket 🛒","Pharmacy 💊","Hospital 🏥","Dentist 🦷",
+        "Doctor 👨‍⚕️","Nurse 👩‍⚕️","Ambulance 🚑","Emergency 🚨","Accident 💥",
+        "Traffic 🚦","Vehicle 🚗","Engine ⚙️","Police 👮","Firefighter 👨‍🚒",
+        "Alarm 🔔","Planet 🪐","Rocket 🚀","Ocean 🌊","River 🏞️",
+        "Mountain ⛰️","Forest 🌲","Desert 🐪","Island 🏝️","Beach 🏖️",
+        "Dolphin 🐬","Penguin 🐧","Elephant 🐘","Giraffe 🦒","Butterfly 🦋",
+        "Crocodile 🐊","Kangaroo 🦘","Octopus 🐙","Volcano 🌋","Earthquake 🫨",
+        "Hurricane 🌀","Flood 🌊","Medicine 💊","Compass 🧭","Lighthouse 🏠",
+        "Treasure 💎","Sandwich 🥪","Pineapple 🍍","Mushroom 🍄","Strawberry 🍓",
+        "Watermelon 🍉","Chocolate 🍫","Hamburger 🍔","Pancake 🥞","Lemonade 🍋",
+        "Broccoli 🥦","Avocado 🥑","Cinnamon 🫚","Popcorn 🍿","Calendar 📅",
+        "Envelope ✉️","Newspaper 📰","Magazine 📖","Notebook 📓","Scissors ✂️",
+        "Staircase 🪜","Candle 🕯️","Battery 🔋","Microwave 📡","Refrigerator 🧊",
+        "Washing Machine 🫧","Camera 📷","Headphones 🎧","Sunglasses 🕶️",
+        "Necklace 📿","Bracelet 💍","Toothbrush 🪥","Wheelchair 🦽","Parachute 🪂",
+        "Laptop 💻","Backyard 🏡"
+    ];
+    const B2_WORDS = [
+        "Submarine 🚢","Binoculars 🔭","Handcuffs 🔗","Helicopter 🚁","Microscope 🔬",
+        "Avalanche 🏔️","Skeleton 💀","Sculpture 🗿","Orchestra 🎻","Architecture 🏛️",
+        "Laboratory 🧪","Thermometer 🌡️","Baggage 🧳","Symphony 🎼","Choreography 💃",
+        "Camouflage 🦎","Catastrophe 💥","Negotiation 🤝","Fossil 🦕","Monument 🗽",
+        "Exhibition 🖼️","Gallery 🎨","Masterpiece 🖌️","Canvas 🎨","Portrait 🖼️",
+        "Landscape 🏞️","Tapestry 🧵","Ballet 🩰","Opera 🎭","Composer 🎼",
+        "Conductor 🪗","Applause 👏","Encore 🎬","Microphone 🎤","Amphitheater 🏟️",
+        "Harmony 🎶","Rhythm 🥁","Melody 🎵","Stethoscope 🩺","Prescription 📜",
+        "Surgeon 😷","Diagnosis 🔍","Quarantine 🏥","Vaccination 💉","Antibiotic 💊",
+        "Adrenaline ⚡","Metabolism 🔄","Chromosome 🧬","Ecosystem 🌿","Photosynthesis 🌱",
+        "Constellation 🌟","Astronaut 👨‍🚀","Satellite 🛰️","Orbit 🔄","Spacecraft 🛸",
+        "Meteorite ☄️","Observatory 🏛️","Gravity ⬇️","Hemisphere 🌍",
+        "Peninsula 🗺️","Archipelago 🏝️","Glacier 🧊","Tsunami 🌊","Tornado 🌪️",
+        "Drought 🏜️","Monsoon 🌧️","Blizzard ❄️","Quicksand ⏳","Whirlpool 🌀",
+        "Silhouette 🌑","Kaleidoscope 🔮","Chandelier 💡","Pendulum ⏱️","Periscope 🔭",
+        "Tightrope 🎪","Trampoline 🤸","Catapult 🏰","Boomerang 🪃","Guillotine ⚔️",
+        "Typewriter ⌨️","Gramophone 🎵","Stagecoach 🐎","Drawbridge 🏰","Portcullis 🏰",
+        "Aquarium 🐠","Terrarium 🦎","Greenhouse 🌱","Windmill 🌬️","Waterfall 💧",
+        "Thunderstorm ⛈️","Labyrinth 🏛️","Souvenir 🎁","Fireworks 🎆",
+        "Trident 🔱","Hammock 🏝️","Canopy 🌳","Propeller ✈️","Perimeter 📐",
+        "Barometer 🌡️","Thermostat 🌡️","Speedometer 🏎️","Odometer 🚗",
+        "Altimeter ⛰️","Hourglass ⏳","Sundial ☀️","Metronome 🎵",
+        "Xylophone 🎶","Saxophone 🎷","Accordion 🪗","Tambourine 🥁","Harmonica 🎵",
+        "Clarinet 🎵","Trombone 🎺","Banjo 🪕","Ukulele 🎸","Harpoon 🎣",
+        "Anchor ⚓","Rudder 🚢","Lifeboat 🛟","Flagship 🚢",
+        "Caravan 🐫","Gondola 🛶","Toboggan 🛷","Rickshaw 🛺","Chariot 🏇",
+        "Monocle 🧐","Turban 🧕","Tiara 👑","Gauntlet 🧤","Medallion 🏅",
+        "Goblet 🏆","Chalice 🍷","Cauldron 🫕","Scepter 👑","Horoscope ♈",
+        "Mascot 🐶","Talisman 🧿","Pharaoh 🐫","Pyramid 🔺","Obelisk 🏛️",
+        "Gargoyle 🐉","Sphinx 🦁","Centaur 🐎","Pegasus 🦄","Griffin 🦅",
+        "Dragon 🐲","Phoenix 🔥"
+    ];
+    const C1_WORDS = [
+        "Philanthropy 🤲","Bureaucracy 🏛️","Sovereignty 👑","Jurisdiction ⚖️","Legislature 📜",
+        "Diplomacy 🕊️","Propaganda 📢","Censorship ✂️","Referendum 🗳️","Amnesty 🕊️",
+        "Paradox 🔄","Hypothesis 🧪","Phenomenon 🌟","Algorithm 💻","Encryption 🔐",
+        "Cybersecurity 🛡️","Infrastructure 🏗️","Sustainability 🌿","Biodiversity 🦜","Deforestation 🪵",
+        "Gentrification 🏘️","Globalization 🌐","Immigration 🛂","Assimilation 🤝","Emancipation ⛓️",
+        "Renaissance 🎨","Enlightenment 💡","Revolution 🔄","Colonialism 🗺️","Imperialism 👑",
+        "Aristocracy 🏰","Oligarchy 💰","Dictatorship ⚔️","Anarchy 🏴","Democracy 🗳️",
+        "Capitalism 💵","Socialism 🤝","Communism ☭","Meritocracy 🏅","Theocracy ⛪",
+        "Eloquence 🎤","Rhetoric 📣","Metaphor 🌀","Allegory 📖","Satire 🎭",
+        "Plagiarism 📝","Manuscript 📜","Anthology 📚","Autobiography 📖","Monologue 🎭",
+        "Soliloquy 🎭","Protagonist 🦸","Antagonist 🦹","Cliffhanger 🧗","Epilogue 📖",
+        "Reconnaissance 🔭","Espionage 🕵️","Sabotage 💣","Subterfuge 🎭","Ambush ⚔️",
+        "Barricade 🚧","Fortification 🏰","Ammunition 🎯","Artillery 💥","Surveillance 📹",
+        "Interrogation ❓","Prosecution ⚖️","Acquittal ✅","Extradition 🛫",
+        "Bankruptcy 📉","Monopoly 🎩","Conglomerate 🏢","Embezzlement 💸","Litigation ⚖️",
+        "Arbitration ⚖️","Jurisprudence 📚","Precedent 📜","Amendment 📝","Constitution 📜",
+        "Pandemonium 😱","Calamity 💥","Turbulence ✈️","Upheaval 🌊",
+        "Resurgence 📈","Deterioration 📉","Stagnation 🔄","Proliferation 📊","Culmination 🏔️",
+        "Juxtaposition 🔀","Conundrum 🤔","Quandary ❓","Predicament 😰","Dilemma ⚖️",
+        "Epiphany 💡","Revelation 🌟","Premonition 🔮","Intuition 🧠","Perception 👁️",
+        "Consciousness 🧠","Subconscious 💭","Hallucination 🌀","Meditation 🧘","Tranquility 🕊️",
+        "Melancholy 🌧️","Nostalgia 📷","Serendipity ✨","Euphoria 🎆","Wanderlust 🌍",
+        "Sarcasm 😏","Irony 🎭","Hypocrisy 🎭","Altruism 💝","Narcissism 🪞",
+        "Charisma ✨","Resilience 💪","Perseverance 🏃","Tenacity 🦾","Ambiguity 🔮",
+        "Anonymity 🎭","Authenticity ✅","Vulnerability 💔","Solidarity 🤝","Unanimity ✊",
+        "Exaggeration 📢","Understatement 🤏","Contradiction 🔄","Coincidence 🎯","Consequence ⚡",
+        "Procrastination ⏰","Claustrophobia 😨","Vertigo 🌀","Insomnia 😵","Amnesia 🧠",
+        "Catacombs 💀","Colosseum 🏟️","Acropolis 🏛️","Parthenon 🏛️",
+        "Hieroglyphics 📜","Papyrus 📃","Archaeology 🦴","Anthropology 🧬","Etymology 📖",
+        "Calligraphy ✒️","Origami 🦢","Ventriloquism 🎭","Pantomime 🤡","Puppeteer 🎭",
+        "Mosaic 🎨","Fresco 🖼️","Terracotta 🏺","Porcelain 🍶",
+        "Marionette 🎭","Xenophobia 🚫","Agoraphobia 🏃","Kleptomania 💎","Megalomania 👑",
+        "Omnipresence 🌌","Omniscience 🧠","Omnipotence 💪"
     ];
 
-    if (state.allWords.length < 200) {
-        console.log(`Only ${state.allWords.length} words submitted. Auto-filling to 200...`);
-        // Extract just the word text for dedup (allWords are now {word, team} objects)
+    // Combine into level-tagged objects — used for auto-fill AND level badge display
+    const FALLBACK_VOCABULARY = [
+        ...B1_WORDS.map(w => ({ word: w, level: 'B1+' })),
+        ...B2_WORDS.map(w => ({ word: w, level: 'B2'  })),
+        ...C1_WORDS.map(w => ({ word: w, level: 'C1'  }))
+    ];
+
+    // Auto-fill up to 500 words using the full vocabulary pool
+    if (state.allWords.length < 500) {
+        console.log(`Only ${state.allWords.length} words submitted. Auto-filling to 500...`);
         let currentWordsLower = state.allWords.map(w => (w.word || w).toLowerCase());
-        
-        // Shuffle the backup list
         let backupList = [...FALLBACK_VOCABULARY];
         shuffleArray(backupList);
-        
-        for (let word of backupList) {
-            if (state.allWords.length >= 200) break;
-            
-            if (!currentWordsLower.includes(word.toLowerCase())) {
-                state.allWords.push({ word: word, team: '🤖 Auto' });
-                currentWordsLower.push(word.toLowerCase());
+        for (let item of backupList) {
+            if (state.allWords.length >= 500) break;
+            if (!currentWordsLower.includes(item.word.toLowerCase())) {
+                state.allWords.push({ word: item.word, team: '🤖 Auto', level: item.level });
+                currentWordsLower.push(item.word.toLowerCase());
             }
         }
         console.log(`Auto-fill complete. Deck size: ${state.allWords.length}`);
     }
+
     
     socket.emit('startGame', state.roomId);
     startGame();
@@ -472,6 +468,7 @@ function drawCard() {
     const card = state.deck[state.currentWordIndex];
     const wordText = card.word || card; // handle both object and string
     const teamText = card.team || '';
+    const levelText = card.level || '';
     
     document.getElementById('current-word').textContent = wordText;
     document.getElementById('current-word').classList.add('gradient-text');
@@ -483,6 +480,17 @@ function drawCard() {
         sourceEl.textContent = `✏️ by ${teamText}`;
     } else {
         sourceEl.textContent = '';
+    }
+
+    const levelEl = document.getElementById('word-level-badge');
+    if (levelEl) {
+        if (levelText) {
+            levelEl.textContent = levelText;
+            levelEl.className = `level-badge level-${levelText.replace('+', 'plus').toLowerCase()}`;
+            levelEl.style.display = 'inline-block';
+        } else {
+            levelEl.style.display = 'none';
+        }
     }
 }
 
@@ -538,6 +546,10 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     state.lastGuessedCards = state.lastGuessedCards || [];
     state.lastGuessedCards.push(scoredCard);
     
+    // Add +2 seconds bonus for correct guess
+    state.timeLeft += 2;
+    updateTimerVisuals();
+    
     playBeep(800, 'sine', 0.1);
     
     syncToProjector('gotIt');
@@ -560,6 +572,10 @@ document.getElementById('btn-undo').addEventListener('click', () => {
     const cardToReturn = state.lastGuessedCards.pop();
     state.deck.push(cardToReturn);
     document.getElementById('game-words-remaining').textContent = state.deck.length;
+    
+    // Remove the +2 seconds bonus for the undone card
+    state.timeLeft = Math.max(0, state.timeLeft - 2);
+    updateTimerVisuals();
     
     playBeep(300, 'triangle', 0.1);
     syncToProjector();
