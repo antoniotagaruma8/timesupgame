@@ -64,10 +64,12 @@ socket.on('projectorSync', (data) => {
     
     if (data.currentTeam) {
         projTeamName.textContent = data.currentTeam.name;
-        projScore.textContent = data.currentTeam.score;
+        
+        let displayScore = data.turnScore !== undefined ? data.turnScore : data.currentTeam.score;
+        projScore.textContent = displayScore;
         
         // Play sounds if score changed positively or if event passed
-        if (data.event === 'gotIt' && data.currentTeam.score > lastScore) {
+        if (data.event === 'gotIt' && displayScore > lastScore) {
             playAudio(sfxSuccess);
             fireProjectorConfetti();
         } else if (data.event === 'pass') {
@@ -76,7 +78,7 @@ socket.on('projectorSync', (data) => {
             playAudio(sfxTimesup);
         }
         
-        lastScore = data.currentTeam.score;
+        lastScore = displayScore;
     }
 
     // Update Timer

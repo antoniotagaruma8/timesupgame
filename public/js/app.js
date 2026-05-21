@@ -14,6 +14,7 @@ let state = {
     // Turn state
     timer: null,
     timeLeft: 0,
+    isPaused: false,
     currentWordIndex: -1,
     turnScore: 0,
 
@@ -376,6 +377,13 @@ function startTurnSetup() {
     document.getElementById('current-word').classList.remove('gradient-text');
     
     state.timeLeft = state.turnDuration;
+    state.isPaused = false;
+    const pauseBtn = document.getElementById('btn-pause');
+    if (pauseBtn) {
+        pauseBtn.textContent = '⏸ Pause';
+        pauseBtn.classList.remove('btn-primary');
+        pauseBtn.classList.add('btn-secondary');
+    }
     updateTimerVisuals();
     syncToProjector();
 }
@@ -409,6 +417,8 @@ function drawCard() {
 }
 
 function tickTimer() {
+    if (state.isPaused) return;
+    
     state.timeLeft--;
     updateTimerVisuals();
     syncToProjector();
@@ -488,6 +498,23 @@ document.getElementById('btn-foul').addEventListener('click', () => {
     syncToProjector('foul');
 });
 
+document.getElementById('btn-pause').addEventListener('click', () => {
+    state.isPaused = !state.isPaused;
+    const btn = document.getElementById('btn-pause');
+    if (state.isPaused) {
+        btn.textContent = '▶ Resume';
+        btn.classList.remove('btn-secondary');
+        btn.classList.add('btn-primary');
+        playBeep(400, 'sine', 0.1);
+    } else {
+        btn.textContent = '⏸ Pause';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-secondary');
+        playBeep(600, 'sine', 0.1);
+    }
+    syncToProjector(state.isPaused ? 'paused' : 'resumed');
+});
+
 function endTurn(wasFoul) {
     clearInterval(state.timer);
     
@@ -539,6 +566,7 @@ function syncToProjector(eventName = null) {
         phase: phase,
         teams: state.teams,
         currentTeam: state.teams[state.currentTeamIndex] || null,
+        turnScore: state.turnScore,
         timeLeft: state.timeLeft,
         event: eventName
     });
