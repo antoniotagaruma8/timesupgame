@@ -428,6 +428,8 @@ function startTurnSetup() {
     document.getElementById('current-word').classList.remove('gradient-text');
     document.getElementById('word-source').textContent = '';
     
+    document.getElementById('input-midgame-timer').value = state.turnDuration;
+    
     state.timeLeft = state.turnDuration;
     state.isPaused = false;
     const pauseBtn = document.getElementById('btn-pause');
@@ -688,6 +690,17 @@ document.getElementById('btn-timer-sub').addEventListener('click', () => {
     // Check if they manually drained the time to zero
     if (state.timeLeft <= 0) {
         endTurn(false);
+    }
+});
+
+document.getElementById('btn-update-timer').addEventListener('click', () => {
+    const newVal = parseInt(document.getElementById('input-midgame-timer').value, 10);
+    if (!isNaN(newVal) && newVal >= 10 && newVal <= 300) {
+        state.turnDuration = newVal;
+        state.timeLeft = newVal;
+        updateTimerVisuals();
+        playBeep(600, 'sine', 0.1);
+        syncToProjector('timer-adjusted');
     }
 });
 
