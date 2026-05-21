@@ -413,6 +413,30 @@ input:focus {
     100% { transform: scale(1); }
 }
 
+.time-float-anim {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: var(--font-heading);
+    z-index: 100;
+    pointer-events: none;
+    animation: floatUpFadeOut 1s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+}
+
+@keyframes floatUpFadeOut {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    30% { transform: translate(-50%, -80%) scale(1.2); opacity: 1; }
+    100% { transform: translate(-50%, -180%) scale(1); opacity: 0; }
+}
+
+.text-success { color: var(--success) !important; }
+.text-danger { color: var(--danger) !important; }
+.text-warning { color: #f59e0b !important; }
+
 /* Word Card */
 .word-card {
     width: 100%;

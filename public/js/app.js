@@ -535,6 +535,21 @@ function updateTimerVisuals() {
     if (state.timeLeft <= 3) timerContainer.classList.add('timer-danger');
 }
 
+function showTimeAnimation(text, colorClass) {
+    const timerContainer = document.querySelector('.timer-container');
+    if (!timerContainer) return;
+    
+    const animEl = document.createElement('div');
+    animEl.className = `time-float-anim ${colorClass}`;
+    animEl.textContent = text;
+    
+    timerContainer.appendChild(animEl);
+    
+    setTimeout(() => {
+        animEl.remove();
+    }, 1000);
+}
+
 document.getElementById('btn-got-it').addEventListener('click', () => {
     if (state.currentWordIndex === -1) return;
     
@@ -546,9 +561,10 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     state.lastGuessedCards = state.lastGuessedCards || [];
     state.lastGuessedCards.push(scoredCard);
     
-    // Add +2 seconds bonus for correct guess
-    state.timeLeft += 2;
+    // Add +1 second bonus for correct guess
+    state.timeLeft += 1;
     updateTimerVisuals();
+    showTimeAnimation('+1s', 'text-success');
     
     playBeep(800, 'sine', 0.1);
     
@@ -573,9 +589,10 @@ document.getElementById('btn-undo').addEventListener('click', () => {
     state.deck.push(cardToReturn);
     document.getElementById('game-words-remaining').textContent = state.deck.length;
     
-    // Remove the +2 seconds bonus for the undone card
-    state.timeLeft = Math.max(0, state.timeLeft - 2);
+    // Remove the +1 second bonus for the undone card
+    state.timeLeft = Math.max(0, state.timeLeft - 1);
     updateTimerVisuals();
+    showTimeAnimation('-1s', 'text-danger');
     
     playBeep(300, 'triangle', 0.1);
     syncToProjector();
@@ -584,9 +601,10 @@ document.getElementById('btn-undo').addEventListener('click', () => {
 document.getElementById('btn-pass').addEventListener('click', () => {
     playBeep(300, 'triangle', 0.1);
     
-    // 5-second penalty for passing
-    state.timeLeft = Math.max(0, state.timeLeft - 5);
+    // 2-second penalty for passing
+    state.timeLeft = Math.max(0, state.timeLeft - 2);
     updateTimerVisuals();
+    showTimeAnimation('-2s', 'text-warning');
     
     drawCard();
     syncToProjector('pass');
