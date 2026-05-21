@@ -494,7 +494,7 @@ function drawCard() {
     const teamText = card.team || '';
     const levelText = card.level || '';
     
-    let displayHtml = wordText;
+    let displayHtml = `<span class="gradient-text">${wordText}</span>`;
     const parts = wordText.trim().split(' ');
     if (parts.length > 1) {
         const lastPart = parts[parts.length - 1];
@@ -502,12 +502,12 @@ function drawCard() {
         if (!/[a-zA-Z0-9]/.test(lastPart)) {
             parts.pop();
             const textPart = parts.join(' ');
-            displayHtml = `${textPart} <span style="-webkit-text-fill-color: initial; color: initial;">${lastPart}</span>`;
+            displayHtml = `<span class="gradient-text">${textPart}</span> <span>${lastPart}</span>`;
         }
     }
     
     document.getElementById('current-word').innerHTML = displayHtml;
-    document.getElementById('current-word').classList.add('gradient-text');
+    document.getElementById('current-word').classList.remove('gradient-text');
     
     const sourceEl = document.getElementById('word-source');
     if (teamText === '🤖 Auto') {
