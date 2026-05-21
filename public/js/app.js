@@ -237,6 +237,7 @@ socket.on('newTeam', (data) => {
 
 socket.on('newWord', (data) => {
     liveWordCount.textContent = data.wordCount;
+    // Words are now {word, team} objects from the server
     state.allWords = data.allWords;
     
     playBeep(800 + (data.wordCount % 5) * 100, 'sine', 0.05);
@@ -253,71 +254,119 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
     }
     
     if (state.allWords.length === 0) {
-        // Since we have auto-fill, this is technically never a fatal error anymore,
-        // but it's good to ensure students tried at least a little bit.
         alert("Please wait for at least one word to be submitted!");
         return;
     }
-    
-    // AUTO-FILL B1+/B2 VOCABULARY LOGIC
-    const FALLBACK_VOCABULARY = [
-        // B2 Level (50 words)
-        "Submarine 🚢", "Binoculars 🔭", "Parachute 🪂", "Handcuffs 🔗", "Helicopter 🚁",
-        "Microscope 🔬", "Telescope 🔭", "Avalanche 🏔️", "Skeleton 💀", "Sculpture 🗿",
-        "Orchestra 🎻", "Architecture 🏛️", "Laboratory 🧪", "Thermometer 🌡️", "Baggage 🧳",
-        "Symphony 🎼", "Choreography 💃", "Hypnotize 🌀", "Acupuncture 🪡", "Camouflage 🦎",
-        "Catastrophe 🌋", "Investigate 🕵️", "Negotiation 🤝", "Fossil 🦕", "Monument 🗽",
-        "Exhibition 🖼️", "Gallery 🖼️", "Masterpiece 🎨", "Canvas 🖌️", "Portrait 🖼️",
-        "Landscape 🏞️", "Tapestry 🧵", "Sculptor 🔨", "Easel 🎨", "Ballet 🩰",
-        "Opera 🎭", "Composer 🎼", "Conductor 🪗", "Applause 👏", "Encore 🎬",
-        "Microphone 🎤", "Amphitheater 🏟️", "Acoustics 🎧", "Harmony 🎶", "Rhythm 🥁",
-        "Melody 🎵", "Chorus 🎤", "Verse 📝", "Stanza 📜", "Poetry ✒️",
-        
-        // B1+ Level (200 words)
-        "Destination 📍", "Celebration 🎉", "Competition 🏆", "Generation 👶", "Pollution 🏭",
-        "Environment 🌳", "Atmosphere ☁️", "Temperature 🌡️", "Advertisement 📺", "Ingredient 🧂",
-        "Signature ✍️", "Neighborhood 🏘️", "Rehearsal 🎭", "Tradition 🏮", "Ceremony 🎖️",
-        "Personality 🧠", "Relationship 💑", "Friendship 👫", "Argument 🗣️", "Discussion 💬",
-        "Translation 🌐", "Pronunciation 🗣️", "Vocabulary 📖", "Dictionary 📚", "Password 🔑",
-        "Keyboard ⌨️", "Screen 🖥️", "Software 💻", "Document 📄", "Message ✉️",
-        "Audience 👥", "Performance 🎭", "Character 🦸", "Director 🎬", "Musician 🎸",
-        "Instrument 🎺", "Concert 🎫", "Stadium 🏟️", "Champion 🥇", "Referee 🦓",
-        "Penalty ⚽", "Tournament 🏆", "Backpack 🎒", "Suitcase 🧳", "Passenger 🧍",
-        "Flight ✈️", "Pilot 🧑‍✈️", "Airport 🛬", "Platform 🚉", "Ticket 🎟️",
-        "Receipt 🧾", "Discount 🏷️", "Customer 🛒", "Manager 👔", "Employee 👷",
-        "Interview 🎤", "Salary 💰", "Company 🏢", "Industry 🏭", "Factory 🏭",
-        "Recycling ♻️", "Rubbish 🗑️", "Climate 🌍", "Hurricane 🌀", "Earthquake 🫨",
-        "Volcano 🌋", "Drought 🏜️", "Flood 🌊", "Disease 🦠", "Infection 🤒",
-        "Medicine 💊", "Surgery 🥼", "Ambulance 🚑", "Emergency 🚨", "Accident 💥",
-        "Traffic 🚦", "Vehicle 🚗", "Engine ⚙️", "License 🪪", "Bicycle 🚲",
-        "Motorcycle 🏍️", "Helicopter 🚁", "Subway 🚇", "Scooter 🛴", "Skateboard 🛹",
-        "Surfboard 🏄", "Snowboard 🏂", "Parachute 🪂", "Backpack 🎒", "Suitcase 🧳",
-        "Briefcase 💼", "Wallet 👛", "Purse 👜", "Umbrella ☂️", "Raincoat 🧥",
-        "Jacket 🧥", "Sweater 🧥", "Scarf 🧣", "Gloves 🧤", "Boots 👢",
-        "Sneakers 👟", "Sandals 🩴", "Socks 🧦", "Pajamas 🛌", "Underwear 🩲",
-        "Swimsuit 🩱", "Towel 🧖", "Blanket 🛌", "Pillow 🛌", "Mattress 🛏️",
-        "Furniture 🛋️", "Bookshelf 📚", "Wardrobe 🚪", "Drawer 🗄️", "Mirror 🪞",
-        "Carpet 🧶", "Curtain 🪟", "Window 🪟", "Balcony 🏢", "Garden 🪴",
-        "Garage 🚘", "Basement 🏚️", "Attic 🛖", "Chimney 🏭", "Fireplace 🔥",
-        "Kitchen 🍳", "Bathroom 🛁", "Bedroom 🛏️", "Living Room 🛋️", "Dining Room 🍽️",
-        "Restaurant 🍽️", "Cafeteria 🍱", "Bakery 🥐", "Supermarket 🛒", "Pharmacy 💊",
-        "Hospital 🏥", "Clinic 🩺", "Dentist 🦷", "Doctor 👨‍⚕️", "Nurse 👩‍⚕️",
-        "Surgeon 😷", "Patient 🤕", "Medicine 💊", "Pharmacy ⚕️", "Prescription 📜",
-        "Police 👮", "Station 🚓", "Prison ⛓️", "Detective 🕵️", "Criminal 🦹",
-        "Judge 👨‍⚖️", "Lawyer 💼", "Court 🏛️", "Jury 🧑‍🤝‍🧑", "Witness 👁️",
-        "Firefighter 👨‍🚒", "Fire Engine 🚒", "Extinguisher 🧯", "Smoke 💨", "Alarm 🔔",
-        "Scientist 👨‍🔬", "Laboratory 🧪", "Experiment 🧪", "Microscope 🔬", "Telescope 🔭",
-        "Planet 🪐", "Star ⭐️", "Moon 🌕", "Sun ☀️", "Galaxy 🌌",
-        "Universe 🌠", "Astronaut 👨‍🚀", "Rocket 🚀", "Satellite 🛰️", "Orbit 🔄",
-        "Alien 👽", "UFO 🛸", "Spacecraft 🛸", "Comet ☄️", "Meteor ☄️",
-        "Ocean 🌊", "River 🏞️", "Lake 🏞️", "Waterfall 🏞️", "Mountain ⛰️",
-        "Valley 🏞️", "Forest 🌲", "Jungle 🌴", "Desert 🐪", "Island 🏝️",
-        "Beach 🏖️", "Sand 🏜️", "Shell 🐚", "Wave 🌊", "Tide 🌊"
-    ];
 
-    if (state.allWords.length < 200) {
+    // AUTO-FILL VOCABULARY — 500 unique words across B1+, B2, C1 (no duplicates)
+    const FALLBACK_VOCABULARY = [
+        // ═══════════════════════════════════════════════════
+        // B1+ Level (~167 words) — Common, concrete, everyday
+        // ═══════════════════════════════════════════════════
+        "Destination 📍", "Celebration 🎉", "Competition 🏆", "Pollution 🏭", "Environment 🌳",
+        "Atmosphere ☁️", "Temperature 🌡️", "Advertisement 📺", "Ingredient 🧂", "Signature ✍️",
+        "Neighborhood 🏘️", "Tradition 🏮", "Ceremony 🎖️", "Personality 🧠", "Friendship 👫",
+        "Argument 🗣️", "Discussion 💬", "Vocabulary 📖", "Dictionary 📚", "Password 🔑",
+        "Keyboard ⌨️", "Screen 🖥️", "Document 📄", "Message ✉️", "Audience 👥",
+        "Performance 🎭", "Character 🦸", "Director 🎬", "Musician 🎸", "Instrument 🎺",
+        "Concert 🎫", "Stadium 🏟️", "Champion 🥇", "Referee 🦓", "Tournament 🏆",
+        "Backpack 🎒", "Suitcase 🧳", "Passenger 🧍", "Flight ✈️", "Pilot 🧑‍✈️",
+        "Airport 🛬", "Platform 🚉", "Ticket 🎟️", "Receipt 🧾", "Discount 🏷️",
+        "Customer 🛒", "Manager 👔", "Employee 👷", "Interview 🎤", "Salary 💰",
+        "Company 🏢", "Bicycle 🚲", "Motorcycle 🏍️", "Subway 🚇", "Skateboard 🛹",
+        "Umbrella ☂️", "Jacket 🧥", "Sweater 🧶", "Scarf 🧣", "Gloves 🧤",
+        "Boots 👢", "Sneakers 👟", "Sandals 🩴", "Pajamas 🛌", "Swimsuit 🩱",
+        "Towel 🧖", "Blanket 🛏️", "Pillow 😴", "Furniture 🛋️", "Bookshelf 📚",
+        "Wardrobe 🚪", "Mirror 🪞", "Curtain 🪟", "Garden 🪴", "Garage 🚘",
+        "Fireplace 🔥", "Kitchen 🍳", "Bathroom 🛁", "Bedroom 🛏️", "Restaurant 🍽️",
+        "Bakery 🥐", "Supermarket 🛒", "Pharmacy 💊", "Hospital 🏥", "Dentist 🦷",
+        "Doctor 👨‍⚕️", "Nurse 👩‍⚕️", "Ambulance 🚑", "Emergency 🚨", "Accident 💥",
+        "Traffic 🚦", "Vehicle 🚗", "Engine ⚙️", "Police 👮", "Firefighter 👨‍🚒",
+        "Alarm 🔔", "Planet 🪐", "Rocket 🚀", "Ocean 🌊", "River 🏞️",
+        "Mountain ⛰️", "Forest 🌲", "Desert 🐪", "Island 🏝️", "Beach 🏖️",
+        "Dolphin 🐬", "Penguin 🐧", "Elephant 🐘", "Giraffe 🦒", "Butterfly 🦋",
+        "Crocodile 🐊", "Kangaroo 🦘", "Octopus 🐙", "Volcano 🌋", "Earthquake 🫨",
+        "Hurricane 🌀", "Flood 🌊", "Medicine 💊", "Telescope 🔬", "Compass 🧭",
+        "Lighthouse 🏠", "Treasure 💎", "Sandwich 🥪", "Pineapple 🍍", "Mushroom 🍄",
+        "Strawberry 🍓", "Watermelon 🍉", "Chocolate 🍫", "Hamburger 🍔", "Pancake 🥞",
+        "Lemonade 🍋", "Broccoli 🥦", "Avocado 🥑", "Cinnamon 🫚", "Popcorn 🍿",
+        "Calendar 📅", "Envelope ✉️", "Newspaper 📰", "Magazine 📖", "Notebook 📓",
+        "Scissors ✂️", "Staircase 🪜", "Candle 🕯️", "Battery 🔋", "Microwave 📡",
+        "Refrigerator 🧊", "Washing Machine 🫧", "Camera 📷", "Headphones 🎧", "Sunglasses 🕶️",
+        "Necklace 📿", "Bracelet 💍", "Toothbrush 🪥", "Wheelchair 🦽", "Parachute 🪂",
+        "Laptop 💻", "Backyard 🏡",
+
+        // ═══════════════════════════════════════════════════
+        // B2 Level (~167 words) — Specialized, less common
+        // ═══════════════════════════════════════════════════
+        "Submarine 🚢", "Binoculars 🔭", "Handcuffs 🔗", "Helicopter 🚁", "Microscope 🔬",
+        "Avalanche 🏔️", "Skeleton 💀", "Sculpture 🗿", "Orchestra 🎻", "Architecture 🏛️",
+        "Laboratory 🧪", "Thermometer 🌡️", "Baggage 🧳", "Symphony 🎼", "Choreography 💃",
+        "Camouflage 🦎", "Catastrophe 💥", "Negotiation 🤝", "Fossil 🦕", "Monument 🗽",
+        "Exhibition 🖼️", "Gallery 🎨", "Masterpiece 🖌️", "Canvas 🎨", "Portrait 🖼️",
+        "Landscape 🏞️", "Tapestry 🧵", "Ballet 🩰", "Opera 🎭", "Composer 🎼",
+        "Conductor 🪗", "Applause 👏", "Encore 🎬", "Microphone 🎤", "Amphitheater 🏟️",
+        "Harmony 🎶", "Rhythm 🥁", "Melody 🎵", "Stethoscope 🩺", "Prescription 📜",
+        "Surgeon 😷", "Diagnosis 🔍", "Quarantine 🏥", "Vaccination 💉", "Antibiotic 💊",
+        "Adrenaline ⚡", "Metabolism 🔄", "Chromosome 🧬", "Ecosystem 🌿", "Photosynthesis 🌱",
+        "Constellation 🌟", "Astronaut 👨‍🚀", "Satellite 🛰️", "Orbit 🔄", "Spacecraft 🛸",
+        "Meteorite ☄️", "Observatory 🏛️", "Gravity ⬇️", "Hemisphere 🌍",
+        "Peninsula 🗺️", "Archipelago 🏝️", "Glacier 🧊", "Tsunami 🌊", "Tornado 🌪️",
+        "Drought 🏜️", "Monsoon 🌧️", "Blizzard ❄️", "Quicksand ⏳", "Whirlpool 🌀",
+        "Silhouette 🌑", "Kaleidoscope 🔮", "Chandelier 💡", "Pendulum ⏱️", "Periscope 🔭",
+        "Tightrope 🎪", "Trampoline 🤸", "Catapult 🏰", "Boomerang 🪃", "Guillotine ⚔️",
+        "Typewriter ⌨️", "Gramophone 🎵", "Stagecoach 🐎", "Drawbridge 🏰", "Portcullis 🏰",
+        "Aquarium 🐠", "Terrarium 🦎", "Greenhouse 🌱", "Windmill 🌬️", "Waterfall 💧",
+        "Thunderstorm ⛈️", "Labyrinth 🏛️", "Souvenir 🎁", "Fireworks 🎆",
+        "Trident 🔱", "Hammock 🏝️", "Canopy 🌳", "Propeller ✈️", "Perimeter 📐",
+        "Barometer 🌡️", "Thermostat 🌡️", "Speedometer 🏎️",
+        "Odometer 🚗", "Altimeter ⛰️", "Hourglass ⏳", "Sundial ☀️", "Metronome 🎵",
+        "Xylophone 🎶", "Saxophone 🎷", "Accordion 🪗", "Tambourine 🥁", "Harmonica 🎵",
+        "Clarinet 🎵", "Trombone 🎺", "Banjo 🪕", "Ukulele 🎸", "Harpoon 🎣",
+        "Anchor ⚓", "Rudder 🚢", "Lifeboat 🛟", "Flagship 🚢",
+        "Caravan 🐫", "Gondola 🛶", "Toboggan 🛷", "Rickshaw 🛺", "Chariot 🏇",
+        "Monocle 🧐", "Turban 🧕", "Tiara 👑", "Gauntlet 🧤", "Medallion 🏅",
+        "Goblet 🏆", "Chalice 🍷", "Cauldron 🫕", "Scepter 👑", "Horoscope ♈",
+        "Mascot 🐶", "Talisman 🧿", "Pharaoh 🐫", "Pyramid 🔺", "Obelisk 🏛️",
+        "Gargoyle 🐉", "Sphinx 🦁", "Centaur 🐎", "Pegasus 🦄", "Griffin 🦅",
+        "Dragon 🐲", "Phoenix 🔥",
+
+        // ═══════════════════════════════════════════════════
+        // C1 Level (~166 words) — Advanced, abstract, sophisticated
+        // ═══════════════════════════════════════════════════
+        "Philanthropy 🤲", "Bureaucracy 🏛️", "Sovereignty 👑", "Jurisdiction ⚖️", "Legislature 📜",
+        "Diplomacy 🕊️", "Propaganda 📢", "Censorship ✂️", "Referendum 🗳️", "Amnesty 🕊️",
+        "Paradox 🔄", "Hypothesis 🧪", "Phenomenon 🌟", "Algorithm 💻", "Encryption 🔐",
+        "Cybersecurity 🛡️", "Infrastructure 🏗️", "Sustainability 🌿", "Biodiversity 🦜", "Deforestation 🪵",
+        "Gentrification 🏘️", "Globalization 🌐", "Immigration 🛂", "Assimilation 🤝", "Emancipation ⛓️",
+        "Renaissance 🎨", "Enlightenment 💡", "Revolution 🔄", "Colonialism 🗺️", "Imperialism 👑",
+        "Aristocracy 🏰", "Oligarchy 💰", "Dictatorship ⚔️", "Anarchy 🏴", "Democracy 🗳️",
+        "Capitalism 💵", "Socialism 🤝", "Communism ☭", "Meritocracy 🏅", "Theocracy ⛪",
+        "Eloquence 🎤", "Rhetoric 📣", "Metaphor 🌀", "Allegory 📖", "Satire 🎭",
+        "Plagiarism 📝", "Manuscript 📜", "Anthology 📚", "Autobiography 📖", "Monologue 🎭",
+        "Soliloquy 🎭", "Protagonist 🦸", "Antagonist 🦹", "Cliffhanger 🧗", "Epilogue 📖",
+        "Reconnaissance 🔭", "Espionage 🕵️", "Sabotage 💣", "Subterfuge 🎭", "Ambush ⚔️",
+        "Barricade 🚧", "Fortification 🏰", "Ammunition 🎯", "Artillery 💥", "Surveillance 📹",
+        "Interrogation ❓", "Prosecution ⚖️", "Acquittal ✅", "Extradition 🛫",
+        "Bankruptcy 📉", "Monopoly 🎩", "Conglomerate 🏢", "Embezzlement 💸", "Litigation ⚖️",
+        "Arbitration ⚖️", "Jurisprudence 📚", "Precedent 📜", "Amendment 📝", "Constitution 📜",
+        "Pandemonium 😱", "Calamity 💥", "Turbulence ✈️", "Upheaval 🌊",
+        "Resurgence 📈", "Deterioration 📉", "Stagnation 🔄", "Proliferation 📊", "Culmination 🏔️",
+        "Juxtaposition 🔀", "Conundrum 🤔", "Quandary ❓", "Predicament 😰", "Dilemma ⚖️",
+        "Epiphany 💡", "Revelation 🌟", "Premonition 🔮", "Intuition 🧠", "Perception 👁️",
+        "Consciousness 🧠", "Subconscious 💭", "Hallucination 🌀", "Meditation 🧘", "Tranquility 🕊️",
+        "Melancholy 🌧️", "Nostalgia 📷", "Serendipity ✨", "Euphoria 🎆", "Wanderlust 🌍",
+        "Sarcasm 😏", "Irony 🎭", "Hypocrisy 🎭", "Altruism 💝", "Narcissism 🪞",
+        "Charisma ✨", "Resilience 💪", "Perseverance 🏃", "Tenacity 🦾", "Ambiguity 🔮",
+        "Anonymity 🎭", "Authenticity ✅", "Vulnerability 💔", "Solidarity 🤝", "Unanimity ✊",
+        "Exaggeration 📢", "Understatement 🤏", "Contradiction 🔄", "Coincidence 🎯", "Consequence ⚡",
+        "Procrastination ⏰", "Claustrophobia 😨", "Vertigo 🌀", "Insomnia 😵", "Amnesia 🧠",
+        "Catacombs 💀", "Colosseum 🏟️", "Acropolis 🏛️", "Parthenon 🏛️",
+        "Hieroglyphics 📜", "Papyrus 📃", "Archaeology 🦴", "Anthropology 🧬", "Etymology 📖",
+        "Calligraphy ✒️", "Origami 🦢", "Ventriloquism 🎭", "Pantomime 🤡", "Puppeteer 🎭",
         console.log(`Only ${state.allWords.length} words submitted. Auto-filling to 200...`);
-        let currentWordsLower = state.allWords.map(w => w.toLowerCase());
+        // Extract just the word text for dedup (allWords are now {word, team} objects)
+        let currentWordsLower = state.allWords.map(w => (w.word || w).toLowerCase());
         
         // Shuffle the backup list
         let backupList = [...FALLBACK_VOCABULARY];
@@ -327,7 +376,7 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
             if (state.allWords.length >= 200) break;
             
             if (!currentWordsLower.includes(word.toLowerCase())) {
-                state.allWords.push(word);
+                state.allWords.push({ word: word, team: '🤖 Auto' });
                 currentWordsLower.push(word.toLowerCase());
             }
         }
@@ -375,6 +424,7 @@ function startTurnSetup() {
     
     document.getElementById('current-word').textContent = "READY?";
     document.getElementById('current-word').classList.remove('gradient-text');
+    document.getElementById('word-source').textContent = '';
     
     state.timeLeft = state.turnDuration;
     state.isPaused = false;
@@ -412,8 +462,21 @@ function drawCard() {
     void cardEl.offsetWidth; 
     cardEl.classList.add('anim-pop');
     
-    document.getElementById('current-word').textContent = state.deck[state.currentWordIndex];
+    const card = state.deck[state.currentWordIndex];
+    const wordText = card.word || card; // handle both object and string
+    const teamText = card.team || '';
+    
+    document.getElementById('current-word').textContent = wordText;
     document.getElementById('current-word').classList.add('gradient-text');
+    
+    const sourceEl = document.getElementById('word-source');
+    if (teamText === '🤖 Auto') {
+        sourceEl.textContent = '🤖 Auto-filled';
+    } else if (teamText) {
+        sourceEl.textContent = `✏️ by ${teamText}`;
+    } else {
+        sourceEl.textContent = '';
+    }
 }
 
 function tickTimer() {

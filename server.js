@@ -129,7 +129,11 @@ io.on('connection', (socket) => {
                 return;
             }
             
-            rooms[roomId].words.push(cleanWord);
+            // Look up which team submitted this word
+            const submittingTeam = rooms[roomId].teams.find(t => t.socketId === socket.id);
+            const teamName = submittingTeam ? submittingTeam.name : 'Unknown';
+            
+            rooms[roomId].words.push({ word: cleanWord, team: teamName });
             
             // Broadcast to everyone in the room (including the teacher)
             io.to(roomId).emit('newWord', {
