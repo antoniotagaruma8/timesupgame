@@ -428,7 +428,8 @@ function startTurnSetup() {
     document.getElementById('current-word').classList.remove('gradient-text');
     document.getElementById('word-source').textContent = '';
     
-    document.getElementById('input-midgame-timer').value = state.turnDuration;
+    document.getElementById('input-midgame-min').value = Math.floor(state.turnDuration / 60);
+    document.getElementById('input-midgame-sec').value = state.turnDuration % 60;
     
     state.timeLeft = state.turnDuration;
     state.isPaused = false;
@@ -573,6 +574,23 @@ function showTimeAnimation(text, colorClass) {
     }, 1000);
 }
 
+function showScoreAnimation(text, colorClass) {
+    const scoreContainer = document.querySelector('.round-score');
+    if (!scoreContainer) return;
+    
+    const animEl = document.createElement('div');
+    animEl.className = `time-float-anim ${colorClass}`;
+    animEl.style.fontSize = '1.8rem';
+    animEl.style.left = '80%'; // Offset a bit to the right of the score
+    animEl.textContent = text;
+    
+    scoreContainer.appendChild(animEl);
+    
+    setTimeout(() => {
+        animEl.remove();
+    }, 1000);
+}
+
 document.getElementById('btn-got-it').addEventListener('click', () => {
     if (state.currentWordIndex === -1) return;
     
@@ -585,6 +603,7 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     state.turnScore += points;
     state.teams[state.currentTeamIndex].score += points;
     document.getElementById('game-current-score').textContent = state.turnScore;
+    showScoreAnimation(`+${points}`, 'text-success');
     
     state.lastGuessedCards = state.lastGuessedCards || [];
     state.lastGuessedCards.push(scoredCard);
@@ -618,6 +637,7 @@ document.getElementById('btn-undo').addEventListener('click', () => {
     state.turnScore = Math.max(0, state.turnScore - points);
     state.teams[state.currentTeamIndex].score = Math.max(0, state.teams[state.currentTeamIndex].score - points);
     document.getElementById('game-current-score').textContent = state.turnScore;
+    showScoreAnimation(`-${points}`, 'text-danger');
     state.deck.push(cardToReturn);
     document.getElementById('game-words-remaining').textContent = state.deck.length;
     
@@ -681,23 +701,15 @@ document.getElementById('btn-timer-add').addEventListener('click', () => {
     syncToProjector('timer-adjusted');
 });
 
-document.getElementById('btn-timer-sub').addEventListener('click', () => {
-    state.timeLeft = Math.max(0, state.timeLeft - 5);
-    updateTimerVisuals();
-    showTimeAnimation('-5s', 'text-danger');
-    syncToProjector('timer-adjusted');
-    
-    // Check if they manually drained the time to zero
-    if (state.timeLeft <= 0) {
-        endTurn(false);
-    }
-});
-
 document.getElementById('btn-update-timer').addEventListener('click', () => {
-    const newVal = parseInt(document.getElementById('input-midgame-timer').value, 10);
-    if (!isNaN(newVal) && newVal >= 10 && newVal <= 300) {
-        state.turnDuration = newVal;
-        state.timeLeft = newVal;
+    const minVal = parseInt(document.getElementById('input-midgame-min').value, 10) || 0;
+    const secVal = parseInt(document.getElementById('input-midgame-sec').value, 10) || 0;
+    
+    const totalSeconds = (minVal * 60) + secVal;
+    
+    if (totalSeconds >= 10 && totalSeconds <= 600) {
+        state.turnDuration = totalSeconds;
+        state.timeLeft = totalSeconds;
         updateTimerVisuals();
         playBeep(600, 'sine', 0.1);
         syncToProjector('timer-adjusted');
