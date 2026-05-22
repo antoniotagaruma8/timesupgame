@@ -426,7 +426,12 @@ function startTurnSetup() {
     
     document.getElementById('current-word').textContent = "READY?";
     document.getElementById('current-word').classList.remove('gradient-text');
-    document.getElementById('word-source').textContent = '';
+    document.getElementById('word-source').innerHTML = '';
+    const levelBadge = document.getElementById('word-level-badge');
+    if (levelBadge) {
+        levelBadge.style.display = 'none';
+        levelBadge.textContent = '';
+    }
     
     document.getElementById('input-midgame-min').value = Math.floor(state.turnDuration / 60);
     document.getElementById('input-midgame-sec').value = state.turnDuration % 60;
