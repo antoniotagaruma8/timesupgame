@@ -247,6 +247,21 @@ socket.on('newWord', (data) => {
     liveWordCount.classList.add('pulse');
 });
 
+document.getElementById('btn-add-team').addEventListener('click', () => {
+    const input = document.getElementById('manual-team-name');
+    const teamName = input.value.trim();
+    if (teamName) {
+        socket.emit('registerTeam', { roomId: state.roomId, teamName: teamName });
+        input.value = '';
+    }
+});
+
+document.getElementById('manual-team-name').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById('btn-add-team').click();
+    }
+});
+
 document.getElementById('btn-close-submit').addEventListener('click', () => {
     if (state.teams.length < 2) {
         alert("Please wait for at least two teams to join!");
