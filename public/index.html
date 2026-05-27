@@ -111,6 +111,16 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="card-box mt-4" style="max-width: 400px; margin: 0 auto;">
+                    <h3>Total Game Time <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);">(Optional)</span></h3>
+                    <div style="display: flex; gap: 1rem; justify-content: center; text-align: left;">
+                        <div class="input-group" style="flex: 1;">
+                            <label>Total Minutes</label>
+                            <input type="number" id="total-game-minutes" placeholder="e.g. 40" min="1" max="120">
+                        </div>
+                    </div>
+                </div>
 
                 <div class="mt-4 pt-4 text-center">
                     <button id="btn-open-submissions" class="btn-primary btn-large pulse">Create Room & Open Submissions</button>
@@ -198,7 +208,7 @@
 
         <!-- 4. Gameplay Screen -->
         <section id="screen-gameplay" class="screen">
-            <div class="top-bar">
+            <div class="top-bar" style="flex-wrap: wrap;">
                 <div class="team-turn">
                     <span>Current Team:</span>
                     <strong id="game-current-team" class="gradient-text">Team 1</strong>
@@ -207,6 +217,10 @@
                     Score: <strong id="game-current-score" style="color: var(--success); font-size: 1.5rem;">0</strong>
                 </div>
                 <div class="round-info"><span id="game-words-remaining">0</span> words left</div>
+                
+                <div id="global-timer-container" style="display: none; width: 100%; text-align: center; margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">
+                    Total Game Time Left: <strong id="game-total-time" style="color: white; font-family: monospace; font-size: 1.1rem; letter-spacing: 1px;">00:00</strong>
+                </div>
             </div>
 
             <div class="game-center">

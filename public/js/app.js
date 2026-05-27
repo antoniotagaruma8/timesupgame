@@ -18,6 +18,11 @@ let state = {
     currentWordIndex: -1,
     turnScore: 0,
 
+    // Global timer
+    totalGameDuration: 0,
+    totalGameTimeLeft: 0,
+    globalTimerInterval: null,
+
     roomId: null
 };
 
@@ -159,6 +164,10 @@ document.getElementById('btn-open-submissions').addEventListener('click', () => 
     const secs = parseInt(inputSeconds.value) || 0;
     state.turnDuration = (mins * 60) + secs;
     if (state.turnDuration <= 0) state.turnDuration = 30; // safety fallback
+    
+    const totalMins = parseInt(document.getElementById('total-game-minutes').value) || 0;
+    state.totalGameDuration = totalMins * 60;
+    state.totalGameTimeLeft = state.totalGameDuration;
     
     state.currentTeamIndex = 0;
     
@@ -430,8 +439,39 @@ function startGame() {
 }
 
 document.getElementById('btn-start-round').addEventListener('click', () => {
+    if (state.totalGameDuration > 0 && !state.globalTimerInterval) {
+        state.globalTimerInterval = setInterval(tickGlobalTimer, 1000);
+        document.getElementById('global-timer-container').style.display = 'block';
+        updateGlobalTimerVisuals();
+    }
     startTurnSetup();
 });
+
+function tickGlobalTimer() {
+    if (state.totalGameTimeLeft > 0) {
+        state.totalGameTimeLeft--;
+        updateGlobalTimerVisuals();
+    }
+}
+
+function updateGlobalTimerVisuals() {
+    const m = Math.floor(state.totalGameTimeLeft / 60);
+    const s = state.totalGameTimeLeft % 60;
+    const timeString = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    const el = document.getElementById('game-total-time');
+    if (el) {
+        el.textContent = timeString;
+        if (state.totalGameTimeLeft <= 60 && state.totalGameTimeLeft > 0) {
+            el.style.color = 'var(--danger)';
+        } else if (state.totalGameTimeLeft <= 300 && state.totalGameTimeLeft > 0) {
+            el.style.color = '#f59e0b'; // warning
+        } else if (state.totalGameTimeLeft <= 0) {
+            el.style.color = 'var(--danger)';
+        } else {
+            el.style.color = 'white';
+        }
+    }
+}
 
 function startTurnSetup() {
     showScreen('gameplay');
@@ -808,6 +848,11 @@ function syncToProjector(eventName = null) {
 // --- GAME OVER PHASE ---
 
 function endGame() {
+    if (state.globalTimerInterval) {
+        clearInterval(state.globalTimerInterval);
+        state.globalTimerInterval = null;
+    }
+    
     showScreen('gameOver');
     
     const sortedTeams = [...state.teams].sort((a, b) => b.score - a.score);
