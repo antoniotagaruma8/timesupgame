@@ -265,7 +265,9 @@
             </div>
 
             <div class="game-center">
-                <div class="timer-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                <div class="timer-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+                    <button id="btn-dec-time" class="btn-secondary" style="border-radius: 50%; width: 45px; height: 45px; padding: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);" title="Remove 5 seconds">-5</button>
+                    
                     <div class="timer-container">
                         <svg class="timer-svg" viewBox="0 0 100 100">
                             <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
@@ -273,6 +275,8 @@
                         </svg>
                         <div id="timer-text" class="timer-text">30</div>
                     </div>
+                    
+                    <button id="btn-inc-time" class="btn-secondary" style="border-radius: 50%; width: 45px; height: 45px; padding: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);" title="Add 5 seconds">+5</button>
                 </div>
 
                 <div id="word-card" class="word-card">

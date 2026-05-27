@@ -681,9 +681,7 @@ function showScoreAnimation(text, colorClass) {
     if (!scoreContainer) return;
     
     const animEl = document.createElement('div');
-    animEl.className = `time-float-anim ${colorClass}`;
-    animEl.style.fontSize = '1.8rem';
-    animEl.style.left = '80%'; // Offset a bit to the right of the score
+    animEl.className = `score-float-anim ${colorClass}`;
     animEl.textContent = text;
     
     scoreContainer.appendChild(animEl);
@@ -692,6 +690,20 @@ function showScoreAnimation(text, colorClass) {
         animEl.remove();
     }, 1000);
 }
+
+document.getElementById('btn-inc-time').addEventListener('click', () => {
+    state.timeLeft += 5;
+    updateTimerVisuals();
+    showTimeAnimation('+5s', 'text-success');
+    syncToProjector();
+});
+
+document.getElementById('btn-dec-time').addEventListener('click', () => {
+    state.timeLeft = Math.max(0, state.timeLeft - 5);
+    updateTimerVisuals();
+    showTimeAnimation('-5s', 'text-danger');
+    syncToProjector();
+});
 
 document.getElementById('btn-got-it').addEventListener('click', () => {
     if (state.currentWordIndex === -1) return;
