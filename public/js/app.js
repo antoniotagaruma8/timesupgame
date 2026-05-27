@@ -147,7 +147,7 @@ function copyProjectorLink(btnElement, origText, successText) {
 
 
 document.getElementById('btn-global-copy-projector').addEventListener('click', function() {
-    copyProjectorLink(this, "🔗", "✓");
+    window.open(projUrl, '_blank');
 });
 
 // --- SETUP PHASE ---
