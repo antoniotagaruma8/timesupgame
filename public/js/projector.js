@@ -114,29 +114,42 @@ socket.on('projectorSync', (data) => {
         }
     }
     
-    // Update Guessed Words
-    if (data.lastGuessedCards !== undefined) {
+    // Update Guessed Words Banner
+    const guessedWordsBanner = document.getElementById('proj-guessed-words-banner');
+    if (data.lastGuessedCards !== undefined && data.lastGuessedCards.length > 0 && (data.phase === 'playing' || data.phase === 'turn-summary')) {
+        if (guessedWordsBanner) guessedWordsBanner.style.transform = 'translateY(0)'; // Show banner
+        
         const guessedWordsContainer = document.getElementById('proj-guessed-words');
         if (guessedWordsContainer) {
             guessedWordsContainer.innerHTML = '';
-            // Show up to the last 20 words to prevent extreme overflow
-            const recentCards = data.lastGuessedCards.slice(-20);
-            recentCards.forEach(card => {
+            // Show all guessed words for this turn in a horizontally scrolling list
+            data.lastGuessedCards.forEach((card, idx) => {
                 const wordText = card.word || card;
                 const pill = document.createElement('div');
                 pill.style.background = 'rgba(16, 185, 129, 0.2)';
                 pill.style.border = '1px solid rgba(16, 185, 129, 0.4)';
                 pill.style.color = 'white';
-                pill.style.padding = '0.3rem 0.8rem';
+                pill.style.padding = '0.4rem 1.2rem';
                 pill.style.borderRadius = '999px';
-                pill.style.fontSize = '1.1rem';
+                pill.style.fontSize = '1.3rem';
                 pill.style.fontWeight = 'bold';
+                pill.style.whiteSpace = 'nowrap';
                 pill.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
-                pill.style.animation = 'fadeIn 0.3s ease-out';
+                
+                // Add pop animation only to the newest word if event is gotIt
+                if (idx === data.lastGuessedCards.length - 1 && data.event === 'gotIt') {
+                    pill.style.animation = 'pulseTimer 0.4s ease-out';
+                }
+                
                 pill.textContent = wordText;
                 guessedWordsContainer.appendChild(pill);
             });
+            
+            // Auto-scroll to the end so the newest word is visible
+            guessedWordsContainer.scrollLeft = guessedWordsContainer.scrollWidth;
         }
+    } else {
+        if (guessedWordsBanner) guessedWordsBanner.style.transform = 'translateY(100%)'; // Hide banner
     }
     
     // Update Live Scoreboard
