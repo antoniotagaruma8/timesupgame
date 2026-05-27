@@ -472,7 +472,8 @@ document.getElementById('btn-start-turn').addEventListener('click', () => {
     document.getElementById('game-controls-active').classList.remove('hidden');
     state.turnScore = 0;
     state.lastGuessedCards = [];
-    state.c1WordsSeenThisTurn = 0;
+    state.turnLevelCycle = ['B1+', 'B2', 'C1'];
+    state.currentCycleIndex = 0;
     
     drawCard();
     
@@ -486,17 +487,17 @@ function drawCard() {
         return;
     }
     
-    // Find all valid card indices. If we've already seen 2 C1 cards this turn, filter out C1 cards.
+    let targetLevel = state.turnLevelCycle[state.currentCycleIndex];
     let validIndices = [];
+    
+    // Attempt to find cards for the target level
     for (let i = 0; i < state.deck.length; i++) {
-        const c = state.deck[i];
-        if (c.level === 'C1' && state.c1WordsSeenThisTurn >= 2) {
-            continue; // Skip C1 words if limit reached
+        if (state.deck[i].level === targetLevel) {
+            validIndices.push(i);
         }
-        validIndices.push(i);
     }
     
-    // Fallback: If only C1 cards are left in the deck, ignore the limit so the game doesn't break
+    // Fallback: If no cards of the target level are left, pick from whatever is available
     if (validIndices.length === 0) {
         validIndices = state.deck.map((_, i) => i);
     }
@@ -511,9 +512,6 @@ function drawCard() {
     cardEl.classList.add('anim-pop');
     
     const card = state.deck[state.currentWordIndex];
-    if (card.level === 'C1') {
-        state.c1WordsSeenThisTurn++;
-    }
     const wordText = card.word || card; // handle both object and string
     const teamText = card.team || '';
     const levelText = card.level || '';
@@ -644,6 +642,9 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     state.lastGuessedCards = state.lastGuessedCards || [];
     state.lastGuessedCards.push(scoredCard);
     
+    // Advance difficulty cycle
+    state.currentCycleIndex = (state.currentCycleIndex + 1) % state.turnLevelCycle.length;
+    
     // Add +1 second bonus for correct guess
     state.timeLeft += 1;
     updateTimerVisuals();
@@ -677,9 +678,8 @@ document.getElementById('btn-undo').addEventListener('click', () => {
     state.deck.push(cardToReturn);
     document.getElementById('game-words-remaining').textContent = state.deck.length;
     
-    if (cardToReturn.level === 'C1') {
-        state.c1WordsSeenThisTurn = Math.max(0, state.c1WordsSeenThisTurn - 1);
-    }
+    // Revert difficulty cycle
+    state.currentCycleIndex = (state.currentCycleIndex - 1 + state.turnLevelCycle.length) % state.turnLevelCycle.length;
     
     // Remove the +1 second bonus for the undone card
     state.timeLeft = Math.max(0, state.timeLeft - 1);
