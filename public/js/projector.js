@@ -94,16 +94,35 @@ socket.on('projectorSync', (data) => {
         }
     }
     
+    // Update Teams Count
+    if (data.teams !== undefined) {
+        const welcomeTeams = document.getElementById('proj-welcome-teams');
+        const subTeams = document.getElementById('proj-sub-teams');
+        if (welcomeTeams) welcomeTeams.textContent = data.teams.length;
+        if (subTeams) subTeams.textContent = data.teams.length;
+    }
+    
     // Update Word Bank count
     if (data.wordCount !== undefined) {
-        // Update big display on submission screen
+        // Update big displays on submission and welcome screens
         const wordCountDisplay = document.getElementById('proj-word-count-display');
+        const welcomeWordsDisplay = document.getElementById('proj-welcome-words');
+        
         if (wordCountDisplay) {
             wordCountDisplay.textContent = data.wordCount;
             if (data.event === 'wordSubmitted') {
                 wordCountDisplay.style.animation = 'none';
                 void wordCountDisplay.offsetWidth; // trigger reflow
                 wordCountDisplay.style.animation = 'pulseTimer 0.3s ease';
+            }
+        }
+        
+        if (welcomeWordsDisplay) {
+            welcomeWordsDisplay.textContent = data.wordCount;
+            if (data.event === 'wordSubmitted') {
+                welcomeWordsDisplay.style.animation = 'none';
+                void welcomeWordsDisplay.offsetWidth;
+                welcomeWordsDisplay.style.animation = 'pulseTimer 0.3s ease';
             }
         }
         

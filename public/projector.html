@@ -323,7 +323,18 @@
             <div id="view-welcome" class="view-state centered-view active-view">
                 <div class="state-icon">👋</div>
                 <h2 class="state-title">Waiting for Players...</h2>
-                <p style="font-size: 2rem; color: var(--text-muted);">Join using the room code above!</p>
+                <p style="font-size: 2rem; color: var(--text-muted); margin-bottom: 3rem;">Join using the room code above!</p>
+                
+                <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="background: rgba(0,0,0,0.4); padding: 1.5rem 3rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 250px;">
+                        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Teams Joined</p>
+                        <p id="proj-welcome-teams" style="font-size: 5.5rem; color: white; font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.4); padding: 1.5rem 3rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 250px;">
+                        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Words Submitted</p>
+                        <p id="proj-welcome-words" style="font-size: 5.5rem; color: var(--success); font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
+                    </div>
+                </div>
             </div>
             
             <div id="view-how-to-play" class="view-state centered-view">
@@ -348,10 +359,17 @@
             <div id="view-submission" class="view-state centered-view">
                 <div class="state-icon">✍️</div>
                 <h2 class="state-title">Submit Your Words!</h2>
-                <p style="font-size: 2rem; color: var(--text-muted);">Look at your device and start typing.</p>
-                <div style="margin-top: 2rem; background: rgba(0,0,0,0.4); padding: 1.5rem 4rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center;">
-                    <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Word Bank</p>
-                    <p id="proj-word-count-display" style="font-size: 6rem; color: var(--success); font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
+                <p style="font-size: 2rem; color: var(--text-muted); margin-bottom: 3rem;">Look at your device and start typing.</p>
+                
+                <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="background: rgba(0,0,0,0.4); padding: 1.5rem 3rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 250px;">
+                        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Teams Joined</p>
+                        <p id="proj-sub-teams" style="font-size: 5.5rem; color: white; font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.4); padding: 1.5rem 3rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 250px;">
+                        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Word Bank</p>
+                        <p id="proj-word-count-display" style="font-size: 5.5rem; color: var(--success); font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
+                    </div>
                 </div>
             </div>
 
