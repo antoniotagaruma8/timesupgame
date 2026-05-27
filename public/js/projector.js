@@ -94,6 +94,19 @@ socket.on('projectorSync', (data) => {
         }
     }
     
+    // Update Word Bank count
+    if (data.wordCount !== undefined) {
+        const wordCountDisplay = document.getElementById('proj-word-count-display');
+        if (wordCountDisplay) {
+            wordCountDisplay.textContent = data.wordCount;
+            if (data.event === 'wordSubmitted') {
+                wordCountDisplay.style.animation = 'none';
+                void wordCountDisplay.offsetWidth; // trigger reflow
+                wordCountDisplay.style.animation = 'pulseTimer 0.3s ease';
+            }
+        }
+    }
+    
     // Update Live Scoreboard
     if (data.teams && data.teams.length > 0) {
         const scoreboardContainer = document.getElementById('proj-live-scoreboard');
@@ -120,7 +133,7 @@ socket.on('projectorSync', (data) => {
                 const crown = (i === 0 && t.score > 0) ? '👑 ' : '';
                 
                 row.innerHTML = `
-                    <div style="font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${isCurrent ? 'white' : 'var(--text-light)'}; font-weight: ${isCurrent ? 'bold' : 'normal'};">
+                    <div style="flex: 1; min-width: 0; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${isCurrent ? 'white' : 'var(--text-light)'}; font-weight: ${isCurrent ? 'bold' : 'normal'};">
                         ${crown}${t.name}
                     </div>
                     <div style="font-size: 1.1rem; color: var(--success); font-weight: bold; font-family: var(--font-heading); flex-shrink: 0; margin-left: 0.3rem;">

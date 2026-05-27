@@ -256,6 +256,8 @@ socket.on('newWord', (data) => {
     liveWordCount.classList.remove('pulse');
     void liveWordCount.offsetWidth; // reflow
     liveWordCount.classList.add('pulse');
+    
+    syncToProjector('wordSubmitted');
 });
 
 document.getElementById('btn-add-team').addEventListener('click', () => {
@@ -279,7 +281,7 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
         return;
     }
     
-    // Allowing 0 words since auto-fill will populate the bank with 500 words anyway.
+    // Allowing 0 words since auto-fill will populate the bank using the full vocabulary list.
 
     const B1_WORDS = [
         "Destination 📍","Celebration 🎉","Competition 🏆","Pollution 🏭","Environment 🌳",
@@ -394,20 +396,19 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
         ...C1_WORDS.map(w => ({ word: w, level: 'C1'  }))
     ];
 
-    // Auto-fill up to 500 words using the full vocabulary pool
-    if (state.allWords.length < 500) {
-        console.log(`Only ${state.allWords.length} words submitted. Auto-filling to 500...`);
+    // Auto-fill using the full vocabulary pool for any remaining gaps
+    if (state.allWords.length < FALLBACK_VOCABULARY.length) {
+        console.log(`Only ${state.allWords.length} words submitted. Auto-filling from vocabulary list...`);
         let currentWordsLower = state.allWords.map(w => (w.word || w).toLowerCase());
         let backupList = [...FALLBACK_VOCABULARY];
         shuffleArray(backupList);
         for (let item of backupList) {
-            if (state.allWords.length >= 500) break;
             if (!currentWordsLower.includes(item.word.toLowerCase())) {
                 state.allWords.push({ word: item.word, team: '🤖 Auto', level: item.level });
                 currentWordsLower.push(item.word.toLowerCase());
             }
         }
-        console.log(`Auto-fill complete. Deck size: ${state.allWords.length}`);
+        console.log(`Auto-fill complete. Total Deck size: ${state.allWords.length}`);
     }
 
     
@@ -875,6 +876,7 @@ function syncToProjector(eventName = null) {
         currentTeam: state.teams[state.currentTeamIndex] || null,
         turnScore: state.turnScore,
         timeLeft: state.timeLeft,
+        wordCount: parseInt(document.getElementById('live-word-count').textContent) || state.allWords.length || 0,
         event: eventName
     });
 }
