@@ -441,7 +441,7 @@ function startGame() {
 document.getElementById('btn-start-round').addEventListener('click', () => {
     if (state.totalGameDuration > 0 && !state.globalTimerInterval) {
         state.globalTimerInterval = setInterval(tickGlobalTimer, 1000);
-        document.getElementById('global-timer-container').style.display = 'block';
+        document.getElementById('global-timer-container').style.display = 'flex';
         updateGlobalTimerVisuals();
     }
     startTurnSetup();
@@ -472,6 +472,19 @@ function updateGlobalTimerVisuals() {
         }
     }
 }
+
+document.getElementById('btn-inc-global-time').addEventListener('click', () => {
+    state.totalGameTimeLeft += 60;
+    state.totalGameDuration += 60; // Extend duration too
+    updateGlobalTimerVisuals();
+    playBeep(600, 'sine', 0.1);
+});
+
+document.getElementById('btn-dec-global-time').addEventListener('click', () => {
+    state.totalGameTimeLeft = Math.max(0, state.totalGameTimeLeft - 60);
+    updateGlobalTimerVisuals();
+    playBeep(400, 'triangle', 0.1);
+});
 
 function startTurnSetup() {
     showScreen('gameplay');
