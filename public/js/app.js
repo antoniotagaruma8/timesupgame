@@ -111,14 +111,10 @@ document.getElementById('btn-back-rules').addEventListener('click', () => {
 });
 
 // Setup copy projector link
-document.getElementById('btn-copy-projector').addEventListener('click', () => {
-    const btn = document.getElementById('btn-copy-projector');
-    const origText = "🔗 Copy Projector Link";
-    
-    // Success feedback function
+function copyProjectorLink(btnElement, origText, successText) {
     const showSuccess = () => {
-        btn.textContent = '✓ Copied!';
-        setTimeout(() => btn.textContent = origText, 2000);
+        btnElement.textContent = successText;
+        setTimeout(() => btnElement.textContent = origText, 2000);
     };
 
     if (navigator.clipboard && window.isSecureContext) {
@@ -141,6 +137,14 @@ document.getElementById('btn-copy-projector').addEventListener('click', () => {
         }
         textArea.remove();
     }
+}
+
+document.getElementById('btn-copy-projector').addEventListener('click', function() {
+    copyProjectorLink(this, "🔗 Copy Projector Link", "✓ Copied!");
+});
+
+document.getElementById('btn-global-copy-projector').addEventListener('click', function() {
+    copyProjectorLink(this, "🔗", "✓");
 });
 
 // --- SETUP PHASE ---
