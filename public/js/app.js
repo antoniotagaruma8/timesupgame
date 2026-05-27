@@ -275,6 +275,22 @@ document.getElementById('manual-team-name').addEventListener('keypress', (e) => 
     }
 });
 
+document.getElementById('btn-toggle-join-info').addEventListener('click', function() {
+    const qrCard = document.getElementById('join-qr-card');
+    const urlCard = document.getElementById('join-url-card');
+    const isHidden = qrCard.style.display === 'none';
+    
+    if (isHidden) {
+        qrCard.style.display = 'flex';
+        urlCard.style.display = 'flex';
+        this.textContent = '👁️ Hide Join Info';
+    } else {
+        qrCard.style.display = 'none';
+        urlCard.style.display = 'none';
+        this.textContent = '👁️ Show Join Info';
+    }
+});
+
 document.getElementById('btn-close-submit').addEventListener('click', () => {
     if (state.teams.length < 2) {
         alert("Please wait for at least two teams to join!");
