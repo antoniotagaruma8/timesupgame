@@ -268,10 +268,7 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
         return;
     }
     
-    if (state.allWords.length === 0) {
-        alert("Please wait for at least one word to be submitted!");
-        return;
-    }
+    // Allowing 0 words since auto-fill will populate the bank with 500 words anyway.
 
     const B1_WORDS = [
         "Destination 📍","Celebration 🎉","Competition 🏆","Pollution 🏭","Environment 🌳",
