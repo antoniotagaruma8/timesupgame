@@ -535,6 +535,30 @@ function startTurnSetup() {
     syncToProjector();
 }
 
+document.getElementById('btn-update-timer').addEventListener('click', () => {
+    const min = parseInt(document.getElementById('input-midgame-min').value) || 0;
+    const sec = parseInt(document.getElementById('input-midgame-sec').value) || 0;
+    const newDuration = (min * 60) + sec;
+    
+    if (newDuration > 0) {
+        state.turnDuration = newDuration;
+        state.timeLeft = newDuration;
+        updateTimerVisuals();
+        syncToProjector();
+        
+        const btn = document.getElementById('btn-update-timer');
+        const originalText = btn.textContent;
+        btn.textContent = 'Updated!';
+        btn.style.backgroundColor = 'var(--success)';
+        btn.style.color = 'white';
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.backgroundColor = '';
+            btn.style.color = '';
+        }, 1500);
+    }
+});
+
 document.getElementById('btn-start-turn').addEventListener('click', () => {
     document.getElementById('game-controls-pre').classList.add('hidden');
     document.getElementById('game-controls-active').classList.remove('hidden');
