@@ -144,9 +144,7 @@ function copyProjectorLink(btnElement, origText, successText) {
     }
 }
 
-document.getElementById('btn-copy-projector').addEventListener('click', function() {
-    copyProjectorLink(this, "🔗 Copy Projector Link", "✓ Copied!");
-});
+
 
 document.getElementById('btn-global-copy-projector').addEventListener('click', function() {
     copyProjectorLink(this, "🔗", "✓");
