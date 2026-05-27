@@ -694,6 +694,7 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     
     state.lastGuessedCards = state.lastGuessedCards || [];
     state.lastGuessedCards.push(scoredCard);
+    document.getElementById('game-words-remaining').textContent = state.deck.length;
     
     // Advance difficulty cycle
     state.currentCycleIndex = (state.currentCycleIndex + 1) % state.turnLevelCycle.length;
@@ -820,11 +821,33 @@ function endTurn(wasFoul) {
     
     state.currentTeamIndex = (state.currentTeamIndex + 1) % state.teams.length;
     document.getElementById('summary-next-team').textContent = state.teams[state.currentTeamIndex].name;
+    
+    const btnNext = document.getElementById('btn-next-turn');
+    if (state.totalGameDuration > 0 && state.totalGameTimeLeft <= 0) {
+        if (state.currentTeamIndex === 0) {
+            document.getElementById('summary-next-team').innerHTML = "<span class='text-danger'>Game Over - Time's Up!</span>";
+            btnNext.textContent = "End Game";
+            btnNext.className = "btn-primary mt-4 btn-large pulse";
+            btnNext.style.background = "var(--danger)";
+        } else {
+            document.getElementById('summary-next-team').innerHTML = `${state.teams[state.currentTeamIndex].name} <span style="font-size: 0.8rem; color: #f59e0b; display: block; margin-top: 0.5rem;">(Final turns to balance the round!)</span>`;
+            btnNext.textContent = "Continue";
+            btnNext.className = "btn-primary mt-4 btn-large";
+            btnNext.style.background = "";
+        }
+    } else {
+        btnNext.textContent = "Continue";
+        btnNext.className = "btn-primary mt-4 btn-large";
+        btnNext.style.background = "";
+    }
+    
     syncToProjector();
 }
 
 document.getElementById('btn-next-turn').addEventListener('click', () => {
     if (state.deck.length === 0) {
+        endGame();
+    } else if (state.totalGameDuration > 0 && state.totalGameTimeLeft <= 0 && state.currentTeamIndex === 0) {
         endGame();
     } else {
         startTurnSetup();
