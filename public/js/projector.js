@@ -195,10 +195,12 @@ socket.on('projectorSync', (data) => {
                 
                 // Add a crown for 1st place if score > 0
                 const crown = (i === 0 && t.score > 0) ? '👑 ' : '';
+                const turnsCount = t.turnsPlayed || 0;
                 
                 row.innerHTML = `
                     <div style="flex: 1; min-width: 0; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: ${isCurrent ? 'white' : 'var(--text-light)'}; font-weight: ${isCurrent ? 'bold' : 'normal'};">
                         ${crown}${t.name}
+                        <span style="font-size: 0.65rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 0.1rem 0.4rem; border-radius: 4px; margin-left: 0.3rem;">${turnsCount} ${turnsCount === 1 ? 'turn' : 'turns'}</span>
                     </div>
                     <div style="font-size: 1.1rem; color: var(--success); font-weight: bold; font-family: var(--font-heading); flex-shrink: 0; margin-left: 0.3rem;">
                         ${t.score}

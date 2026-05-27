@@ -82,7 +82,7 @@ io.on('connection', (socket) => {
         if (rooms[roomId] && teamName && teamName.trim()) {
             const name = teamName.trim();
             // Store the socket id with the team so we can target them for kicks
-            rooms[roomId].teams.push({ name: name, score: 0, socketId: socket.id });
+            rooms[roomId].teams.push({ name: name, score: 0, turnsPlayed: 0, socketId: socket.id });
             
             io.to(roomId).emit('newTeam', {
                 teams: rooms[roomId].teams

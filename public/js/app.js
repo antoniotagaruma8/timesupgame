@@ -856,6 +856,11 @@ document.getElementById('btn-update-timer').addEventListener('click', () => {
 function endTurn(wasFoul) {
     clearInterval(state.timer);
     
+    // Track how many turns this team has played
+    if (state.teams[state.currentTeamIndex]) {
+        state.teams[state.currentTeamIndex].turnsPlayed = (state.teams[state.currentTeamIndex].turnsPlayed || 0) + 1;
+    }
+    
     showScreen('turnSummary');
     
     const team = state.teams[state.currentTeamIndex];
@@ -960,9 +965,12 @@ function endGame() {
         const row = document.createElement('div');
         row.className = `score-row ${index === 0 ? 'winner' : ''}`;
         
+        const turnsCount = team.turnsPlayed || 0;
+        
         row.innerHTML = `
             <div class="team-name-disp">
                 ${index === 0 ? '🏆 ' : ''}${index + 1}. ${team.name}
+                <span style="font-size: 0.7rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 0.2rem 0.5rem; border-radius: 6px; margin-left: 0.5rem; font-weight: normal;">${turnsCount} ${turnsCount === 1 ? 'turn' : 'turns'}</span>
             </div>
             <div class="team-score-disp">${team.score} pts</div>
         `;
