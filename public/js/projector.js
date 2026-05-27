@@ -96,6 +96,7 @@ socket.on('projectorSync', (data) => {
     
     // Update Word Bank count
     if (data.wordCount !== undefined) {
+        // Update big display on submission screen
         const wordCountDisplay = document.getElementById('proj-word-count-display');
         if (wordCountDisplay) {
             wordCountDisplay.textContent = data.wordCount;
@@ -104,6 +105,37 @@ socket.on('projectorSync', (data) => {
                 void wordCountDisplay.offsetWidth; // trigger reflow
                 wordCountDisplay.style.animation = 'pulseTimer 0.3s ease';
             }
+        }
+        
+        // Update small display on live playing screen
+        const wordsRemainingDisplay = document.getElementById('proj-words-remaining');
+        if (wordsRemainingDisplay) {
+            wordsRemainingDisplay.textContent = data.wordCount;
+        }
+    }
+    
+    // Update Guessed Words
+    if (data.lastGuessedCards !== undefined) {
+        const guessedWordsContainer = document.getElementById('proj-guessed-words');
+        if (guessedWordsContainer) {
+            guessedWordsContainer.innerHTML = '';
+            // Show up to the last 20 words to prevent extreme overflow
+            const recentCards = data.lastGuessedCards.slice(-20);
+            recentCards.forEach(card => {
+                const wordText = card.word || card;
+                const pill = document.createElement('div');
+                pill.style.background = 'rgba(16, 185, 129, 0.2)';
+                pill.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+                pill.style.color = 'white';
+                pill.style.padding = '0.3rem 0.8rem';
+                pill.style.borderRadius = '999px';
+                pill.style.fontSize = '1.1rem';
+                pill.style.fontWeight = 'bold';
+                pill.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+                pill.style.animation = 'fadeIn 0.3s ease-out';
+                pill.textContent = wordText;
+                guessedWordsContainer.appendChild(pill);
+            });
         }
     }
     

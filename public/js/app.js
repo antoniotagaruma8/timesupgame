@@ -885,6 +885,13 @@ function syncToProjector(eventName = null) {
     else if (screens.turnSummary.classList.contains('active')) phase = 'turn-summary';
     else if (screens.gameOver.classList.contains('active')) phase = 'game-over';
     
+    let currentWords = 0;
+    if (phase === 'playing' || phase === 'turn-summary' || phase === 'round-intro') {
+        currentWords = state.deck ? state.deck.length : 0;
+    } else {
+        currentWords = parseInt(document.getElementById('live-word-count').textContent) || state.allWords.length || 0;
+    }
+    
     socket.emit('hostUpdate', {
         roomId: state.roomId,
         phase: phase,
@@ -892,7 +899,8 @@ function syncToProjector(eventName = null) {
         currentTeam: state.teams[state.currentTeamIndex] || null,
         turnScore: state.turnScore,
         timeLeft: state.timeLeft,
-        wordCount: parseInt(document.getElementById('live-word-count').textContent) || state.allWords.length || 0,
+        wordCount: currentWords,
+        lastGuessedCards: state.lastGuessedCards || [],
         event: eventName
     });
 }

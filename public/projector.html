@@ -371,8 +371,17 @@
                     
                     <div class="massive-timer-text" id="proj-timer">--:--</div>
                     
-                    <div class="score-display">
-                        Score <span id="proj-score">0</span>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; justify-content: center;">
+                        <div class="score-display" style="margin-top: 0;">
+                            Score <span id="proj-score">0</span>
+                        </div>
+                        <div class="score-display" style="margin-top: 0; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">
+                            Words <span id="proj-words-remaining" style="color: var(--success);">0</span>
+                        </div>
+                    </div>
+                    
+                    <div id="proj-guessed-words" style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; width: 100%; max-height: 250px; overflow-y: auto;">
+                        <!-- Dynamically populated guessed words -->
                     </div>
                 </div>
 
