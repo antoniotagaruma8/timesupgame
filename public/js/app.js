@@ -454,11 +454,11 @@ function startGame() {
 }
 
 document.getElementById('btn-start-round').addEventListener('click', () => {
-    if (state.totalGameDuration > 0 && !state.globalTimerInterval) {
+    if (!state.globalTimerInterval) {
         state.globalTimerInterval = setInterval(tickGlobalTimer, 1000);
-        document.getElementById('global-timer-container').style.display = 'flex';
-        updateGlobalTimerVisuals();
     }
+    document.getElementById('global-timer-container').style.display = 'flex';
+    updateGlobalTimerVisuals();
     startTurnSetup();
 });
 
