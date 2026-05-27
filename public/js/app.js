@@ -306,7 +306,8 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
         "Staircase 🪜","Candle 🕯️","Battery 🔋","Microwave 📡","Refrigerator 🧊",
         "Washing Machine 🫧","Camera 📷","Headphones 🎧","Sunglasses 🕶️",
         "Necklace 📿","Bracelet 💍","Toothbrush 🪥","Wheelchair 🦽","Parachute 🪂",
-        "Laptop 💻","Backyard 🏡"
+        "Laptop 💻","Backyard 🏡",
+        "Library 📚", "Television 📺", "Telephone ☎️", "Elevator 🛗", "Escalator 🎢", "Tractor 🚜", "Truck 🛻", "Bus 🚌", "Train 🚆", "Piano 🎹", "Violin 🎻", "Drums 🥁", "Singer 🎤", "Actor 🎭", "Painter 🎨", "Chef 🧑‍🍳", "Waiter 🍽️", "Mechanic 🔧", "Farmer 🌾", "Scientist 🔬", "Teacher 👩‍🏫", "Student 🎒", "Classroom 🏫", "Computer 💻", "Mouse 🖱️", "Printer 🖨️", "Smartphone 📱", "Tablet 📱", "Charger 🔌", "Wallet 👛", "Purse 👜", "Coins 🪙", "Credit Card 💳", "Cash 💵", "Market 🍎", "Butcher 🥩", "Cafe ☕", "Menu 📋", "Recipe 🍳", "Breakfast 🥞", "Lunch 🥗", "Dinner 🍲", "Dessert 🍰", "Ice Cream 🍦", "Cake 🎂", "Cookie 🍪", "Apple 🍎", "Banana 🍌", "Orange 🍊", "Grapes 🍇", "Cherry 🍒", "Peach 🍑", "Pear 🍐", "Lemon 🍋", "Tomato 🍅", "Potato 🥔", "Carrot 🥕", "Onion 🧅", "Garlic 🧄", "Cheese 🧀", "Butter 🧈", "Bread 🍞", "Egg 🥚", "Chicken 🍗", "Fish 🐟", "Beef 🥩", "Salad 🥗", "Soup 🥣", "Rice 🍚", "Pasta 🍝", "Pizza 🍕", "Juice 🧃", "Coffee ☕"
     ];
     const B2_WORDS = [
         "Submarine 🚢","Binoculars 🔭","Handcuffs 🔗","Helicopter 🚁","Microscope 🔬",
@@ -339,7 +340,8 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
         "Goblet 🏆","Chalice 🍷","Cauldron 🫕","Scepter 👑","Horoscope ♈",
         "Mascot 🐶","Talisman 🧿","Pharaoh 🐫","Pyramid 🔺","Obelisk 🏛️",
         "Gargoyle 🐉","Sphinx 🦁","Centaur 🐎","Pegasus 🦄","Griffin 🦅",
-        "Dragon 🐲","Phoenix 🔥"
+        "Dragon 🐲","Phoenix 🔥",
+        "Speaker 🔊", "Projector 📽️", "Whiteboard 🖍️", "Calculator 🧮", "Generator ⚡", "Motor 🚤", "Wheel 🛞", "Tire 🛞", "Brake 🛑", "Gear ⚙️", "Seatbelt 💺", "Airbag 🎈", "Windshield 🚙", "Headlight 💡", "Exhaust 💨", "Paint 🎨", "Polish ✨", "Wax 🕯️", "Soap 🧼", "Sponge 🧽", "Bucket 🪣", "Hose 🚿", "Vacuum 🌪️", "Brush 🖌️", "Comb 梳", "Razor 🪒", "Deodorant 🧴", "Perfume 🧴", "Lotion 🧴", "Sunscreen 🧴", "Toothpaste 🧴", "Floss 🧵", "Mouthwash 🧴", "Shampoo 🧴", "Conditioner 🧴", "Bathrobe 🥋", "Slippers 🥿", "Underwear 🩲", "Socks 🧦", "Leggings 👖", "Pants 👖", "Jeans 👖", "Shorts 👖", "Skirt 👗", "Dress 👗", "Shirt 👕", "Blouse 👚", "Cardigan 🧥", "Collar 👔", "Sleeve 👕", "Pocket 👖", "Zipper 🤐", "Button 🔘", "Thread 🧵", "Needle 🪡", "Thimble 🧵", "Fabric 🧶", "Silk 🐛", "Cotton ☁️", "Wool 🐑", "Leather 👞", "Denim 👖", "Velvet 🧣", "Lace 🎀", "Ribbon 🎀", "Helmet ⛑️"
     ];
     const C1_WORDS = [
         "Philanthropy 🤲","Bureaucracy 🏛️","Sovereignty 👑","Jurisdiction ⚖️","Legislature 📜",
@@ -374,7 +376,8 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
         "Calligraphy ✒️","Origami 🦢","Ventriloquism 🎭","Pantomime 🤡","Puppeteer 🎭",
         "Mosaic 🎨","Fresco 🖼️","Terracotta 🏺","Porcelain 🍶",
         "Marionette 🎭","Xenophobia 🚫","Agoraphobia 🏃","Kleptomania 💎","Megalomania 👑",
-        "Omnipresence 🌌","Omniscience 🧠","Omnipotence 💪"
+        "Omnipresence 🌌","Omniscience 🧠","Omnipotence 💪",
+        "Philosopher 🤔", "Metaphysics 🌌", "Aesthetics 🎨", "Ethics ⚖️", "Syntax 📝", "Semantics 🧠", "Bilingualism 🗣️", "Multilingualism 🌍", "Inflation 📈", "Deflation 📉", "Recession 📉", "Depression 😔", "Oligopoly 🏢", "Cartel 💰", "Tariff 📜", "Quota 📊", "Embargo 🚫", "Sanction ⚖️", "Treaty 🤝", "Alliance 🤝", "Coalition 🤝", "Federation 🏛️", "Confederation 🏛️", "Republic 🏛️", "Monarchy 👑", "Empire 🌍", "Colony 🗺️", "Protectorate 🛡️", "Dominion 🌍", "Mandate 📜", "Territory 🗺️", "Province 🗺️", "State 🏛️", "County 🗺️", "Municipality 🏙️", "District 🗺️", "Borough 🏙️", "Parish ⛪", "Ward 🗺️", "Precinct 🗺️", "Community 👥", "Society 👥", "Culture 🎭", "Civilization 🏛️", "Custom 🏮", "Habit 🔄", "Ritual 🕯️", "Festival 🎉", "Holiday 🏖️", "Vacation 🏖️", "Journey 🌍", "Voyage 🚢", "Expedition 🧗", "Pilgrimage ⛪", "Crusade ⚔️", "Ideology 🧠", "Theology ⛪", "Heresy 🕯️", "Orthodoxy 📜", "Paradigm 🔄", "Dogma 📜"
     ];
 
     // Combine into level-tagged objects — used for auto-fill AND level badge display
