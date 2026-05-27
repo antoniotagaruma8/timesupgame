@@ -105,15 +105,15 @@
         }
 
         .centered-view .state-icon {
-            font-size: 6rem;
-            margin-bottom: 1rem;
+            font-size: clamp(3.5rem, 8vh, 5.5rem);
+            margin-bottom: 0.5rem;
             animation: float 3s ease-in-out infinite;
         }
 
         .centered-view .state-title {
-            font-size: clamp(3rem, 6vh, 5rem);
+            font-size: clamp(2.5rem, 6vh, 4rem);
             color: white;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             font-family: var(--font-heading);
             text-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
@@ -323,16 +323,16 @@
             <div id="view-welcome" class="view-state centered-view active-view">
                 <div class="state-icon">👋</div>
                 <h2 class="state-title">Waiting for Players...</h2>
-                <p style="font-size: 2rem; color: var(--text-muted); margin-bottom: 3rem;">Join using the room code above!</p>
+                <p style="font-size: clamp(1.2rem, 3vh, 1.8rem); color: var(--text-muted); margin-bottom: 2rem;">Join using the room code above!</p>
                 
-                <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-                    <div style="background: rgba(0,0,0,0.4); padding: 1.5rem 3rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 250px;">
-                        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Teams Joined</p>
-                        <p id="proj-welcome-teams" style="font-size: 5.5rem; color: white; font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
+                <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="background: rgba(0,0,0,0.4); padding: 1rem 2rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 200px;">
+                        <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Teams Joined</p>
+                        <p id="proj-welcome-teams" style="font-size: clamp(3.5rem, 8vh, 4.5rem); color: white; font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
                     </div>
-                    <div style="background: rgba(0,0,0,0.4); padding: 1.5rem 3rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 250px;">
-                        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Words Submitted</p>
-                        <p id="proj-welcome-words" style="font-size: 5.5rem; color: var(--success); font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
+                    <div style="background: rgba(0,0,0,0.4); padding: 1rem 2rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 200px;">
+                        <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Words Submitted</p>
+                        <p id="proj-welcome-words" style="font-size: clamp(3.5rem, 8vh, 4.5rem); color: var(--success); font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
                     </div>
                 </div>
             </div>
@@ -340,35 +340,35 @@
             <div id="view-how-to-play" class="view-state centered-view">
                 <div class="state-icon">📖</div>
                 <h2 class="state-title">How To Play</h2>
-                <p style="font-size: 2rem; color: var(--text-muted);">1. Submit Words &nbsp;&nbsp; 2. Describe &nbsp;&nbsp; 3. Win</p>
+                <p style="font-size: clamp(1.2rem, 3vh, 1.8rem); color: var(--text-muted);">1. Submit Words &nbsp;&nbsp; 2. Describe &nbsp;&nbsp; 3. Win</p>
             </div>
 
             <div id="view-rules" class="view-state centered-view">
                 <div class="state-icon">🚫</div>
                 <h2 class="state-title" style="color: var(--danger);">Strict Rules</h2>
-                <p style="font-size: 2rem; color: white;">NO Saying the Word</p>
-                <p style="font-size: 2rem; color: white; margin-top: 1rem;">NO Pointing at Objects</p>
+                <p style="font-size: clamp(1.2rem, 3vh, 1.8rem); color: white;">NO Saying the Word</p>
+                <p style="font-size: clamp(1.2rem, 3vh, 1.8rem); color: white; margin-top: 1rem;">NO Pointing at Objects</p>
             </div>
 
             <div id="view-setup" class="view-state centered-view">
                 <div class="state-icon">⚙️</div>
                 <h2 class="state-title">Game Setup</h2>
-                <p style="font-size: 2rem; color: var(--text-muted);">Host is configuring the game...</p>
+                <p style="font-size: clamp(1.2rem, 3vh, 1.8rem); color: var(--text-muted);">Host is configuring the game...</p>
             </div>
 
             <div id="view-submission" class="view-state centered-view">
                 <div class="state-icon">✍️</div>
                 <h2 class="state-title">Submit Your Words!</h2>
-                <p style="font-size: 2rem; color: var(--text-muted); margin-bottom: 3rem;">Look at your device and start typing.</p>
+                <p style="font-size: clamp(1.2rem, 3vh, 1.8rem); color: var(--text-muted); margin-bottom: 2rem;">Look at your device and start typing.</p>
                 
-                <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-                    <div style="background: rgba(0,0,0,0.4); padding: 1.5rem 3rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 250px;">
-                        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Teams Joined</p>
-                        <p id="proj-sub-teams" style="font-size: 5.5rem; color: white; font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
+                <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                    <div style="background: rgba(0,0,0,0.4); padding: 1rem 2rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 200px;">
+                        <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Teams Joined</p>
+                        <p id="proj-sub-teams" style="font-size: clamp(3.5rem, 8vh, 4.5rem); color: white; font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
                     </div>
-                    <div style="background: rgba(0,0,0,0.4); padding: 1.5rem 3rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 250px;">
-                        <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Word Bank</p>
-                        <p id="proj-word-count-display" style="font-size: 5.5rem; color: var(--success); font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
+                    <div style="background: rgba(0,0,0,0.4); padding: 1rem 2rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); min-width: 200px;">
+                        <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;">Word Bank</p>
+                        <p id="proj-word-count-display" style="font-size: clamp(3.5rem, 8vh, 4.5rem); color: var(--success); font-family: var(--font-heading); font-weight: bold; margin: 0; line-height: 1;">0</p>
                     </div>
                 </div>
             </div>
@@ -376,7 +376,7 @@
             <div id="view-waiting" class="view-state centered-view">
                 <div class="state-icon">⏳</div>
                 <h2 class="state-title">Get Ready!</h2>
-                <p style="font-size: 2rem; color: var(--text-muted);">Waiting for host to start...</p>
+                <p style="font-size: clamp(1.2rem, 3vh, 1.8rem); color: var(--text-muted);">Waiting for host to start...</p>
             </div>
 
             <!-- Playing State (2-Column Layout) -->
