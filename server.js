@@ -81,6 +81,13 @@ io.on('connection', (socket) => {
     socket.on('registerTeam', ({ roomId, teamName }) => {
         if (rooms[roomId] && teamName && teamName.trim()) {
             const name = teamName.trim();
+            
+            // Prevent duplicate team names
+            const existingTeam = rooms[roomId].teams.find(t => t.name.toLowerCase() === name.toLowerCase());
+            if (existingTeam) {
+                return; // Silently ignore duplicate registration
+            }
+            
             // Store the socket id with the team so we can target them for kicks
             rooms[roomId].teams.push({ name: name, score: 0, turnsPlayed: 0, socketId: socket.id });
             

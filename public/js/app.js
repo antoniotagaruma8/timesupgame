@@ -23,7 +23,8 @@ let state = {
     totalGameTimeLeft: 0,
     globalTimerInterval: null,
 
-    roomId: null
+    roomId: null,
+    isTurnActive: false
 };
 
 function generateRoomId() {
@@ -525,6 +526,7 @@ function startTurnSetup() {
     
     state.timeLeft = state.turnDuration;
     state.isPaused = false;
+    state.isTurnActive = false;
     const pauseBtn = document.getElementById('btn-pause');
     if (pauseBtn) {
         pauseBtn.textContent = '⏸ Pause';
@@ -560,12 +562,17 @@ document.getElementById('btn-update-timer').addEventListener('click', () => {
 });
 
 document.getElementById('btn-start-turn').addEventListener('click', () => {
+    if (state.isTurnActive) return; // Prevent double clicks
+    
     document.getElementById('game-controls-pre').classList.add('hidden');
     document.getElementById('game-controls-active').classList.remove('hidden');
     state.turnScore = 0;
     state.lastGuessedCards = [];
     state.turnLevelCycle = ['B1+', 'B2', 'C1'];
     state.currentCycleIndex = 0;
+    state.isTurnActive = true;
+    
+    if (state.timer) clearInterval(state.timer);
     
     drawCard();
     
@@ -854,7 +861,11 @@ document.getElementById('btn-update-timer').addEventListener('click', () => {
 
 
 function endTurn(wasFoul) {
+    if (!state.isTurnActive) return; // Prevent double firing
+    state.isTurnActive = false;
+    
     clearInterval(state.timer);
+    state.timer = null;
     
     // Track how many turns this team has played
     if (state.teams[state.currentTeamIndex]) {
