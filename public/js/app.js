@@ -301,116 +301,20 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
     // Allowing 0 words since auto-fill will populate the bank using the full vocabulary list.
 
     const B1_WORDS = [
-        "Destination 📍","Celebration 🎉","Competition 🏆","Pollution 🏭","Environment 🌳",
-        "Atmosphere ☁️","Temperature 🌡️","Advertisement 📺","Ingredient 🧂","Signature ✍️",
-        "Neighborhood 🏘️","Tradition 🏮","Ceremony 🎖️","Personality 🧠","Friendship 👫",
-        "Argument 🗣️","Discussion 💬","Vocabulary 📖","Dictionary 📚","Password 🔑",
-        "Keyboard ⌨️","Screen 🖥️","Document 📄","Message ✉️","Audience 👥",
-        "Performance 🎭","Character 🦸","Director 🎬","Musician 🎸","Instrument 🎺",
-        "Concert 🎫","Stadium 🏟️","Champion 🥇","Referee 🦓","Tournament 🏆",
-        "Backpack 🎒","Suitcase 🧳","Passenger 🧍","Flight ✈️","Pilot 🧑‍✈️",
-        "Airport 🛬","Platform 🚉","Ticket 🎟️","Receipt 🧾","Discount 🏷️",
-        "Customer 🛒","Manager 👔","Employee 👷","Interview 🎤","Salary 💰",
-        "Company 🏢","Bicycle 🚲","Motorcycle 🏍️","Subway 🚇","Skateboard 🛹",
-        "Umbrella ☂️","Jacket 🧥","Sweater 🧶","Scarf 🧣","Gloves 🧤",
-        "Boots 👢","Sneakers 👟","Sandals 🩴","Pajamas 🛌","Swimsuit 🩱",
-        "Towel 🧖","Blanket 🛏️","Pillow 😴","Furniture 🛋️","Bookshelf 📚",
-        "Wardrobe 🚪","Mirror 🪞","Curtain 🪟","Garden 🪴","Garage 🚘",
-        "Fireplace 🔥","Kitchen 🍳","Bathroom 🛁","Bedroom 🛏️","Restaurant 🍽️",
-        "Bakery 🥐","Supermarket 🛒","Pharmacy 💊","Hospital 🏥","Dentist 🦷",
-        "Doctor 👨‍⚕️","Nurse 👩‍⚕️","Ambulance 🚑","Emergency 🚨","Accident 💥",
-        "Traffic 🚦","Vehicle 🚗","Engine ⚙️","Police 👮","Firefighter 👨‍🚒",
-        "Alarm 🔔","Planet 🪐","Rocket 🚀","Ocean 🌊","River 🏞️",
-        "Mountain ⛰️","Forest 🌲","Desert 🐪","Island 🏝️","Beach 🏖️",
-        "Dolphin 🐬","Penguin 🐧","Elephant 🐘","Giraffe 🦒","Butterfly 🦋",
-        "Crocodile 🐊","Kangaroo 🦘","Octopus 🐙","Volcano 🌋","Earthquake 🫨",
-        "Hurricane 🌀","Flood 🌊","Medicine 💊","Compass 🧭","Lighthouse 🏠",
-        "Treasure 💎","Sandwich 🥪","Pineapple 🍍","Mushroom 🍄","Strawberry 🍓",
-        "Watermelon 🍉","Chocolate 🍫","Hamburger 🍔","Pancake 🥞","Lemonade 🍋",
-        "Broccoli 🥦","Avocado 🥑","Cinnamon 🫚","Popcorn 🍿","Calendar 📅",
-        "Envelope ✉️","Newspaper 📰","Magazine 📖","Notebook 📓","Scissors ✂️",
-        "Staircase 🪜","Candle 🕯️","Battery 🔋","Microwave 📡","Refrigerator 🧊",
-        "Washing Machine 🫧","Camera 📷","Headphones 🎧","Sunglasses 🕶️",
-        "Necklace 📿","Bracelet 💍","Toothbrush 🪥","Wheelchair 🦽","Parachute 🪂",
-        "Laptop 💻","Backyard 🏡",
-        "Library 📚", "Television 📺", "Telephone ☎️", "Elevator 🛗", "Escalator 🎢", "Tractor 🚜", "Truck 🛻", "Bus 🚌", "Train 🚆", "Piano 🎹", "Violin 🎻", "Drums 🥁", "Singer 🎤", "Actor 🎭", "Painter 🎨", "Chef 🧑‍🍳", "Waiter 🍽️", "Mechanic 🔧", "Farmer 🌾", "Scientist 🔬", "Teacher 👩‍🏫", "Student 🎒", "Classroom 🏫", "Computer 💻", "Mouse 🖱️", "Printer 🖨️", "Smartphone 📱", "Tablet 📱", "Charger 🔌", "Wallet 👛", "Purse 👜", "Coins 🪙", "Credit Card 💳", "Cash 💵", "Market 🍎", "Butcher 🥩", "Cafe ☕", "Menu 📋", "Recipe 🍳", "Breakfast 🥞", "Lunch 🥗", "Dinner 🍲", "Dessert 🍰", "Ice Cream 🍦", "Cake 🎂", "Cookie 🍪", "Apple 🍎", "Banana 🍌", "Orange 🍊", "Grapes 🍇", "Cherry 🍒", "Peach 🍑", "Pear 🍐", "Lemon 🍋", "Tomato 🍅", "Potato 🥔", "Carrot 🥕", "Onion 🧅", "Garlic 🧄", "Cheese 🧀", "Butter 🧈", "Bread 🍞", "Egg 🥚", "Chicken 🍗", "Fish 🐟", "Beef 🥩", "Salad 🥗", "Soup 🥣", "Rice 🍚", "Pasta 🍝", "Pizza 🍕", "Juice 🧃", "Coffee ☕"
+        "Social Media 📱", "Influencer 📸", "Playlist 🎵", "Streaming 📺", "Podcast 🎧", "Selfie 🤳", "Video Game 🎮", "Console 🕹️", "Multiplayer 👥", "Laptop 💻", "Keyboard ⌨️", "Screen 🖥️", "Charger 🔌", "Battery 🔋", "Headphones 🎧", "Speaker 🔊", "Microphone 🎤", "Concert 🎫", "Festival 🎪", "Ticket 🎟️", "Crowd 👥", "Stage 🎤", "Audience 👏", "Singer 🎤", "Rapper 🎤", "Movie 🍿", "Cinema 🍿", "Actor 🎭", "Director 🎬", "Character 🦸", "Hero 🦸", "Villain 🦹", "Spoiler 🚫", "Series 📺", "Episode 📺", "Season 📺", "Anime 🌸", "Cartoon 📺", "Superhero 🦸", "Comic 📖", "Homework 📝", "Assignment 📝", "Project 📊", "Presentation 📊", "Exam 📝", "Teacher 👩‍🏫", "Classmate 🎒", "Crush ❤️", "Relationship 💑", "Breakup 💔", "Drama 🎭", "Gossip 🗣️", "Rumor 🗣️", "Secret 🤫", "Apology 🙇", "Trust 🤝", "Friendship 🤝", "Jealousy 😒", "Anxiety 😰", "Stress 😫", "Vacation 🏖️", "Adventure 🧗", "Destination 📍", "Beach 🏖️", "Alien 👽", "Ghost 👻", "Vampire 🧛", "Zombie 🧟", "Magic ✨", "Dragon 🐉", "Unicorn 🦄", "Pet 🐱", "Snack 🍟", "Fast Food 🍔", "Pizza 🍕", "Burger 🍔", "Fries 🍟", "Shopping 🛍️", "Discount 🏷️", "Brand 👕", "Sneakers 👟", "Hoodie 🧥", "Outfit 👗", "Style 😎", "Trend 📈", "Makeup 💄", "Skincare 🧴", "Haircut ✂️", "Tattoo 🖋️", "Piercing 🧷", "Gym 💪", "Workout 🏋️", "Sport ⚽", "Team 👥", "Tournament 🏆", "Champion 🥇", "Winner 🏆", "Loser 👎", "Score 💯", "Goal 🥅", "Referee 🦓", "Stadium 🏟️", "Fan 👏", "Mascot 🐶"
     ];
     const B2_WORDS = [
-        "Submarine 🚢","Binoculars 🔭","Handcuffs 🔗","Helicopter 🚁","Microscope 🔬",
-        "Avalanche 🏔️","Skeleton 💀","Sculpture 🗿","Orchestra 🎻","Architecture 🏛️",
-        "Laboratory 🧪","Thermometer 🌡️","Baggage 🧳","Symphony 🎼","Choreography 💃",
-        "Camouflage 🦎","Catastrophe 💥","Negotiation 🤝","Fossil 🦕","Monument 🗽",
-        "Exhibition 🖼️","Gallery 🎨","Masterpiece 🖌️","Canvas 🎨","Portrait 🖼️",
-        "Landscape 🏞️","Tapestry 🧵","Ballet 🩰","Opera 🎭","Composer 🎼",
-        "Conductor 🪗","Applause 👏","Encore 🎬","Microphone 🎤","Amphitheater 🏟️",
-        "Harmony 🎶","Rhythm 🥁","Melody 🎵","Stethoscope 🩺","Prescription 📜",
-        "Surgeon 😷","Diagnosis 🔍","Quarantine 🏥","Vaccination 💉","Antibiotic 💊",
-        "Adrenaline ⚡","Metabolism 🔄","Chromosome 🧬","Ecosystem 🌿","Photosynthesis 🌱",
-        "Constellation 🌟","Astronaut 👨‍🚀","Satellite 🛰️","Orbit 🔄","Spacecraft 🛸",
-        "Meteorite ☄️","Observatory 🏛️","Gravity ⬇️","Hemisphere 🌍",
-        "Peninsula 🗺️","Archipelago 🏝️","Glacier 🧊","Tsunami 🌊","Tornado 🌪️",
-        "Drought 🏜️","Monsoon 🌧️","Blizzard ❄️","Quicksand ⏳","Whirlpool 🌀",
-        "Silhouette 🌑","Kaleidoscope 🔮","Chandelier 💡","Pendulum ⏱️","Periscope 🔭",
-        "Tightrope 🎪","Trampoline 🤸","Catapult 🏰","Boomerang 🪃","Guillotine ⚔️",
-        "Typewriter ⌨️","Gramophone 🎵","Stagecoach 🐎","Drawbridge 🏰","Portcullis 🏰",
-        "Aquarium 🐠","Terrarium 🦎","Greenhouse 🌱","Windmill 🌬️","Waterfall 💧",
-        "Thunderstorm ⛈️","Labyrinth 🏛️","Souvenir 🎁","Fireworks 🎆",
-        "Trident 🔱","Hammock 🏝️","Canopy 🌳","Propeller ✈️","Perimeter 📐",
-        "Barometer 🌡️","Thermostat 🌡️","Speedometer 🏎️","Odometer 🚗",
-        "Altimeter ⛰️","Hourglass ⏳","Sundial ☀️","Metronome 🎵",
-        "Xylophone 🎶","Saxophone 🎷","Accordion 🪗","Tambourine 🥁","Harmonica 🎵",
-        "Clarinet 🎵","Trombone 🎺","Banjo 🪕","Ukulele 🎸","Harpoon 🎣",
-        "Anchor ⚓","Rudder 🚢","Lifeboat 🛟","Flagship 🚢",
-        "Caravan 🐫","Gondola 🛶","Toboggan 🛷","Rickshaw 🛺","Chariot 🏇",
-        "Monocle 🧐","Turban 🧕","Tiara 👑","Gauntlet 🧤","Medallion 🏅",
-        "Goblet 🏆","Chalice 🍷","Cauldron 🫕","Scepter 👑","Horoscope ♈",
-        "Mascot 🐶","Talisman 🧿","Pharaoh 🐫","Pyramid 🔺","Obelisk 🏛️",
-        "Gargoyle 🐉","Sphinx 🦁","Centaur 🐎","Pegasus 🦄","Griffin 🦅",
-        "Dragon 🐲","Phoenix 🔥",
-        "Speaker 🔊", "Projector 📽️", "Whiteboard 🖍️", "Calculator 🧮", "Generator ⚡", "Motor 🚤", "Wheel 🛞", "Tire 🛞", "Brake 🛑", "Gear ⚙️", "Seatbelt 💺", "Airbag 🎈", "Windshield 🚙", "Headlight 💡", "Exhaust 💨", "Paint 🎨", "Polish ✨", "Wax 🕯️", "Soap 🧼", "Sponge 🧽", "Bucket 🪣", "Hose 🚿", "Vacuum 🌪️", "Brush 🖌️", "Comb 梳", "Razor 🪒", "Deodorant 🧴", "Perfume 🧴", "Lotion 🧴", "Sunscreen 🧴", "Toothpaste 🧴", "Floss 🧵", "Mouthwash 🧴", "Shampoo 🧴", "Conditioner 🧴", "Bathrobe 🥋", "Slippers 🥿", "Underwear 🩲", "Socks 🧦", "Leggings 👖", "Pants 👖", "Jeans 👖", "Shorts 👖", "Skirt 👗", "Dress 👗", "Shirt 👕", "Blouse 👚", "Cardigan 🧥", "Collar 👔", "Sleeve 👕", "Pocket 👖", "Zipper 🤐", "Button 🔘", "Thread 🧵", "Needle 🪡", "Thimble 🧵", "Fabric 🧶", "Silk 🐛", "Cotton ☁️", "Wool 🐑", "Leather 👞", "Denim 👖", "Velvet 🧣", "Lace 🎀", "Ribbon 🎀", "Helmet ⛑️"
+        "Algorithm 💻", "Cyberbullying 🚫", "Clickbait 🎣", "Viral 🦠", "Trendsetter ✨", "Subscribe 🔔", "Sponsorship 💰", "Verification ✅", "Cringe 😬", "Aesthetic ✨", "Vibe 🌊", "Nostalgia 📷", "Procrastinate ⏰", "Motivation 🎯", "Curriculum 📚", "Plagiarism 📝", "Scholarship 🎓", "Graduation 🎓", "Rebellion ✊", "Independence 🦅", "Identity 👤", "Stereotype 🎭", "Peer Pressure 👥", "Expectation 📈", "Reputation 🌟", "Betrayal 💔", "Loyalty 🤝", "Commitment 💍", "Compromise 🤝", "Sarcasm 😏", "Irony 🎭", "Empathy ❤️", "Sympathy 🥺", "Generation 👨‍👩‍👧", "Environment 🌳", "Pollution 🏭", "Climate Change 🌍", "Activism 📢", "Volunteer 🤲", "Charity 💝", "Donation 💰", "Community 🏘️", "Diversity 🌍", "Equality ⚖️", "Justice ⚖️", "Feminism 👩", "Racism 🚫", "Discrimination 🚫", "Prejudice 🚫", "Mental Health 🧠", "Therapy 🛋️", "Meditation 🧘", "Mindfulness 🧘", "Nutrition 🥗", "Diet 🥗", "Vegan 🌱", "Vegetarian 🥦", "Allergy 🤧", "Symptom 🤒", "Diagnosis 🩺", "Vaccine 💉", "Pandemic 🦠", "Quarantine 🏠", "Economy 💰", "Inflation 📈", "Investment 📈", "Cryptocurrency 🪙", "Entrepreneur 👔", "Startup 🚀", "Freelance 💻", "Remote Work 🏠", "Virtual Reality 🕶️", "Augmented Reality 📱", "Cybersecurity 🛡️", "Privacy 🔒", "Hacking 💻", "Encryption 🔐", "Biometrics 👁️", "Drone 🚁", "Space Exploration 🚀", "Astronomy 🔭", "Astrology ♈", "Horoscope ♈", "Zodiac ♈", "Superstition 🍀", "Karma 🔄", "Destiny ✨", "Coincidence 🎯", "Illusion 🌀", "Hallucination 🌀", "Nightmare 😱", "Phobia 😨"
     ];
-    const C1_WORDS = [
-        "Philanthropy 🤲","Bureaucracy 🏛️","Sovereignty 👑","Jurisdiction ⚖️","Legislature 📜",
-        "Diplomacy 🕊️","Propaganda 📢","Censorship ✂️","Referendum 🗳️","Amnesty 🕊️",
-        "Paradox 🔄","Hypothesis 🧪","Phenomenon 🌟","Algorithm 💻","Encryption 🔐",
-        "Cybersecurity 🛡️","Infrastructure 🏗️","Sustainability 🌿","Biodiversity 🦜","Deforestation 🪵",
-        "Gentrification 🏘️","Globalization 🌐","Immigration 🛂","Assimilation 🤝","Emancipation ⛓️",
-        "Renaissance 🎨","Enlightenment 💡","Revolution 🔄","Colonialism 🗺️","Imperialism 👑",
-        "Aristocracy 🏰","Oligarchy 💰","Dictatorship ⚔️","Anarchy 🏴","Democracy 🗳️",
-        "Capitalism 💵","Socialism 🤝","Communism ☭","Meritocracy 🏅","Theocracy ⛪",
-        "Eloquence 🎤","Rhetoric 📣","Metaphor 🌀","Allegory 📖","Satire 🎭",
-        "Plagiarism 📝","Manuscript 📜","Anthology 📚","Autobiography 📖","Monologue 🎭",
-        "Soliloquy 🎭","Protagonist 🦸","Antagonist 🦹","Cliffhanger 🧗","Epilogue 📖",
-        "Reconnaissance 🔭","Espionage 🕵️","Sabotage 💣","Subterfuge 🎭","Ambush ⚔️",
-        "Barricade 🚧","Fortification 🏰","Ammunition 🎯","Artillery 💥","Surveillance 📹",
-        "Interrogation ❓","Prosecution ⚖️","Acquittal ✅","Extradition 🛫",
-        "Bankruptcy 📉","Monopoly 🎩","Conglomerate 🏢","Embezzlement 💸","Litigation ⚖️",
-        "Arbitration ⚖️","Jurisprudence 📚","Precedent 📜","Amendment 📝","Constitution 📜",
-        "Pandemonium 😱","Calamity 💥","Turbulence ✈️","Upheaval 🌊",
-        "Resurgence 📈","Deterioration 📉","Stagnation 🔄","Proliferation 📊","Culmination 🏔️",
-        "Juxtaposition 🔀","Conundrum 🤔","Quandary ❓","Predicament 😰","Dilemma ⚖️",
-        "Epiphany 💡","Revelation 🌟","Premonition 🔮","Intuition 🧠","Perception 👁️",
-        "Consciousness 🧠","Subconscious 💭","Hallucination 🌀","Meditation 🧘","Tranquility 🕊️",
-        "Melancholy 🌧️","Nostalgia 📷","Serendipity ✨","Euphoria 🎆","Wanderlust 🌍",
-        "Sarcasm 😏","Irony 🎭","Hypocrisy 🎭","Altruism 💝","Narcissism 🪞",
-        "Charisma ✨","Resilience 💪","Perseverance 🏃","Tenacity 🦾","Ambiguity 🔮",
-        "Anonymity 🎭","Authenticity ✅","Vulnerability 💔","Solidarity 🤝","Unanimity ✊",
-        "Exaggeration 📢","Understatement 🤏","Contradiction 🔄","Coincidence 🎯","Consequence ⚡",
-        "Procrastination ⏰","Claustrophobia 😨","Vertigo 🌀","Insomnia 😵","Amnesia 🧠",
-        "Catacombs 💀","Colosseum 🏟️","Acropolis 🏛️","Parthenon 🏛️",
-        "Hieroglyphics 📜","Papyrus 📃","Archaeology 🦴","Anthropology 🧬","Etymology 📖",
-        "Calligraphy ✒️","Origami 🦢","Ventriloquism 🎭","Pantomime 🤡","Puppeteer 🎭",
-        "Mosaic 🎨","Fresco 🖼️","Terracotta 🏺","Porcelain 🍶",
-        "Marionette 🎭","Xenophobia 🚫","Agoraphobia 🏃","Kleptomania 💎","Megalomania 👑",
-        "Omnipresence 🌌","Omniscience 🧠","Omnipotence 💪",
-        "Philosopher 🤔", "Metaphysics 🌌", "Aesthetics 🎨", "Ethics ⚖️", "Syntax 📝", "Semantics 🧠", "Bilingualism 🗣️", "Multilingualism 🌍", "Inflation 📈", "Deflation 📉", "Recession 📉", "Depression 😔", "Oligopoly 🏢", "Cartel 💰", "Tariff 📜", "Quota 📊", "Embargo 🚫", "Sanction ⚖️", "Treaty 🤝", "Alliance 🤝", "Coalition 🤝", "Federation 🏛️", "Confederation 🏛️", "Republic 🏛️", "Monarchy 👑", "Empire 🌍", "Colony 🗺️", "Protectorate 🛡️", "Dominion 🌍", "Mandate 📜", "Territory 🗺️", "Province 🗺️", "State 🏛️", "County 🗺️", "Municipality 🏙️", "District 🗺️", "Borough 🏙️", "Parish ⛪", "Ward 🗺️", "Precinct 🗺️", "Community 👥", "Society 👥", "Culture 🎭", "Civilization 🏛️", "Custom 🏮", "Habit 🔄", "Ritual 🕯️", "Festival 🎉", "Holiday 🏖️", "Vacation 🏖️", "Journey 🌍", "Voyage 🚢", "Expedition 🧗", "Pilgrimage ⛪", "Crusade ⚔️", "Ideology 🧠", "Theology ⛪", "Heresy 🕯️", "Orthodoxy 📜", "Paradigm 🔄", "Dogma 📜"
+    const B2_PLUS_WORDS = [
+        "Authenticity ✅", "Vulnerability 💔", "Gaslighting 🕯️", "Toxic ☣️", "Boundaries 🚧", "Manipulation 🎭", "Narcissist 🪞", "Validation ✅", "Insecurity 😰", "Empowerment 💪", "Resilience 💪", "Advocacy 📢", "Intersectionality 🌐", "Marginalized 👥", "Privilege 👑", "Appropriation 🎭", "Censorship ✂️", "Echo Chamber 🗣️", "Polarization ↔️", "Misinformation 📰", "Deepfake 🤖", "Monetization 💰", "Burnout 😫", "Hustle Culture 🏃", "Gentrification 🏘️", "Sustainability 🌿", "Carbon Footprint 👣", "Greenwashing 🧼", "Biodiversity 🦜", "Ecosystem 🌿", "Deforestation 🪵", "Extinction 🦖", "Genetic Engineering 🧬", "Simulation 💻", "Paradox 🔄", "Hypothesis 🧪", "Bias ⚖️", "Subjective 🧠", "Objective 🎯", "Ambiguity 🔮", "Nuance 🎨", "Dilemma ⚖️", "Conundrum 🤔", "Metaphor 🌀", "Satire 🎭", "Parody 🤡", "Cynicism 😒", "Pessimism 🌧️", "Optimism ☀️", "Philosophy 🤔", "Psychology 🧠", "Sociology 👥", "Globalization 🌐", "Propaganda 📢", "Radicalization ⚡", "Extremism ⚡", "Whistleblower 📢", "Philanthropy 🤲", "Micromanage 👔", "Overthink 🧠", "Spontaneous ✨", "Charisma ✨", "Prodigy 🌟", "Introvert 🤫", "Extrovert 🥳", "Ambivert ↔️", "Hypocrisy 🎭", "Skepticism 🤨", "Tolerance 🤝", "Inclusive 🌈", "Exclusive 🚫", "Anonymous 🎭", "Controversy ⚡", "Backlash 📉", "Boycott 🚫", "Cancel Culture 🚫", "Mainstream 🌊", "Underground 🚇", "Masterpiece 🎨", "Avant-garde 🎨", "Binge-watch 📺", "Cliffhanger 🧗", "Plot Twist 🌪️", "Protagonist 🦸", "Antagonist 🦹", "Antihero 🦹", "Flashback 🕰️", "Foreshadowing 🔮", "Genre 📚", "Cinematography 🎥"
     ];
 
     // Combine into level-tagged objects — used for auto-fill AND level badge display
     const FALLBACK_VOCABULARY = [
         ...B1_WORDS.map(w => ({ word: w, level: 'B1+' })),
         ...B2_WORDS.map(w => ({ word: w, level: 'B2'  })),
-        ...C1_WORDS.map(w => ({ word: w, level: 'C1'  }))
+        ...B2_PLUS_WORDS.map(w => ({ word: w, level: 'B2+'  }))
     ];
 
     // Auto-fill using the full vocabulary pool for any remaining gaps
@@ -568,7 +472,7 @@ document.getElementById('btn-start-turn').addEventListener('click', () => {
     document.getElementById('game-controls-active').classList.remove('hidden');
     state.turnScore = 0;
     state.lastGuessedCards = [];
-    state.turnLevelCycle = ['B1+', 'B2', 'C1'];
+    state.turnLevelCycle = ['B1+', 'B2', 'B2+'];
     state.currentCycleIndex = 0;
     state.isTurnActive = true;
     
@@ -743,7 +647,7 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     
     let points = 1;
     if (scoredCard.level === 'B2') points = 2;
-    if (scoredCard.level === 'C1') points = 3;
+    if (scoredCard.level === 'B2+') points = 3;
     
     state.turnScore += points;
     state.teams[state.currentTeamIndex].score += points;
@@ -781,7 +685,7 @@ document.getElementById('btn-undo').addEventListener('click', () => {
     
     let points = 1;
     if (cardToReturn.level === 'B2') points = 2;
-    if (cardToReturn.level === 'C1') points = 3;
+    if (cardToReturn.level === 'B2+') points = 3;
     
     state.turnScore = Math.max(0, state.turnScore - points);
     state.teams[state.currentTeamIndex].score = Math.max(0, state.teams[state.currentTeamIndex].score - points);
