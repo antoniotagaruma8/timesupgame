@@ -143,7 +143,11 @@ io.on('connection', (socket) => {
             const submittingTeam = rooms[roomId].teams.find(t => t.socketId === socket.id);
             const teamName = submittingTeam ? submittingTeam.name : 'Unknown';
             
-            rooms[roomId].words.push({ word: cleanWord, team: teamName });
+            // Assign a random difficulty level to student-submitted words
+            const levels = ['B1+', 'B2', 'B2+'];
+            const randomLevel = levels[Math.floor(Math.random() * levels.length)];
+            
+            rooms[roomId].words.push({ word: cleanWord, team: teamName, level: randomLevel });
             
             // Broadcast to everyone in the room (including the teacher)
             io.to(roomId).emit('newWord', {
