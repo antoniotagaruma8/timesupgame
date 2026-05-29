@@ -199,29 +199,6 @@ document.getElementById('btn-open-submissions').addEventListener('click', () => 
     state.allWords = [];
     document.getElementById('live-word-count').textContent = '0';
     
-    const ctx = document.getElementById('word-level-chart').getContext('2d');
-    if (wordLevelChart) wordLevelChart.destroy();
-    wordLevelChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['B1+', 'B2', 'B2+'],
-            datasets: [{
-                data: [0, 0, 0],
-                backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6'],
-                borderWidth: 0,
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'right', labels: { color: '#ffffff', font: { family: 'Inter', size: 12 } } }
-            },
-            layout: { padding: 0 }
-        }
-    });
-    
     showScreen('submission');
 });
 
