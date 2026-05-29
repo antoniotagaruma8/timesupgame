@@ -194,7 +194,7 @@
                                 <span class="text-muted" style="font-size: 0.8rem;">Waiting for students...</span>
                             </div>
                             <div style="display: flex; gap: 0.5rem; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
-                                <input type="text" id="manual-team-name" placeholder="Add participant..." style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-family: inherit; font-size: 1.1rem;">
+                                <input type="text" id="manual-team-name" placeholder="Add participant..." maxlength="20" style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-family: inherit; font-size: 1.1rem;">
                                 <button id="btn-add-team" class="btn-secondary" style="width: auto; padding: 0.8rem 1.5rem; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; line-height: 1;" title="Add Team">+</button>
                             </div>
                         </div>
@@ -239,7 +239,7 @@
                 <!-- Left: Team Name -->
                 <div class="team-turn" style="flex: 1; min-width: 150px; max-width: 33%; text-align: left;">
                     <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.2rem;">Current Team</div>
-                    <strong id="game-current-team" class="gradient-text" style="font-size: 2rem; line-height: 1.1; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">Team 1</strong>
+                    <strong id="game-current-team" class="gradient-text" style="font-size: 1.6rem; line-height: 1.1; display: block; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%;">Team 1</strong>
                 </div>
 
                 <!-- Center: Score & Words -->

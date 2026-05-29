@@ -80,7 +80,10 @@ io.on('connection', (socket) => {
 
     socket.on('registerTeam', ({ roomId, teamName }) => {
         if (rooms[roomId] && teamName && teamName.trim()) {
-            const name = teamName.trim();
+            let name = teamName.trim();
+            if (name.length > 20) {
+                name = name.substring(0, 20).trim();
+            }
             
             // Prevent duplicate team names
             const existingTeam = rooms[roomId].teams.find(t => t.name.toLowerCase() === name.toLowerCase());
