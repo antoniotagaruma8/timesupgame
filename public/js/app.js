@@ -27,17 +27,7 @@ let state = {
     isTurnActive: false
 };
 
-let wordLevelChart = null;
-
-function updateWordLevelChart() {
-    if (!wordLevelChart) return;
-    const counts = { 'B1+': 0, 'B2': 0, 'B2+': 0 };
-    state.allWords.forEach(w => {
-        if (counts[w.level] !== undefined) counts[w.level]++;
-    });
-    wordLevelChart.data.datasets[0].data = [counts['B1+'], counts['B2'], counts['B2+']];
-    wordLevelChart.update();
-}
+let guessedWordsChart = null;
 
 function generateRoomId() {
     return Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit code
@@ -286,7 +276,6 @@ socket.on('newWord', (data) => {
     liveWordCount.textContent = data.wordCount;
     // Words are now {word, team} objects from the server
     state.allWords = data.allWords;
-    updateWordLevelChart();
     
     playBeep(800 + (data.wordCount % 5) * 100, 'sine', 0.05);
     
@@ -935,6 +924,41 @@ function endGame() {
     playBeep(600, 'sine', 0.1);
     setTimeout(() => playBeep(800, 'sine', 0.1), 150);
     setTimeout(() => playBeep(1000, 'sine', 0.3), 300);
+    
+    const counts = { 'B1+': 0, 'B2': 0, 'B2+': 0 };
+    state.allWords.forEach(w => {
+        const isInDeck = state.deck.some(d => d.word === w.word);
+        if (!isInDeck && counts[w.level] !== undefined) {
+            counts[w.level]++;
+        }
+    });
+    
+    const ctx = document.getElementById('guessed-words-chart').getContext('2d');
+    if (guessedWordsChart) guessedWordsChart.destroy();
+    guessedWordsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['B1+', 'B2', 'B2+'],
+            datasets: [{
+                label: 'Words Guessed',
+                data: [counts['B1+'], counts['B2'], counts['B2+']],
+                backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6'],
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1, color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                x: { ticks: { color: '#fff', font: { family: 'Inter', weight: 'bold' } }, grid: { display: false } }
+            },
+            layout: { padding: 0 }
+        }
+    });
     
     syncToProjector();
     fireConfetti();
