@@ -98,7 +98,7 @@
                     </div>
                     <div class="rule-item" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3);">
                         <span class="rule-icon">🏆</span>
-                        <p><strong>Tiered Scoring:</strong> Harder words give more points! <strong>B1+</strong> = 1 pt, <strong>B2</strong> = 2 pts, <strong>B2+</strong> = 3 pts.</p>
+                        <p><strong>Tiered Scoring:</strong> Harder words give more points! <strong>B1+</strong> = 1 pt, <strong>B2</strong> = 2 pts, <strong>B2+</strong> = 3 pts, <strong>C1</strong> = 4 pts, <strong>C2</strong> = 5 pts.</p>
                     </div>
                 </div>
                 <div class="text-center mt-4 pt-4" style="display: flex; gap: 1rem; justify-content: center;">
@@ -135,6 +135,28 @@
                             <label>Total Minutes</label>
                             <input type="number" id="total-game-minutes" placeholder="e.g. 40" min="1" max="120">
                         </div>
+                    </div>
+                </div>
+                
+                <div class="card-box mt-4" style="max-width: 400px; margin: 0 auto;">
+                    <h3>Vocabulary Levels</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Select which word difficulty levels to include in the game.</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center;">
+                        <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; background: rgba(0,0,0,0.3); padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                            <input type="checkbox" class="vocab-level-cb" value="B1+" checked style="width: 18px; height: 18px; accent-color: #10b981;"> B1+
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; background: rgba(0,0,0,0.3); padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                            <input type="checkbox" class="vocab-level-cb" value="B2" checked style="width: 18px; height: 18px; accent-color: #3b82f6;"> B2
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; background: rgba(0,0,0,0.3); padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                            <input type="checkbox" class="vocab-level-cb" value="B2+" checked style="width: 18px; height: 18px; accent-color: #8b5cf6;"> B2+
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; background: rgba(0,0,0,0.3); padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                            <input type="checkbox" class="vocab-level-cb" value="C1" checked style="width: 18px; height: 18px; accent-color: #f59e0b;"> C1
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; background: rgba(0,0,0,0.3); padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                            <input type="checkbox" class="vocab-level-cb" value="C2" checked style="width: 18px; height: 18px; accent-color: #ef4444;"> C2
+                        </label>
                     </div>
                 </div>
 
@@ -332,8 +354,12 @@
                     <p><strong id="summary-words-left">0</strong> words left in the deck.</p>
                 </div>
 
-                <div class="next-up mt-4">
-                    <p>Next up: <strong id="summary-next-team">Team 2</strong></p>
+                <div class="next-up mt-4" id="next-up-container">
+                    <p style="margin-bottom: 0.5rem;">Next up:</p>
+                    <select id="select-next-team" style="padding: 0.8rem; border-radius: 8px; font-size: 1.2rem; background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); width: 100%; max-width: 300px; text-align: center; font-weight: bold; font-family: inherit; cursor: pointer;">
+                        <!-- Options generated dynamically -->
+                    </select>
+                    <div id="summary-next-team" style="font-weight: bold; font-size: 1.2rem; margin-top: 0.5rem; display: none;"></div>
                 </div>
 
                 <button id="btn-next-turn" class="btn-primary mt-4 btn-large">Continue</button>

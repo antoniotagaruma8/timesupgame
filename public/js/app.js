@@ -24,7 +24,9 @@ let state = {
     globalTimerInterval: null,
 
     roomId: null,
-    isTurnActive: false
+    isTurnActive: false,
+    selectedLevels: ['B1+', 'B2', 'B2+', 'C1', 'C2'],
+    turnLevelCycle: ['B1+', 'B1+', 'B2', 'B2+']
 };
 
 let guessedWordsChart = null;
@@ -160,6 +162,14 @@ const inputSeconds = document.getElementById('timer-seconds');
 
 document.getElementById('btn-open-submissions').addEventListener('click', () => {
     state.teams = []; // Reset teams on new room creation
+    
+    state.selectedLevels = [];
+    document.querySelectorAll('.vocab-level-cb:checked').forEach(cb => {
+        state.selectedLevels.push(cb.value);
+    });
+    if (state.selectedLevels.length === 0) {
+        state.selectedLevels = ['B1+']; // Fallback
+    }
     
     const mins = parseInt(inputMinutes.value) || 0;
     const secs = parseInt(inputSeconds.value) || 0;
@@ -311,13 +321,25 @@ document.getElementById('btn-close-submit').addEventListener('click', () => {
     const B2_PLUS_WORDS = [
         "Authenticity ✅", "Vulnerability 💔", "Gaslighting 🕯️", "Toxic ☣️", "Boundaries 🚧", "Manipulation 🎭", "Narcissist 🪞", "Validation ✅", "Insecurity 😰", "Empowerment 💪", "Resilience 💪", "Advocacy 📢", "Intersectionality 🌐", "Marginalized 👥", "Privilege 👑", "Appropriation 🎭", "Censorship ✂️", "Echo Chamber 🗣️", "Polarization ↔️", "Misinformation 📰", "Deepfake 🤖", "Monetization 💰", "Burnout 😫", "Hustle Culture 🏃", "Gentrification 🏘️", "Sustainability 🌿", "Carbon Footprint 👣", "Greenwashing 🧼", "Biodiversity 🦜", "Ecosystem 🌿", "Deforestation 🪵", "Extinction 🦖", "Genetic Engineering 🧬", "Simulation 💻", "Paradox 🔄", "Hypothesis 🧪", "Bias ⚖️", "Subjective 🧠", "Objective 🎯", "Ambiguity 🔮", "Nuance 🎨", "Dilemma ⚖️", "Conundrum 🤔", "Metaphor 🌀", "Satire 🎭", "Parody 🤡", "Cynicism 😒", "Pessimism 🌧️", "Optimism ☀️", "Philosophy 🤔", "Psychology 🧠", "Sociology 👥", "Globalization 🌐", "Propaganda 📢", "Radicalization ⚡", "Extremism ⚡", "Whistleblower 📢", "Philanthropy 🤲", "Micromanage 👔", "Overthink 🧠", "Spontaneous ✨", "Charisma ✨", "Prodigy 🌟", "Introvert 🤫", "Extrovert 🥳", "Ambivert ↔️", "Hypocrisy 🎭", "Skepticism 🤨", "Tolerance 🤝", "Inclusive 🌈", "Exclusive 🚫", "Anonymous 🎭", "Controversy ⚡", "Backlash 📉", "Boycott 🚫", "Cancel Culture 🚫", "Mainstream 🌊", "Underground 🚇", "Masterpiece 🎨", "Avant-garde 🎨", "Binge-watch 📺", "Cliffhanger 🧗", "Plot Twist 🌪️", "Protagonist 🦸", "Antagonist 🦹", "Antihero 🦹", "Flashback 🕰️", "Foreshadowing 🔮", "Genre 📚", "Cinematography 🎥", "Procrastination ⏰", "Vulnerable 🥺", "Gaslight 🕯️", "Boundary 🚧", "Advocate 📢", "Monetize 💰", "Ambiguous 🔮", "Cynical 😒", "Pessimistic 🌧️", "Optimistic ☀️", "Philosophical 🤔", "Psychological 🧠", "Globalized 🌐", "Extremist ⚡", "Philanthropist 🤲", "Overthinking 🧠", "Charismatic ✨", "Introverted 🤫", "Extroverted 🥳", "Hypocrite 🎭", "Skeptical 🤨", "Tolerant 🤝", "Controversial ⚡", "Binge-watching 📺", "Choreography 💃", "Improvise 🎭", "Rehearse 🎬", "Audition 🎤", "Premiere 🎬", "Encore 👏", "Ovation 👏", "Debut 🌟", "Legacy 🏛️", "Heritage 🌍", "Tradition 🏮", "Custom 🎎", "Ritual 🕯️", "Superstitious 🍀", "Destined ✨", "Coincidental 🎯", "Illusional 🌀", "Hallucinate 🌀", "Nightmarish 😱", "Phobic 😨", "Traumatic 🤕", "Therapeutic 🛋️", "Mindful 🧘", "Meditate 🧘"
     ];
+    const C1_WORDS = [
+        "Ubiquitous 🌍", "Paradigm 🔄", "Pragmatic 🛠️", "Resilient 💪", "Tenacious 🧗", "Meticulous 🔍", "Cognitive 🧠", "Elicit 🗣️", "Ambiguous 🔮", "Lucrative 💰", "Mitigate 🛡️", "Profound 🌊", "Intricate 🧩", "Plausible 🤔", "Exacerbate 📈", "Discrepancy ⚖️", "Subtle 🤫", "Prevalent 🌍", "Viable 🌱", "Inevitable ⏳", "Deter 🚫", "Eminent 👑", "Intrinsic ❤️", "Proponent 📢", "Vindicate ⚖️", "Reiterate 🔄", "Articulate 🗣️", "Comprehensive 📚", "Empirical 🔬", "Scrutiny 🔎", "Superfluous 🗑️", "Nuance 🎨", "Acquisition 🛒", "Apprehension 😰", "Inquisitive 🧐", "Prolific 📈", "Surpass 🚀", "Disparity ⚖️", "Adhere 📎", "Coherent 🧩", "Diligent 📝", "Frivolous 🤡", "Implement 🛠️", "Notorious 🦹", "Repudiate 🚫", "Abundant 🌾", "Compel 🎯", "Erudite 📚", "Inherent 🧬", "Obscure 🌫️", "Proficient 🎯", "Rigorous 🏋️", "Tangible 🧱", "Unprecedented 🌟", "Alleviate 🩹", "Concede 🏳️", "Disparage 👎", "Imminent ⏱️", "Nostalgic 📷", "Skeptical 🤨", "Vulnerable 🥺", "Altruistic 🤲", "Amiable 😊", "Astute 🧠", "Benevolent ❤️", "Candid 📸", "Complacent 😒", "Cynical 😒", "Deleterious ☢️", "Eccentric 🤪", "Elusive 🥷", "Fervent 🔥", "Garrulous 🗣️", "Hostile 😠", "Impetuous ⚡", "Indifferent 😐", "Jovial 😄", "Lethargic 🦥", "Lucid 💡", "Melancholy 🌧️", "Naive 👶", "Obstinate 🪨", "Pensive 🤔", "Quirky 🤪", "Rebellious ✊", "Sagacious 🦉", "Tactful 🤫", "Voracious 🍽️", "Witty 😂", "Zealous 🔥", "Acclimate 🌡️", "Baffle 🤯", "Catalyst ⚡", "Decipher 🕵️", "Enigma 🧩", "Fabricate 🤥", "Guise 🎭", "Hypocrisy 🎭", "Irony 🎭", "Jargon 🗣️", "Kudos 👏", "Labyrinth 🌀", "Metaphor 🌀", "Nemesis 🦹", "Omen 🔮", "Paradox 🔄", "Qualm 😰", "Rhetoric 📢", "Satire 🤡", "Taboo 🚫", "Ultimatum ⏱️", "Abolish 🗑️", "Boycott 🚫", "Campaign 📢", "Delegate 👔", "Emancipate 🕊️", "Filibuster 🗣️", "Gerrymander 🗺️", "Hierarchy 👑", "Incumbent 🏛️", "Jurisdiction ⚖️", "Lobby 🏛️", "Manifesto 📜", "Nepotism 👨‍👩‍👧", "Oligarchy 👑", "Partisan 🔵", "Quota 📊", "Referendum 🗳️", "Sanction 🚫", "Tariff 💰", "Unanimous 🤝", "Veto ❌", "Accommodate 🏠", "Aesthetic ✨", "Bizarre 👽", "Connoisseur 🍷", "Eclectic 🎨", "Facade 🎭", "Genre 📚", "Avant-Garde 🎨", "Improvise 🎭", "Juxtapose ⚖️", "Kitsch 🖼️", "Motif 🎨", "Niche 🎯", "Opulence 💎", "Pastiche 🎨", "Renaissance 🏛️", "Surreal 🌀", "Tableau 🖼️", "Vignette 📷", "Abstain 🚫", "Culinary 🍳", "Decadent 🍰", "Edible 🍎", "Famished 😫", "Gastronomy 🍽️", "Insatiable 🍽️", "Palatable 😋", "Quench 💧", "Savor 😋", "Apparel 👕", "Boutique 🛍️", "Couture 👗", "Fad 📈", "Garment 🧥", "Haute 💎", "Tailor ✂️", "Vogue ✨", "Wardrobe 🚪", "Architecture 🏛️", "Balcony 🏢", "Canopy ⛺", "Gargoyle 🐉", "Hearth 🔥", "Insulation 🧱", "Lattice 🕸️", "Mezzanine 🏢", "Patio 🪑", "Pillar 🏛️", "Porch 🏠", "Spire 🗼", "Terrace 🏢", "Vault 🔐", "Acupuncture 🪡", "Benign 😇", "Chronic ⏳", "Diagnosis 🩺", "Epidemic 🦠", "Fatigue 😫", "Holistic 🌱", "Immunity 🛡️", "Malignant ☢️", "Placebo 💊", "Prognosis 📈", "Quarantine 🏠", "Remedy 🩹", "Syndrome 🤒", "Therapy 🛋️", "Vaccine 💉", "Algorithm 💻", "Bandwidth 📶", "Cache 💾", "Encryption 🔐", "Firewall 🧱", "Glitch 👾", "Hacker 💻", "Interface 🖥️", "Malware 🦠", "Network 🌐", "Phishing 🎣", "Proxy 🛡️", "Router 📶", "Server 🖥️", "Spam 🥫", "Trojan 🐎", "Virus 🦠", "Webinar 💻"
+    ];
+    const C2_WORDS = [
+        "Ephemeral ⏳", "Sycophant 🐍", "Obfuscate 🌫️", "Fastidious 🔍", "Capricious 🎲", "Equivocate ⚖️", "Mellifluous 🎵", "Perspicacious 🦉", "Quixotic 🐉", "Recalcitrant 🪨", "Serendipity ✨", "Trepidation 😰", "Venerable 🏛️", "Zephyr 🌬️", "Acrimonious 😠", "Alacrity ⚡", "Anachronism 🕰️", "Cacophony 🔊", "Callous 🧊", "Chicanery 🃏", "Deference 🙇", "Despot 👑", "Didactic 📚", "Ebullient 🥳", "Egregious 🚫", "Enervate 😫", "Epitome 🏆", "Esoteric 🔮", "Evanescent 💨", "Exonerate ⚖️", "Facetious 🤡", "Fatuous 🤪", "Fiduciary 💰", "Gargantuan 🐘", "Grandiloquent 🗣️", "Hackneyed 🥱", "Hegemony 👑", "Hubris 👑", "Iconoclast 🔨", "Idiosyncrasy 🤪", "Ignominious 👎", "Impeccable ✨", "Implacable 🪨", "Inane 🤡", "Inchoate 🌱", "Incontrovertible ✅", "Indefatigable 🏃", "Ineffable 😶", "Inexorable 🚂", "Ingenuous 😇", "Inimical ⚔️", "Innocuous 🐰", "Insidious 🐍", "Intransigent 🪨", "Inveterate ⏳", "Irascible 😠", "Juxtaposition ⚖️", "Laconic 🤫", "Languid 🦥", "Lugubrious 🌧️", "Magnanimous 🤲", "Malinger 🤒", "Martinet 👮", "Maudlin 😢", "Mendacious 🤥", "Mercurial 🌡️", "Misanthrope 😠", "Modicum 🤏", "Morose 🌧️", "Multifarious 🌈", "Munificent 💰", "Myriad ✨", "Nadir 📉", "Nefarious 🦹", "Neophyte 🌱", "Nondescript 🌫️", "Obdurate 🪨", "Oblique 📐", "Obsequious 🙇", "Obstreperous 🔊", "Officious 👔", "Omnipotent ⚡", "Onerous 🏋️", "Opaque ⬛", "Opprobrium 👎", "Orthodox ⛪", "Ostensible 🎭", "Ostentatious 💎", "Palliate 🩹", "Panacea 💊", "Paradoxical 🔄", "Pariah 🚫", "Parochial 🏡", "Parsimonious 🪙", "Pathos 😢", "Paucity 📉", "Pedantic 🤓", "Pejorative 👎", "Penchant ❤️", "Penury 🪙", "Perfunctory 🥱", "Peripatetic 🚶", "Pernicious ☢️", "Perspicacity 🦉", "Pervasive 🌫️", "Petulant 👶", "Phlegmatic 😐", "Pithy 🎯", "Placate 🕊️", "Platitude 🥱", "Plethora 📈", "Polemic ⚔️", "Pragmatism 🛠️", "Precipitate ⚡", "Precocious 👶", "Predilection ❤️", "Prescient 🔮", "Pretentious 🎩", "Prevaricate 🤥", "Pristine ✨", "Probity ⚖️", "Proclivity 📈", "Prodigal 💸", "Prodigious 🐘", "Profligate 💸", "Profuse 💦", "Proliferate 📈", "Propensity 📈", "Propitious 🍀", "Prosaic 🥱", "Proscribe 🚫", "Provincial 🏡", "Puerile 👶", "Pugnacious 🥊", "Punctilious ⏱️", "Pundit 🧠", "Pungent 🌶️", "Pusillanimous 🐔", "Querulous 😫", "Quiescent 🤫", "Quotidian 📅", "Rancor 😠", "Recalcitrance 🪨", "Recondite 📚", "Refractory 🪨", "Relegate ⬇️", "Remonstrate 🗣️", "Reticent 🤫", "Reverence 🙏", "Ribald 🤪", "Sagacity 🦉", "Salient 🎯", "Salubrious 🌱", "Sanctimonious 😇", "Sanguine 🩸", "Sartorial 👔", "Satiate 😋", "Scintillating ✨", "Scurrilous 🤬", "Sedition ✊", "Sedulous 🐝", "Sentient 🧠", "Solipsism 🪞", "Soporific 😴", "Spurious 🤥", "Squalid 🗑️", "Stolid 🪨", "Stricture 🚧", "Strident 🔊", "Stultify 😵", "Stymie 🛑", "Subjugate 👑", "Subterfuge 🥷", "Supercilious 😒", "Supine 🛌", "Supplant 🔄", "Surfeit 🤢", "Sycophancy 🐍", "Tacit 🤫", "Taciturn 🤫", "Tantamount ⚖️", "Temerity 🤡", "Tenuous 🧵", "Timorous 😰", "Torpid 🦥", "Tortuous 🐍", "Tractable 🐕", "Transient 💨", "Travesty 🤡", "Trenchant 🗡️", "Truculent 🥊", "Turpitude 🗑️", "Ubiquity 🌍", "Umbrage 😠", "Unctuous 🛢️", "Undulate 🌊", "Upbraid 🗣️", "Usurp 👑", "Vacillate ⚖️", "Vacuous 🌫️", "Vapid 🥱", "Variegated 🌈", "Vehement 🔥", "Venal 💰", "Veneer 🪵", "Veracity ✅", "Verbose 🗣️", "Verisimilitude 🎭", "Vernacular 🗣️", "Vestige 👣", "Vex 😠", "Vicarious 🎭", "Vicissitude 🔄", "Vilify 🤬", "Viscous 🍯", "Vitiate ☢️", "Vituperate 🤬", "Vociferous 🔊", "Volatile 🌋", "Voluble 🗣️", "Voracity 🍽️", "Wane 📉", "Wanton 🤪", "Wily 🦊", "Winsome 😊", "Wistful 😔", "Wry 😏", "Xenophobia 🚫", "Zealot 🔥"
+    ];
 
     // Combine into level-tagged objects — used for auto-fill AND level badge display
-    const FALLBACK_VOCABULARY = [
-        ...B1_WORDS.map(w => ({ word: w, level: 'B1+' })),
-        ...B2_WORDS.map(w => ({ word: w, level: 'B2'  })),
-        ...B2_PLUS_WORDS.map(w => ({ word: w, level: 'B2+'  }))
-    ];
+    let FALLBACK_VOCABULARY = [];
+    if (state.selectedLevels.includes('B1+')) FALLBACK_VOCABULARY.push(...B1_WORDS.map(w => ({ word: w, level: 'B1+' })));
+    if (state.selectedLevels.includes('B2')) FALLBACK_VOCABULARY.push(...B2_WORDS.map(w => ({ word: w, level: 'B2' })));
+    if (state.selectedLevels.includes('B2+')) FALLBACK_VOCABULARY.push(...B2_PLUS_WORDS.map(w => ({ word: w, level: 'B2+' })));
+    if (state.selectedLevels.includes('C1')) FALLBACK_VOCABULARY.push(...C1_WORDS.map(w => ({ word: w, level: 'C1' })));
+    if (state.selectedLevels.includes('C2')) FALLBACK_VOCABULARY.push(...C2_WORDS.map(w => ({ word: w, level: 'C2' })));
+    
+    // Safety fallback in case they unchecked everything but we bypassed the check somehow
+    if (FALLBACK_VOCABULARY.length === 0) {
+        FALLBACK_VOCABULARY.push(...B1_WORDS.map(w => ({ word: w, level: 'B1+' })));
+    }
 
     // Auto-fill using the full vocabulary pool for any remaining gaps
     if (state.allWords.length < FALLBACK_VOCABULARY.length) {
@@ -474,7 +496,7 @@ document.getElementById('btn-start-turn').addEventListener('click', () => {
     document.getElementById('game-controls-active').classList.remove('hidden');
     state.turnScore = 0;
     state.lastGuessedCards = [];
-    state.turnLevelCycle = ['B1+', 'B1+', 'B2', 'B2+'];
+    state.turnLevelCycle = state.selectedLevels.length > 0 ? [...state.selectedLevels] : ['B1+'];
     state.currentCycleIndex = 0;
     state.isTurnActive = true;
     
@@ -650,6 +672,8 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     let points = 1;
     if (scoredCard.level === 'B2') points = 2;
     if (scoredCard.level === 'B2+') points = 3;
+    if (scoredCard.level === 'C1') points = 4;
+    if (scoredCard.level === 'C2') points = 5;
     
     state.turnScore += points;
     state.teams[state.currentTeamIndex].score += points;
@@ -688,6 +712,8 @@ document.getElementById('btn-undo').addEventListener('click', () => {
     let points = 1;
     if (cardToReturn.level === 'B2') points = 2;
     if (cardToReturn.level === 'B2+') points = 3;
+    if (cardToReturn.level === 'C1') points = 4;
+    if (cardToReturn.level === 'C2') points = 5;
     
     state.turnScore = Math.max(0, state.turnScore - points);
     state.teams[state.currentTeamIndex].score = Math.max(0, state.teams[state.currentTeamIndex].score - points);
@@ -796,18 +822,56 @@ function endTurn(wasFoul) {
     document.getElementById('summary-score-earned').textContent = state.turnScore;
     document.getElementById('summary-words-left').textContent = state.deck.length;
     
-    state.currentTeamIndex = (state.currentTeamIndex + 1) % state.teams.length;
-    document.getElementById('summary-next-team').textContent = state.teams[state.currentTeamIndex].name;
+    const selectEl = document.getElementById('select-next-team');
+    const summaryNext = document.getElementById('summary-next-team');
+    selectEl.innerHTML = '';
+    
+    let teamIndices = state.teams.map((t, i) => i);
+    teamIndices.sort((a, b) => {
+        const turnsA = state.teams[a].turnsPlayed || 0;
+        const turnsB = state.teams[b].turnsPlayed || 0;
+        if (turnsA !== turnsB) return turnsA - turnsB;
+        
+        // If tied, natural rotation from the team that just played
+        let distA = a - state.currentTeamIndex;
+        if (distA <= 0) distA += state.teams.length;
+        let distB = b - state.currentTeamIndex;
+        if (distB <= 0) distB += state.teams.length;
+        
+        return distA - distB;
+    });
+
+    const recommendedNextIndex = teamIndices[0];
+    
+    state.teams.forEach((t, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        const turns = t.turnsPlayed || 0;
+        opt.textContent = `${t.name} (${turns} turn${turns === 1 ? '' : 's'})`;
+        selectEl.appendChild(opt);
+    });
+    
+    selectEl.value = recommendedNextIndex;
+    selectEl.style.display = 'inline-block';
+    summaryNext.style.display = 'none';
     
     const btnNext = document.getElementById('btn-next-turn');
     if (state.totalGameDuration > 0 && state.totalGameTimeLeft <= 0) {
-        if (state.currentTeamIndex === 0) {
-            document.getElementById('summary-next-team').innerHTML = "<span class='text-danger'>Game Over - Time's Up!</span>";
+        const minTurns = state.teams[teamIndices[0]].turnsPlayed || 0;
+        const maxTurns = state.teams[teamIndices[state.teams.length - 1]].turnsPlayed || 0;
+        
+        if (minTurns === maxTurns) {
+            selectEl.style.display = 'none';
+            summaryNext.style.display = 'block';
+            summaryNext.innerHTML = "<span class='text-danger'>Game Over - Time's Up!</span>";
             btnNext.textContent = "End Game";
             btnNext.className = "btn-primary mt-4 btn-large pulse";
             btnNext.style.background = "var(--danger)";
         } else {
-            document.getElementById('summary-next-team').innerHTML = `${state.teams[state.currentTeamIndex].name} <span style="font-size: 0.8rem; color: #f59e0b; display: block; margin-top: 0.5rem;">(Final turns to balance the round!)</span>`;
+            selectEl.style.display = 'none';
+            summaryNext.style.display = 'block';
+            summaryNext.innerHTML = `${state.teams[recommendedNextIndex].name} <span style="font-size: 0.8rem; color: #f59e0b; display: block; margin-top: 0.5rem;">(Final turns to balance the round!)</span>`;
+            state.currentTeamIndex = recommendedNextIndex; // Lock it in for the final balance turns
             btnNext.textContent = "Continue";
             btnNext.className = "btn-primary mt-4 btn-large";
             btnNext.style.background = "";
@@ -822,10 +886,22 @@ function endTurn(wasFoul) {
 }
 
 document.getElementById('btn-next-turn').addEventListener('click', () => {
+    const selectEl = document.getElementById('select-next-team');
+    if (selectEl.style.display !== 'none') {
+        state.currentTeamIndex = parseInt(selectEl.value, 10);
+    }
+
     if (state.deck.length === 0) {
         endGame();
-    } else if (state.totalGameDuration > 0 && state.totalGameTimeLeft <= 0 && state.currentTeamIndex === 0) {
-        endGame();
+    } else if (state.totalGameDuration > 0 && state.totalGameTimeLeft <= 0) {
+        const turns = state.teams.map(t => t.turnsPlayed || 0);
+        const minTurns = Math.min(...turns);
+        const maxTurns = Math.max(...turns);
+        if (minTurns === maxTurns) {
+            endGame();
+        } else {
+            startTurnSetup();
+        }
     } else {
         startTurnSetup();
     }
@@ -902,7 +978,7 @@ function endGame() {
     setTimeout(() => playBeep(800, 'sine', 0.1), 150);
     setTimeout(() => playBeep(1000, 'sine', 0.3), 300);
     
-    const counts = { 'B1+': 0, 'B2': 0, 'B2+': 0 };
+    const counts = { 'B1+': 0, 'B2': 0, 'B2+': 0, 'C1': 0, 'C2': 0 };
     state.allWords.forEach(w => {
         const isInDeck = state.deck.some(d => d.word === w.word);
         if (!isInDeck && counts[w.level] !== undefined) {
@@ -915,11 +991,11 @@ function endGame() {
     guessedWordsChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['B1+', 'B2', 'B2+'],
+            labels: ['B1+', 'B2', 'B2+', 'C1', 'C2'],
             datasets: [{
                 label: 'Words Guessed',
-                data: [counts['B1+'], counts['B2'], counts['B2+']],
-                backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6'],
+                data: [counts['B1+'], counts['B2'], counts['B2+'], counts['C1'], counts['C2']],
+                backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444'],
                 borderRadius: 6
             }]
         },
