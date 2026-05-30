@@ -148,9 +148,9 @@ socket.on('projectorSync', (data) => {
                 pill.style.background = 'rgba(16, 185, 129, 0.2)';
                 pill.style.border = '1px solid rgba(16, 185, 129, 0.4)';
                 pill.style.color = 'white';
-                pill.style.padding = '0.4rem 1.2rem';
+                pill.style.padding = '0.6rem 1.5rem';
                 pill.style.borderRadius = '999px';
-                pill.style.fontSize = '1.3rem';
+                pill.style.fontSize = '1.8rem';
                 pill.style.fontWeight = 'bold';
                 pill.style.whiteSpace = 'nowrap';
                 pill.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
@@ -187,10 +187,10 @@ socket.on('projectorSync', (data) => {
                 row.style.display = 'flex';
                 row.style.justifyContent = 'space-between';
                 row.style.alignItems = 'center';
-                row.style.padding = '0.4rem 0.6rem';
+                row.style.padding = '1rem 1.5rem';
                 row.style.background = isCurrent ? 'rgba(139, 92, 246, 0.2)' : 'rgba(0,0,0,0.3)';
                 row.style.border = isCurrent ? '1px solid var(--primary)' : '1px solid transparent';
-                row.style.borderRadius = '10px';
+                row.style.borderRadius = '16px';
                 row.style.transition = 'all 0.3s ease';
                 
                 // Add a crown for 1st place if score > 0
@@ -198,11 +198,11 @@ socket.on('projectorSync', (data) => {
                 const turnsCount = t.turnsPlayed || 0;
                 
                 row.innerHTML = `
-                    <div style="flex: 1; min-width: 0; font-size: 0.85rem; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.1; padding-right: 5px; color: ${isCurrent ? 'white' : 'var(--text-light)'}; font-weight: ${isCurrent ? 'bold' : 'normal'};">
+                    <div style="flex: 1; min-width: 0; font-size: 1.8rem; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.2; padding-right: 15px; color: ${isCurrent ? 'white' : 'var(--text-light)'}; font-weight: ${isCurrent ? 'bold' : 'normal'};">
                         ${crown}${t.name}
-                        <span style="font-size: 0.65rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 0.1rem 0.4rem; border-radius: 4px; margin-left: 0.3rem; white-space: nowrap;">${turnsCount} ${turnsCount === 1 ? 'turn' : 'turns'}</span>
+                        <span style="display: inline-block; font-size: 1rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 0.2rem 0.6rem; border-radius: 6px; margin-left: 0.5rem; white-space: nowrap; vertical-align: middle;">${turnsCount} ${turnsCount === 1 ? 'turn' : 'turns'}</span>
                     </div>
-                    <div style="font-size: 1.1rem; color: var(--success); font-weight: bold; font-family: var(--font-heading); flex-shrink: 0; margin-left: 0.3rem;">
+                    <div style="font-size: 2.5rem; color: var(--success); font-weight: bold; font-family: var(--font-heading); flex-shrink: 0; margin-left: 0.5rem;">
                         ${t.score}
                     </div>
                 `;
