@@ -26,7 +26,8 @@ let state = {
     roomId: null,
     isTurnActive: false,
     selectedLevels: ['B1+', 'B2', 'B2+', 'C1', 'C2'],
-    turnLevelCycle: ['B1+', 'B1+', 'B2', 'B2+']
+    turnLevelCycle: ['B1+', 'B1+', 'B2', 'B2+'],
+    gameMode: 'device' // 'device' or 'hotseat'
 };
 
 let guessedWordsChart = null;
@@ -163,6 +164,12 @@ const inputSeconds = document.getElementById('timer-seconds');
 document.getElementById('btn-open-submissions').addEventListener('click', () => {
     state.teams = []; // Reset teams on new room creation
     
+    // Capture Game Mode
+    const selectedMode = document.querySelector('input[name="game-mode"]:checked');
+    if (selectedMode) {
+        state.gameMode = selectedMode.value;
+    }
+    
     state.selectedLevels = [];
     document.querySelectorAll('.vocab-level-cb:checked').forEach(cb => {
         state.selectedLevels.push(cb.value);
@@ -189,7 +196,11 @@ document.getElementById('btn-open-submissions').addEventListener('click', () => 
     const btnProj = document.getElementById('btn-open-projector');
     if(btnProj) {
         btnProj.onclick = () => window.open(projUrl, '_blank');
-        btnProj.style.display = 'inline-block';
+        if (state.gameMode === 'device') {
+            btnProj.style.display = 'inline-block';
+        } else {
+            btnProj.style.display = 'none'; // Hot Seat mode does not use projector
+        }
     }
     
     // Make the QR code point to the current production URL dynamically
@@ -377,6 +388,13 @@ function startGame() {
     
     state.teams.forEach(t => t.score = 0);
     state.currentTeamIndex = 0;
+    
+    if (state.gameMode === 'hotseat') {
+        document.getElementById('round-rules-text').innerHTML = `<strong>HOT SEAT MODE:</strong> Project this screen to the TV. The guesser sits with their back to the TV. The class describes the word on the screen. The Teacher clicks 'Got It!' or 'FOUL!'.`;
+        document.getElementById('screen-gameplay').style.display = 'flex'; // For the split layout
+    } else {
+        document.getElementById('round-rules-text').innerHTML = `Describe the words to your teammate using spoken clues ONLY. You <strong>CANNOT</strong> act them out, and you <strong>CANNOT</strong> say the word itself or parts of it at any time!`;
+    }
     
     showScreen('roundIntro');
     syncToProjector();
@@ -940,6 +958,45 @@ function syncToProjector(eventName = null) {
         wordCount: currentWords,
         lastGuessedCards: state.lastGuessedCards || [],
         event: eventName
+    });
+    
+    // Update local Hot Seat leaderboard if active
+    if (state.gameMode === 'hotseat' && (phase === 'playing' || phase === 'round-intro' || phase === 'turn-summary')) {
+        updateHotseatLeaderboard();
+    }
+}
+
+function updateHotseatLeaderboard() {
+    const container = document.getElementById('hotseat-leaderboard');
+    const list = document.getElementById('hotseat-leaderboard-list');
+    if (!container || !list) return;
+    
+    container.style.display = 'block';
+    list.innerHTML = '';
+    
+    // Sort teams by score
+    const sortedTeams = [...state.teams].sort((a, b) => b.score - a.score);
+    
+    sortedTeams.forEach((team, index) => {
+        const isCurrent = (team === state.teams[state.currentTeamIndex]) && state.isTurnActive;
+        const div = document.createElement('div');
+        div.style.padding = '0.8rem 1rem';
+        div.style.borderRadius = '8px';
+        div.style.background = isCurrent ? 'rgba(139, 92, 246, 0.3)' : 'rgba(0,0,0,0.3)';
+        div.style.border = isCurrent ? '1px solid rgba(139, 92, 246, 0.6)' : '1px solid rgba(255,255,255,0.1)';
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        
+        div.innerHTML = `
+            <span style="font-weight: ${isCurrent ? 'bold' : 'normal'}; color: ${isCurrent ? '#fff' : 'var(--text-muted)'}; font-size: 1.1rem;">
+                ${index + 1}. ${team.name}
+            </span>
+            <span style="font-weight: bold; font-size: 1.3rem; color: var(--success);">
+                ${team.score}
+            </span>
+        `;
+        list.appendChild(div);
     });
 }
 
