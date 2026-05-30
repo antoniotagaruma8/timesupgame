@@ -586,6 +586,11 @@ input:focus {
     100% { transform: scale(1.05); filter: brightness(1.2); }
 }
 
+@keyframes fadeSlideUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
 .steps-grid {
     display: flex;
     flex-direction: column;

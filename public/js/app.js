@@ -883,6 +883,7 @@ function endTurn(wasFoul) {
     summaryNext.style.display = 'none';
     
     const btnNext = document.getElementById('btn-next-turn');
+    const btnEndSummary = document.getElementById('btn-end-game-summary');
     if (state.totalGameDuration > 0 && state.totalGameTimeLeft <= 0) {
         const minTurns = state.teams[teamIndices[0]].turnsPlayed || 0;
         const maxTurns = state.teams[teamIndices[state.teams.length - 1]].turnsPlayed || 0;
@@ -892,21 +893,27 @@ function endTurn(wasFoul) {
             summaryNext.style.display = 'block';
             summaryNext.innerHTML = "<span class='text-danger'>Game Over - Time's Up!</span>";
             btnNext.textContent = "End Game";
-            btnNext.className = "btn-primary mt-4 btn-large pulse";
+            btnNext.className = "btn-primary btn-large pulse";
             btnNext.style.background = "var(--danger)";
+            btnNext.style.flex = "";
+            btnEndSummary.style.display = 'none'; // Hide duplicate
         } else {
             selectEl.style.display = 'none';
             summaryNext.style.display = 'block';
             summaryNext.innerHTML = `${state.teams[recommendedNextIndex].name} <span style="font-size: 0.8rem; color: #f59e0b; display: block; margin-top: 0.5rem;">(Final turns to balance the round!)</span>`;
             state.currentTeamIndex = recommendedNextIndex; // Lock it in for the final balance turns
             btnNext.textContent = "Continue";
-            btnNext.className = "btn-primary mt-4 btn-large";
+            btnNext.className = "btn-primary btn-large";
             btnNext.style.background = "";
+            btnNext.style.flex = "2";
+            btnEndSummary.style.display = '';
         }
     } else {
         btnNext.textContent = "Continue";
-        btnNext.className = "btn-primary mt-4 btn-large";
+        btnNext.className = "btn-primary btn-large";
         btnNext.style.background = "";
+        btnNext.style.flex = "2";
+        btnEndSummary.style.display = '';
     }
     
     syncToProjector();
@@ -931,6 +938,37 @@ document.getElementById('btn-next-turn').addEventListener('click', () => {
         }
     } else {
         startTurnSetup();
+    }
+});
+
+// --- End Game Buttons ---
+
+document.getElementById('btn-end-game-summary').addEventListener('click', () => {
+    if (confirm('End the game now and show final scores?')) {
+        endGame();
+    }
+});
+
+document.getElementById('btn-end-game-pre').addEventListener('click', () => {
+    if (confirm('End the game now and show final scores?')) {
+        endGame();
+    }
+});
+
+// Hover effects for end game buttons
+['btn-end-game-summary', 'btn-end-game-pre'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+        btn.addEventListener('mouseenter', () => {
+            btn.style.background = 'rgba(239,68,68,0.3)';
+            btn.style.borderColor = 'rgba(239,68,68,0.7)';
+            btn.style.opacity = '1';
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.background = id === 'btn-end-game-pre' ? 'transparent' : 'rgba(239,68,68,0.15)';
+            btn.style.borderColor = 'rgba(239,68,68,0.4)';
+            btn.style.opacity = id === 'btn-end-game-pre' ? '0.7' : '1';
+        });
     }
 });
 
@@ -1022,10 +1060,69 @@ function endGame() {
         state.globalTimerInterval = null;
     }
     
+    // Also clear the turn timer if running
+    if (state.timer) {
+        clearInterval(state.timer);
+        state.timer = null;
+    }
+    state.isTurnActive = false;
+    
     showScreen('gameOver');
     
     const sortedTeams = [...state.teams].sort((a, b) => b.score - a.score);
     
+    // --- Winner Podium ---
+    const podium = document.getElementById('winner-podium');
+    podium.innerHTML = '';
+    
+    const podiumConfig = [
+        { place: 2, height: '120px', medal: '🥈', color: '#94a3b8', gradStart: 'rgba(148,163,184,0.25)', gradEnd: 'rgba(148,163,184,0.05)' },
+        { place: 1, height: '160px', medal: '🥇', color: '#fbbf24', gradStart: 'rgba(251,191,36,0.3)', gradEnd: 'rgba(251,191,36,0.05)' },
+        { place: 3, height: '90px', medal: '🥉', color: '#cd7f32', gradStart: 'rgba(205,127,50,0.25)', gradEnd: 'rgba(205,127,50,0.05)' }
+    ];
+    
+    podiumConfig.forEach(cfg => {
+        const team = sortedTeams[cfg.place - 1];
+        if (!team) return;
+        
+        const col = document.createElement('div');
+        col.style.cssText = `display: flex; flex-direction: column; align-items: center; gap: 0.3rem; width: ${cfg.place === 1 ? '160px' : '130px'}; animation: fadeSlideUp 0.6s ease ${cfg.place * 0.15}s both;`;
+        
+        // Medal
+        const medal = document.createElement('div');
+        medal.style.cssText = `font-size: ${cfg.place === 1 ? '2.5rem' : '1.8rem'}; line-height: 1; ${cfg.place === 1 ? 'animation: pulse-slow 2s infinite alternate;' : ''}`;
+        medal.textContent = cfg.medal;
+        
+        // Team name
+        const name = document.createElement('div');
+        let nameFontSize = cfg.place === 1 ? '1.1rem' : '0.9rem';
+        if (team.name.length > 20) nameFontSize = '0.75rem';
+        else if (team.name.length > 12) nameFontSize = '0.85rem';
+        name.style.cssText = `font-weight: bold; font-size: ${nameFontSize}; color: white; text-align: center; word-break: break-word; max-width: 100%;`;
+        name.textContent = team.name;
+        
+        // Score
+        const score = document.createElement('div');
+        score.style.cssText = `font-weight: 800; font-size: ${cfg.place === 1 ? '2rem' : '1.4rem'}; color: ${cfg.color}; line-height: 1;`;
+        score.textContent = `${team.score} pts`;
+        
+        // Podium block
+        const block = document.createElement('div');
+        block.style.cssText = `width: 100%; height: ${cfg.height}; background: linear-gradient(to top, ${cfg.gradStart}, ${cfg.gradEnd}); border: 1px solid ${cfg.color}40; border-radius: 12px 12px 4px 4px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 0.5rem; margin-top: 0.3rem;`;
+        
+        const placeNum = document.createElement('span');
+        placeNum.style.cssText = `font-size: 2rem; font-weight: 800; color: ${cfg.color}; opacity: 0.3;`;
+        placeNum.textContent = cfg.place;
+        block.appendChild(placeNum);
+        
+        col.appendChild(medal);
+        col.appendChild(name);
+        col.appendChild(score);
+        col.appendChild(block);
+        podium.appendChild(col);
+    });
+    
+    // --- Full Scoreboard (all teams including 4th+) ---
     const board = document.getElementById('final-scoreboard');
     board.innerHTML = '';
     
@@ -1034,10 +1131,11 @@ function endGame() {
         row.className = `score-row ${index === 0 ? 'winner' : ''}`;
         
         const turnsCount = team.turnsPlayed || 0;
+        const placeEmoji = index === 0 ? '🏆' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
         
         row.innerHTML = `
             <div class="team-name-disp">
-                ${index === 0 ? '🏆 ' : ''}${index + 1}. ${team.name}
+                ${placeEmoji ? placeEmoji + ' ' : ''}${index + 1}. ${team.name}
                 <span style="font-size: 0.7rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 0.2rem 0.5rem; border-radius: 6px; margin-left: 0.5rem; font-weight: normal;">${turnsCount} ${turnsCount === 1 ? 'turn' : 'turns'}</span>
             </div>
             <div class="team-score-disp">${team.score} pts</div>
