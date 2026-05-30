@@ -391,7 +391,6 @@ function startGame() {
     
     if (state.gameMode === 'hotseat') {
         document.getElementById('round-rules-text').innerHTML = `<strong>HOT SEAT MODE:</strong> Project this screen to the TV. The guesser sits with their back to the TV. The class describes the word on the screen. The Teacher clicks 'Got It!' or 'FOUL!'.`;
-        document.getElementById('screen-gameplay').style.display = 'flex'; // For the split layout
     } else {
         document.getElementById('round-rules-text').innerHTML = `Describe the words to your teammate using spoken clues ONLY. You <strong>CANNOT</strong> act them out, and you <strong>CANNOT</strong> say the word itself or parts of it at any time!`;
     }
