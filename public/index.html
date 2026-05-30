@@ -363,9 +363,9 @@
             </div>
             </div>
 
-            <div id="hotseat-leaderboard" class="glass-panel" style="display: none; width: 320px; flex-shrink: 0; padding: 1.5rem; text-align: left; height: fit-content;">
-                <h3 style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem; color: #fff;">🏆 Leaderboard</h3>
-                <div id="hotseat-leaderboard-list" style="display: flex; flex-direction: column; gap: 0.8rem;">
+            <div id="hotseat-leaderboard" class="glass-panel" style="display: none; width: 320px; flex-shrink: 0; padding: 1.5rem; text-align: left; max-height: calc(100vh - 4rem); flex-direction: column;">
+                <h3 style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem; color: #fff; flex-shrink: 0;">🏆 Leaderboard</h3>
+                <div id="hotseat-leaderboard-list" style="display: flex; flex-direction: column; gap: 0.8rem; overflow-y: auto; padding-right: 0.5rem;">
                     <!-- Injected dynamically -->
                 </div>
             </div>

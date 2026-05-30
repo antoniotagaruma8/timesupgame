@@ -453,7 +453,17 @@ function startTurnSetup() {
     document.getElementById('game-controls-active').classList.add('hidden');
     
     const team = state.teams[state.currentTeamIndex];
-    document.getElementById('game-current-team').textContent = team.name;
+    const teamNameEl = document.getElementById('game-current-team');
+    teamNameEl.textContent = team.name;
+    
+    // Dynamically adjust font size for long names
+    if (team.name.length > 25) {
+        teamNameEl.style.fontSize = '1.0rem';
+    } else if (team.name.length > 15) {
+        teamNameEl.style.fontSize = '1.2rem';
+    } else {
+        teamNameEl.style.fontSize = '1.6rem';
+    }
     document.getElementById('game-words-remaining').textContent = state.deck.length;
     document.getElementById('game-current-score').textContent = '0';
     
@@ -970,7 +980,7 @@ function updateHotseatLeaderboard() {
     const list = document.getElementById('hotseat-leaderboard-list');
     if (!container || !list) return;
     
-    container.style.display = 'block';
+    container.style.display = 'flex';
     list.innerHTML = '';
     
     // Sort teams by score
@@ -986,12 +996,17 @@ function updateHotseatLeaderboard() {
         div.style.display = 'flex';
         div.style.justifyContent = 'space-between';
         div.style.alignItems = 'center';
+        div.style.gap = '0.5rem';
         
+        let nameFontSize = '1.1rem';
+        if (team.name.length > 25) nameFontSize = '0.8rem';
+        else if (team.name.length > 15) nameFontSize = '0.95rem';
+
         div.innerHTML = `
-            <span style="font-weight: ${isCurrent ? 'bold' : 'normal'}; color: ${isCurrent ? '#fff' : 'var(--text-muted)'}; font-size: 1.1rem;">
+            <span style="font-weight: ${isCurrent ? 'bold' : 'normal'}; color: ${isCurrent ? '#fff' : 'var(--text-muted)'}; font-size: ${nameFontSize}; word-wrap: break-word; overflow-wrap: break-word; flex: 1;">
                 ${index + 1}. ${team.name}
             </span>
-            <span style="font-weight: bold; font-size: 1.3rem; color: var(--success);">
+            <span style="font-weight: bold; font-size: 1.3rem; color: var(--success); flex-shrink: 0;">
                 ${team.score}
             </span>
         `;
