@@ -16,8 +16,11 @@
 </head>
 <body>
     <div id="app" class="app-container">
-        <!-- Global Copy Projector Link Button -->
-        <button id="btn-global-copy-projector" title="Open Projector View" style="position: fixed; top: 1rem; right: 1rem; z-index: 1000; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; cursor: pointer; color: white; font-size: 1.5rem; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.2s ease;">📺</button>
+        <!-- Global Floating Controls -->
+        <div id="global-floating-controls" style="position: fixed; top: 1rem; right: 1rem; z-index: 1000; display: flex; gap: 0.5rem; align-items: center;">
+            <button id="btn-global-end-game" title="End Game" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(239,68,68,0.3); border-radius: 50%; width: 50px; height: 50px; display: none; justify-content: center; align-items: center; cursor: pointer; color: #fca5a5; font-size: 1.5rem; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.2s ease;">🏁</button>
+            <button id="btn-global-copy-projector" title="Open Projector View" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; cursor: pointer; color: white; font-size: 1.5rem; backdrop-filter: blur(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.2s ease;">📺</button>
+        </div>
         
         <!-- 0a. Welcome Screen -->
         <section id="screen-welcome" class="screen active">
@@ -348,7 +351,6 @@
                     </div>
                     <button id="btn-update-timer" class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem; width: auto; margin-left: 0.5rem;">Update</button>
                 </div>
-                <button id="btn-end-game-pre" style="margin-top: 1rem; padding: 0.6rem 1.2rem; background: transparent; border: 1px solid rgba(239,68,68,0.4); color: #fca5a5; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-family: inherit; transition: all 0.2s ease; opacity: 0.7;" title="End the game and show final scores">🏁 End Game Now</button>
             </div>
 
             <div id="game-controls-active" class="controls-area hidden">
@@ -394,10 +396,7 @@
                     <div id="summary-next-team" style="font-weight: bold; font-size: 1.2rem; margin-top: 0.5rem; display: none;"></div>
                 </div>
 
-                <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 1.5rem;">
-                    <button id="btn-next-turn" class="btn-primary btn-large" style="flex: 2; min-width: 160px;">Continue</button>
-                    <button id="btn-end-game-summary" style="flex: 1; min-width: 120px; padding: 0.8rem 1.2rem; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #fca5a5; border-radius: 12px; cursor: pointer; font-size: 1rem; font-weight: 600; font-family: inherit; transition: all 0.2s ease;" title="End the game and show final scores">🏁 End Game</button>
-                </div>
+                <button id="btn-next-turn" class="btn-primary mt-4 btn-large">Continue</button>
             </div>
         </section>
 

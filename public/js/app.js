@@ -87,6 +87,14 @@ const screens = {
 function showScreen(screenId) {
     Object.values(screens).forEach(s => s.classList.remove('active'));
     screens[screenId].classList.add('active');
+    
+    // Show/hide global End Game button based on phase
+    const btnEndGame = document.getElementById('btn-global-end-game');
+    if (btnEndGame) {
+        const gamePhases = ['roundIntro', 'gameplay', 'turnSummary'];
+        btnEndGame.style.display = gamePhases.includes(screenId) ? 'flex' : 'none';
+    }
+    
     syncToProjector();
 }
 
@@ -883,7 +891,6 @@ function endTurn(wasFoul) {
     summaryNext.style.display = 'none';
     
     const btnNext = document.getElementById('btn-next-turn');
-    const btnEndSummary = document.getElementById('btn-end-game-summary');
     if (state.totalGameDuration > 0 && state.totalGameTimeLeft <= 0) {
         const minTurns = state.teams[teamIndices[0]].turnsPlayed || 0;
         const maxTurns = state.teams[teamIndices[state.teams.length - 1]].turnsPlayed || 0;
@@ -893,27 +900,21 @@ function endTurn(wasFoul) {
             summaryNext.style.display = 'block';
             summaryNext.innerHTML = "<span class='text-danger'>Game Over - Time's Up!</span>";
             btnNext.textContent = "End Game";
-            btnNext.className = "btn-primary btn-large pulse";
+            btnNext.className = "btn-primary mt-4 btn-large pulse";
             btnNext.style.background = "var(--danger)";
-            btnNext.style.flex = "";
-            btnEndSummary.style.display = 'none'; // Hide duplicate
         } else {
             selectEl.style.display = 'none';
             summaryNext.style.display = 'block';
             summaryNext.innerHTML = `${state.teams[recommendedNextIndex].name} <span style="font-size: 0.8rem; color: #f59e0b; display: block; margin-top: 0.5rem;">(Final turns to balance the round!)</span>`;
             state.currentTeamIndex = recommendedNextIndex; // Lock it in for the final balance turns
             btnNext.textContent = "Continue";
-            btnNext.className = "btn-primary btn-large";
+            btnNext.className = "btn-primary mt-4 btn-large";
             btnNext.style.background = "";
-            btnNext.style.flex = "2";
-            btnEndSummary.style.display = '';
         }
     } else {
         btnNext.textContent = "Continue";
-        btnNext.className = "btn-primary btn-large";
+        btnNext.className = "btn-primary mt-4 btn-large";
         btnNext.style.background = "";
-        btnNext.style.flex = "2";
-        btnEndSummary.style.display = '';
     }
     
     syncToProjector();
@@ -941,35 +942,21 @@ document.getElementById('btn-next-turn').addEventListener('click', () => {
     }
 });
 
-// --- End Game Buttons ---
+// --- Global End Game Button ---
 
-document.getElementById('btn-end-game-summary').addEventListener('click', () => {
+const btnGlobalEndGame = document.getElementById('btn-global-end-game');
+btnGlobalEndGame.addEventListener('click', () => {
     if (confirm('End the game now and show final scores?')) {
         endGame();
     }
 });
-
-document.getElementById('btn-end-game-pre').addEventListener('click', () => {
-    if (confirm('End the game now and show final scores?')) {
-        endGame();
-    }
+btnGlobalEndGame.addEventListener('mouseenter', () => {
+    btnGlobalEndGame.style.background = 'rgba(239,68,68,0.35)';
+    btnGlobalEndGame.style.borderColor = 'rgba(239,68,68,0.7)';
 });
-
-// Hover effects for end game buttons
-['btn-end-game-summary', 'btn-end-game-pre'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) {
-        btn.addEventListener('mouseenter', () => {
-            btn.style.background = 'rgba(239,68,68,0.3)';
-            btn.style.borderColor = 'rgba(239,68,68,0.7)';
-            btn.style.opacity = '1';
-        });
-        btn.addEventListener('mouseleave', () => {
-            btn.style.background = id === 'btn-end-game-pre' ? 'transparent' : 'rgba(239,68,68,0.15)';
-            btn.style.borderColor = 'rgba(239,68,68,0.4)';
-            btn.style.opacity = id === 'btn-end-game-pre' ? '0.7' : '1';
-        });
-    }
+btnGlobalEndGame.addEventListener('mouseleave', () => {
+    btnGlobalEndGame.style.background = 'rgba(0,0,0,0.5)';
+    btnGlobalEndGame.style.borderColor = 'rgba(239,68,68,0.3)';
 });
 
 // --- PROJECTOR SYNC ---
