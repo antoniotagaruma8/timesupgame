@@ -1291,24 +1291,52 @@ async function populateDictionary() {
                 continue;
             }
             const data = await res.json();
-            const meaning = data[0]?.meanings[0];
-            const defObj = meaning?.definitions[0];
-            if (!meaning || !defObj) {
+            
+            let displayDefs = [];
+            
+            // 1. Try to find the first definition that has an example sentence (usually the most common)
+            let foundWithExample = false;
+            if (data[0] && data[0].meanings) {
+                for (const meaning of data[0].meanings) {
+                    for (const def of meaning.definitions) {
+                        if (def.example && !foundWithExample) {
+                            displayDefs.push({ pos: meaning.partOfSpeech, defObj: def });
+                            foundWithExample = true;
+                            break;
+                        }
+                    }
+                    if (foundWithExample) break;
+                }
+                
+                // 2. Fill in other top meanings until we have up to 2 definitions shown
+                for (const meaning of data[0].meanings) {
+                    if (displayDefs.length >= 2) break;
+                    const firstDef = meaning.definitions[0];
+                    if (firstDef && !displayDefs.some(d => d.defObj.definition === firstDef.definition)) {
+                        displayDefs.push({ pos: meaning.partOfSpeech, defObj: firstDef });
+                    }
+                }
+            }
+            
+            if (displayDefs.length === 0) {
                 defContent.innerHTML = '<span style="color: #fca5a5;">Definition not found.</span>';
                 continue;
             }
             
-            const pos = meaning.partOfSpeech || 'unknown';
-            const definition = defObj.definition;
-            const example = defObj.example;
-            
-            let html = `<div style="margin-bottom: 0.5rem;"><span style="color: var(--warning); font-style: italic; font-size: 0.85rem; margin-right: 0.5rem; text-transform: lowercase;">${pos}.</span> ${definition}</div>`;
-            
-            if (example) {
-                const regex = new RegExp(`(${cleanWord})`, 'gi');
-                const highlightedExample = example.replace(regex, '<strong style="color: #10b981; font-weight: 800; background: rgba(16,185,129,0.15); padding: 0 0.2rem; border-radius: 4px;">$1</strong>');
-                html += `<div style="color: var(--text-muted); font-style: italic; font-size: 0.95rem; padding-left: 0.8rem; border-left: 3px solid rgba(255,255,255,0.2);">"${highlightedExample}"</div>`;
-            }
+            let html = '';
+            displayDefs.forEach(item => {
+                const pos = item.pos || 'unknown';
+                const definition = item.defObj.definition;
+                const example = item.defObj.example;
+                
+                html += `<div style="margin-bottom: 0.3rem;"><span style="color: var(--warning); font-style: italic; font-size: 0.85rem; margin-right: 0.5rem; text-transform: lowercase;">${pos}.</span> ${definition}</div>`;
+                
+                if (example) {
+                    const regex = new RegExp(`(${cleanWord})`, 'gi');
+                    const highlightedExample = example.replace(regex, '<strong style="color: #10b981; font-weight: 800; background: rgba(16,185,129,0.15); padding: 0 0.2rem; border-radius: 4px;">$1</strong>');
+                    html += `<div style="color: var(--text-muted); font-style: italic; font-size: 0.95rem; padding-left: 0.8rem; border-left: 3px solid rgba(255,255,255,0.2); margin-bottom: 0.6rem;">"${highlightedExample}"</div>`;
+                }
+            });
             
             defContent.innerHTML = html;
         } catch (e) {
