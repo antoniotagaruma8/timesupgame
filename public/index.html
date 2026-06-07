@@ -417,8 +417,13 @@
                 </div>
                 
                 <h3 style="margin-top: 2rem; margin-bottom: 0.5rem; font-size: 1.1rem; color: var(--text-muted);">Words Guessed Correctly</h3>
-                <div style="width: 100%; height: 200px; position: relative; margin: 0 auto; display: flex; justify-content: center;">
+                <div style="width: 100%; height: 200px; position: relative; margin: 0 auto; display: flex; justify-content: center; margin-bottom: 1.5rem;">
                     <canvas id="guessed-words-chart"></canvas>
+                </div>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.3rem; color: var(--text-muted);">Dictionary: Words Not Guessed</h3>
+                <div id="unguessed-dictionary" style="max-width: 600px; margin: 0 auto; text-align: left; display: flex; flex-direction: column; gap: 0.8rem; max-height: 400px; overflow-y: auto; padding: 0.5rem 1rem; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                    <!-- Filled dynamically -->
                 </div>
 
                 <div class="mt-4 pt-4 border-top">
