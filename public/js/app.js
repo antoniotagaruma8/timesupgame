@@ -1236,7 +1236,7 @@ function fireConfetti() {
     animate();
 }
 
-function populateDictionary() {
+async function populateDictionary() {
     const container = document.getElementById('unguessed-dictionary');
     if (!container) return;
     container.innerHTML = '';
@@ -1253,60 +1253,71 @@ function populateDictionary() {
         return;
     }
     
+    // First render all cards
+    const cardElements = [];
     wordsLeft.forEach(card => {
         const fullWordText = card.word || card;
-        
         const item = document.createElement('div');
-        item.style.cssText = 'background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.8rem; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column;';
-        item.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1.1rem; width: 100%;">
-                <span>${fullWordText}</span>
-                <span style="font-size: 0.8rem; color: var(--primary);">📖 View Definition</span>
-            </div>
-            <div class="def-content" style="display: none; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.95rem; color: #ddd; width: 100%;"></div>
-        `;
+        item.style.cssText = 'background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; margin-bottom: 0.8rem; display: flex; flex-direction: column;';
         
-        item.addEventListener('click', async function() {
-            const defContent = this.querySelector('.def-content');
-            if (defContent.style.display === 'block') {
-                defContent.style.display = 'none';
-                return;
-            }
-            defContent.style.display = 'block';
-            
-            if (defContent.innerHTML === '') {
-                defContent.innerHTML = '<span style="color: var(--text-muted);">Loading definition...</span>';
-                
-                // Clean emoji from word
-                const cleanWord = fullWordText.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/gu, '').trim();
-                
-                // If it has multiple words (like "Social Media"), link to Google search
-                if (cleanWord.split(' ').length > 1) {
-                    defContent.innerHTML = `<span style="color: #fca5a5;">Compound terms are best searched manually. <br><a href="https://www.google.com/search?q=define+${encodeURIComponent(cleanWord)}" target="_blank" style="color: var(--primary); text-decoration: underline; display: inline-block; margin-top: 0.5rem;">🔍 Search on Google</a></span>`;
-                    return;
-                }
-                
-                try {
-                    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${cleanWord}`);
-                    if (!res.ok) {
-                        defContent.innerHTML = '<span style="color: #fca5a5;">Definition not found in dictionary.</span>';
-                        return;
-                    }
-                    const data = await res.json();
-                    const definition = data[0]?.meanings[0]?.definitions[0]?.definition;
-                    if (definition) {
-                        defContent.innerHTML = definition;
-                    } else {
-                        defContent.innerHTML = '<span style="color: #fca5a5;">Definition not found.</span>';
-                    }
-                } catch (e) {
-                    defContent.innerHTML = '<span style="color: #fca5a5;">Error fetching definition.</span>';
-                }
-            }
-        });
+        const header = document.createElement('div');
+        header.style.cssText = 'font-weight: 800; font-size: 1.3rem; color: var(--primary); margin-bottom: 0.5rem;';
+        header.textContent = fullWordText;
         
+        const defContent = document.createElement('div');
+        defContent.style.cssText = 'font-size: 0.95rem; color: #ddd; line-height: 1.4;';
+        defContent.innerHTML = '<span style="color: var(--text-muted);">Loading definition...</span>';
+        
+        item.appendChild(header);
+        item.appendChild(defContent);
         container.appendChild(item);
+        
+        cardElements.push({ fullWordText, defContent });
     });
+    
+    // Then sequentially fetch to avoid rate limits
+    for (const { fullWordText, defContent } of cardElements) {
+        const cleanWord = fullWordText.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/gu, '').trim();
+        
+        if (cleanWord.split(' ').length > 1) {
+            defContent.innerHTML = `<span style="color: #fca5a5;">Compound terms are best searched manually. <a href="https://www.google.com/search?q=define+${encodeURIComponent(cleanWord)}" target="_blank" style="color: var(--primary); text-decoration: underline;">Search on Google</a></span>`;
+            continue;
+        }
+        
+        try {
+            const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${cleanWord}`);
+            if (!res.ok) {
+                defContent.innerHTML = '<span style="color: #fca5a5;">Definition not found.</span>';
+                continue;
+            }
+            const data = await res.json();
+            const meaning = data[0]?.meanings[0];
+            const defObj = meaning?.definitions[0];
+            if (!meaning || !defObj) {
+                defContent.innerHTML = '<span style="color: #fca5a5;">Definition not found.</span>';
+                continue;
+            }
+            
+            const pos = meaning.partOfSpeech || 'unknown';
+            const definition = defObj.definition;
+            const example = defObj.example;
+            
+            let html = `<div style="margin-bottom: 0.5rem;"><span style="color: var(--warning); font-style: italic; font-size: 0.85rem; margin-right: 0.5rem; text-transform: lowercase;">${pos}.</span> ${definition}</div>`;
+            
+            if (example) {
+                const regex = new RegExp(`(${cleanWord})`, 'gi');
+                const highlightedExample = example.replace(regex, '<strong style="color: #10b981; font-weight: 800; background: rgba(16,185,129,0.15); padding: 0 0.2rem; border-radius: 4px;">$1</strong>');
+                html += `<div style="color: var(--text-muted); font-style: italic; font-size: 0.95rem; padding-left: 0.8rem; border-left: 3px solid rgba(255,255,255,0.2);">"${highlightedExample}"</div>`;
+            }
+            
+            defContent.innerHTML = html;
+        } catch (e) {
+            defContent.innerHTML = '<span style="color: #fca5a5;">Error fetching definition.</span>';
+        }
+        
+        // Small delay to respect API limits
+        await new Promise(r => setTimeout(r, 100));
+    }
 }
 
 
