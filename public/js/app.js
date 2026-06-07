@@ -1282,12 +1282,12 @@ function populateDictionary() {
                 
                 // If it has multiple words (like "Social Media"), link to Google search
                 if (cleanWord.split(' ').length > 1) {
-                    defContent.innerHTML = \`<span style="color: #fca5a5;">Compound terms are best searched manually. <br><a href="https://www.google.com/search?q=define+\${encodeURIComponent(cleanWord)}" target="_blank" style="color: var(--primary); text-decoration: underline; display: inline-block; margin-top: 0.5rem;">🔍 Search on Google</a></span>\`;
+                    defContent.innerHTML = `<span style="color: #fca5a5;">Compound terms are best searched manually. <br><a href="https://www.google.com/search?q=define+${encodeURIComponent(cleanWord)}" target="_blank" style="color: var(--primary); text-decoration: underline; display: inline-block; margin-top: 0.5rem;">🔍 Search on Google</a></span>`;
                     return;
                 }
                 
                 try {
-                    const res = await fetch(\`https://api.dictionaryapi.dev/api/v2/entries/en/\${cleanWord}\`);
+                    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${cleanWord}`);
                     if (!res.ok) {
                         defContent.innerHTML = '<span style="color: #fca5a5;">Definition not found in dictionary.</span>';
                         return;
