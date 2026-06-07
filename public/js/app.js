@@ -10,6 +10,8 @@ let state = {
     // Word deck
     allWords: [], 
     deck: [],
+    globalSeenWords: [],
+    globalGuessedWords: [],
     
     // Turn state
     timer: null,
@@ -393,6 +395,8 @@ function shuffleArray(array) {
 function startGame() {
     state.deck = [...state.allWords];
     shuffleArray(state.deck);
+    state.globalSeenWords = [];
+    state.globalGuessedWords = [];
     
     state.teams.forEach(t => t.score = 0);
     state.currentTeamIndex = 0;
@@ -574,6 +578,9 @@ function drawCard() {
     cardEl.classList.add('anim-pop');
     
     const card = state.deck[state.currentWordIndex];
+    if (!state.globalSeenWords.some(c => (c.word || c) === (card.word || card))) {
+        state.globalSeenWords.push(card);
+    }
     const wordText = card.word || card; // handle both object and string
     const teamText = card.team || '';
     const levelText = card.level || '';
@@ -703,6 +710,7 @@ document.getElementById('btn-got-it').addEventListener('click', () => {
     if (state.currentWordIndex === -1) return;
     
     const scoredCard = state.deck.splice(state.currentWordIndex, 1)[0];
+    state.globalGuessedWords.push(scoredCard);
     
     let points = 1;
     if (scoredCard.level === 'B2') points = 2;
@@ -743,6 +751,7 @@ document.getElementById('btn-undo').addEventListener('click', () => {
     if (state.turnScore <= 0) return;
     
     const cardToReturn = state.lastGuessedCards.pop();
+    state.globalGuessedWords = state.globalGuessedWords.filter(c => (c.word || c) !== (cardToReturn.word || cardToReturn));
     
     let points = 1;
     if (cardToReturn.level === 'B2') points = 2;
@@ -1241,8 +1250,13 @@ async function populateDictionary() {
     if (!container) return;
     container.innerHTML = '';
     
+    // Filter only words that were seen (drawn) but never correctly guessed
+    const passedWords = state.globalSeenWords.filter(seen => 
+        !state.globalGuessedWords.some(guessed => (guessed.word || guessed) === (seen.word || seen))
+    );
+
     // Sort words alphabetically
-    const wordsLeft = [...state.deck].sort((a, b) => {
+    const wordsLeft = passedWords.sort((a, b) => {
         const wordA = (a.word || a).toString();
         const wordB = (b.word || b).toString();
         return wordA.localeCompare(wordB);
