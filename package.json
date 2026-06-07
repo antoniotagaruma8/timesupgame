@@ -13,6 +13,7 @@
   "dependencies": {
     "bad-words": "^4.0.0",
     "dictionary-en": "^4.0.0",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "nspell": "^2.1.5",
     "socket.io": "^4.8.3",

@@ -1275,76 +1275,53 @@ async function populateDictionary() {
         cardElements.push({ fullWordText, defContent });
     });
     
-    // Then sequentially fetch to avoid rate limits
-    for (const { fullWordText, defContent } of cardElements) {
-        const cleanWord = fullWordText.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/gu, '').trim();
+    // Gather all words to send to the backend batch API
+    const wordsToDefine = cardElements.map(c => {
+        return c.fullWordText.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/gu, '').trim();
+    });
+
+    try {
+        const res = await fetch('/api/define-batch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ words: wordsToDefine })
+        });
         
-        if (cleanWord.split(' ').length > 1) {
-            defContent.innerHTML = `<span style="color: #fca5a5;">Compound terms are best searched manually. <a href="https://www.google.com/search?q=define+${encodeURIComponent(cleanWord)}" target="_blank" style="color: var(--primary); text-decoration: underline;">Search on Google</a></span>`;
-            continue;
-        }
+        if (!res.ok) throw new Error('API Error');
         
-        try {
-            const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${cleanWord}`);
-            if (!res.ok) {
-                defContent.innerHTML = '<span style="color: #fca5a5;">Definition not found.</span>';
-                continue;
-            }
-            const data = await res.json();
+        const definitionsData = await res.json();
+        
+        // Map the results back to the UI
+        cardElements.forEach((card, index) => {
+            const cleanWord = wordsToDefine[index];
+            const defData = definitionsData.find(d => d.word.toLowerCase() === cleanWord.toLowerCase());
             
-            let displayDefs = [];
-            
-            // 1. Try to find the first definition that has an example sentence (usually the most common)
-            let foundWithExample = false;
-            if (data[0] && data[0].meanings) {
-                for (const meaning of data[0].meanings) {
-                    for (const def of meaning.definitions) {
-                        if (def.example && !foundWithExample) {
-                            displayDefs.push({ pos: meaning.partOfSpeech, defObj: def });
-                            foundWithExample = true;
-                            break;
-                        }
-                    }
-                    if (foundWithExample) break;
-                }
-                
-                // 2. Fill in other top meanings until we have up to 2 definitions shown
-                for (const meaning of data[0].meanings) {
-                    if (displayDefs.length >= 2) break;
-                    const firstDef = meaning.definitions[0];
-                    if (firstDef && !displayDefs.some(d => d.defObj.definition === firstDef.definition)) {
-                        displayDefs.push({ pos: meaning.partOfSpeech, defObj: firstDef });
-                    }
-                }
+            if (!defData || !defData.definition) {
+                card.defContent.innerHTML = '<span style="color: #fca5a5;">Definition could not be generated.</span>';
+                return;
             }
             
-            if (displayDefs.length === 0) {
-                defContent.innerHTML = '<span style="color: #fca5a5;">Definition not found.</span>';
-                continue;
+            const pos = defData.pos || 'unknown';
+            const definition = defData.definition;
+            const example = defData.example;
+            
+            let html = `<div style="margin-bottom: 0.3rem;"><span style="color: var(--warning); font-style: italic; font-size: 0.85rem; margin-right: 0.5rem; text-transform: lowercase;">${pos}.</span> ${definition}</div>`;
+            
+            if (example) {
+                // We use a case-insensitive regex to highlight the exact word
+                const regex = new RegExp(`(${cleanWord})`, 'gi');
+                const highlightedExample = example.replace(regex, '<strong style="color: #10b981; font-weight: 800; background: rgba(16,185,129,0.15); padding: 0 0.2rem; border-radius: 4px;">$1</strong>');
+                html += `<div style="color: var(--text-muted); font-style: italic; font-size: 0.95rem; padding-left: 0.8rem; border-left: 3px solid rgba(255,255,255,0.2); margin-bottom: 0.6rem;">"${highlightedExample}"</div>`;
             }
             
-            let html = '';
-            displayDefs.forEach(item => {
-                const pos = item.pos || 'unknown';
-                const definition = item.defObj.definition;
-                const example = item.defObj.example;
-                
-                html += `<div style="margin-bottom: 0.3rem;"><span style="color: var(--warning); font-style: italic; font-size: 0.85rem; margin-right: 0.5rem; text-transform: lowercase;">${pos}.</span> ${definition}</div>`;
-                
-                if (example) {
-                    const regex = new RegExp(`(${cleanWord})`, 'gi');
-                    const highlightedExample = example.replace(regex, '<strong style="color: #10b981; font-weight: 800; background: rgba(16,185,129,0.15); padding: 0 0.2rem; border-radius: 4px;">$1</strong>');
-                    html += `<div style="color: var(--text-muted); font-style: italic; font-size: 0.95rem; padding-left: 0.8rem; border-left: 3px solid rgba(255,255,255,0.2); margin-bottom: 0.6rem;">"${highlightedExample}"</div>`;
-                }
-            });
-            
-            defContent.innerHTML = html;
-        } catch (e) {
-            defContent.innerHTML = '<span style="color: #fca5a5;">Error fetching definition.</span>';
-        }
+            card.defContent.innerHTML = html;
+        });
         
-        // Small delay to respect API limits
-        await new Promise(r => setTimeout(r, 100));
+    } catch (e) {
+        console.error("AI Dictionary Error:", e);
+        cardElements.forEach(card => {
+            card.defContent.innerHTML = '<span style="color: #fca5a5;">Error contacting AI dictionary.</span>';
+        });
     }
 }
 

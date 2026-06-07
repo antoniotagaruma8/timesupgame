@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -11,6 +12,46 @@ const io = new Server(server, {
 
 // Serve static files from the public folder
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
+app.post('/api/define-batch', async (req, res) => {
+    try {
+        const words = req.body.words;
+        if (!words || !Array.isArray(words) || words.length === 0) {
+            return res.json([]);
+        }
+
+        const prompt = `You are an English teacher. Provide simple, highly accurate definitions for the following words suitable for B2-C2 ESL high school students. Return ONLY a valid JSON array. Each object must have: 'word' (the original word), 'pos' (part of speech like noun, verb, adjective), 'definition' (clear simple definition), 'example' (one clear example sentence using the word). Words to define: ${JSON.stringify(words)}`;
+
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: {
+                    temperature: 0.2,
+                    response_mime_type: "application/json"
+                }
+            })
+        });
+
+        const result = await response.json();
+        
+        if (result.error) {
+            console.error("Gemini API Error:", result.error);
+            return res.status(500).json({ error: "API Error" });
+        }
+
+        const text = result.candidates[0].content.parts[0].text;
+        res.json(JSON.parse(text));
+
+    } catch (err) {
+        console.error("Error defining batch:", err);
+        res.status(500).json({ error: "Failed to fetch definitions" });
+    }
+});
 
 // In-memory store for rooms
 // Structure: { '123456': { words: ['apple', 'banana'], status: 'waiting' } }
